@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativelayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dashboardHomeItemImage"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/splash"
+        android:padding="10dp"
+        android:background="#ffeeeeee" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Lorem Ipsum Dollar Sit Amet"
+        android:id="@+id/dashboardHomeItemTitle"
+        android:layout_below="@+id/dashboardHomeItemImage"
+        android:layout_centerHorizontal="true"
+        android:background="#ffffffff"
+        android:textColor="#ff000000"
+        android:padding="10dp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="But it's important to use this workaround in a relative layout for the layout_align settings to be recognized."
+        android:id="@+id/dashboardHomeItemDescription"
+        android:layout_below="@+id/dashboardHomeItemTitle"
+        android:layout_centerHorizontal="true"
+        android:background="#ffffffff"
+        android:textColor="#ff888888"
+        android:padding="10dp" />
+</RelativeLayout>

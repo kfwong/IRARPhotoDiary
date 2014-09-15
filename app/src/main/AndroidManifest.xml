@@ -15,11 +15,11 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".LoginActivity" />
 
         <!-- meta data declarations -->
         <meta-data
@@ -28,15 +28,6 @@
         <meta-data
             android:name="CLOUDINARY_URL"
             android:value="cloudinary://413734277452647:oR5axeqCqSYPepzFua2s9CI2M_w@dxspdhqz3" />
-
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login" >
-        </activity>
-        <activity
-            android:name=".DashboardActivity"
-            android:label="@string/title_activity_dashboard" >
-        </activity>
     </application>
 
     <!-- user permission declaration -->
