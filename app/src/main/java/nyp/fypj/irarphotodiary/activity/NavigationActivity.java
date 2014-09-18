@@ -1,6 +1,7 @@
 package nyp.fypj.irarphotodiary.activity;
 
 import android.graphics.Color;
+import android.media.Image;
 import android.support.v4.app.FragmentActivity;
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v4.app.FragmentManager;
@@ -104,7 +106,9 @@ public class NavigationActivity extends FragmentActivity {
                 view = layoutInflater.inflate(R.layout.adapter_activity_navigation, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.navigationListItemTitle = (TextView) view.findViewById(R.id.navigationListItemTitle);
+                viewHolder.navigationListItemIcon = (ImageView) view.findViewById(R.id.navigationListItemIcon);
                 view.setTag(viewHolder);
+
             }else{
                 view = convertView;
                 viewHolder = (ViewHolder) view.getTag();
@@ -113,6 +117,7 @@ public class NavigationActivity extends FragmentActivity {
             // the first section of the list, wanted to make it look like a user profile thingy
             if(i == 0){
                 view.setBackgroundColor(getResources().getColor(R.color.ICS_BLUE));
+                viewHolder.navigationListItemIcon.setImageResource(R.drawable.ic_action_user);
                 view.invalidate();
             }
 
@@ -123,6 +128,7 @@ public class NavigationActivity extends FragmentActivity {
 
         private class ViewHolder{
             public TextView navigationListItemTitle;
+            public ImageView navigationListItemIcon;
         }
     }
 }
