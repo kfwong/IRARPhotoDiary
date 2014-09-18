@@ -1,21 +1,32 @@
-package nyp.fypj.irarphotodiary;
+package nyp.fypj.irarphotodiary.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-public class DashboardActivity extends FragmentActivity {
+import nyp.fypj.irarphotodiary.R;
+
+public class DashboardFragment extends Fragment {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+    }
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setAdapter(new DashboardPagerAdapter(getSupportFragmentManager()));
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+
+        final ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewPager);
+        viewPager.setAdapter(new DashboardPagerAdapter(getChildFragmentManager()));
+
+        return view;
     }
 
     private class DashboardPagerAdapter extends FragmentPagerAdapter {

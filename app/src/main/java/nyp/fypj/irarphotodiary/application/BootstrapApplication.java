@@ -1,4 +1,4 @@
-package nyp.fypj.irarphotodiary;
+package nyp.fypj.irarphotodiary.application;
 
 import android.app.Application;
 

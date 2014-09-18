@@ -1,4 +1,4 @@
-package nyp.fypj.irarphotodiary;
+package nyp.fypj.irarphotodiary.fragment;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,23 +13,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudinary.Cloudinary;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.io.ByteArrayOutputStream;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import nyp.fypj.irarphotodiary.R;
+import nyp.fypj.irarphotodiary.application.BootstrapApplication;
+import nyp.fypj.irarphotodiary.util.ColorProfiler;
 
 public class ThirdFragment extends Fragment{
 
@@ -76,12 +77,25 @@ public class ThirdFragment extends Fragment{
                 protected String doInBackground(String... strings) {
 
                     try {
-                        File inputStream = new File(picturePath);
+                        // Generate image profile (dominant color, etc)
+                        Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
+                        String jsonProfile = ColorProfiler.generateJsonProfile(bitmap);
+
                         // Get instance from application constant DO NOT INITIALIZE ANOTHER.
+                        // Upload image to cloudinary
+                        File inputStream = new File(picturePath);
                         Cloudinary cloudinary = ((BootstrapApplication) ThirdFragment.this.getActivity().getApplication()).getCloudinary();
                         cloudinary.uploader().upload(inputStream, Cloudinary.emptyMap());
 
-                        return "success";
+                        // Upload image profile in json format to database
+                        HttpClient httpClient = new DefaultHttpClient();
+                        HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/images");
+                        httpPost.setHeader("Content-Type", "application/json");
+                        httpPost.setEntity(new StringEntity(jsonProfile));
+                        HttpResponse httpResponse = httpClient.execute(httpPost);
+
+                        // Return HTTP status code
+                        return Integer.toString(httpResponse.getStatusLine().getStatusCode());
                     }catch (FileNotFoundException ex){
                         return "filenotfound";
                     }catch (IOException ex){

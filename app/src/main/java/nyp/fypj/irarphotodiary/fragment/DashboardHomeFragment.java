@@ -1,4 +1,4 @@
-package nyp.fypj.irarphotodiary;
+package nyp.fypj.irarphotodiary.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -18,12 +18,13 @@ import com.etsy.android.grid.StaggeredGridView;
 import java.util.ArrayList;
 import java.util.List;
 
+import nyp.fypj.irarphotodiary.R;
+
 public class DashboardHomeFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 
     @Override

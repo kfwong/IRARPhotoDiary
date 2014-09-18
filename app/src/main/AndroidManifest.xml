@@ -3,7 +3,7 @@
     package="nyp.fypj.irarphotodiary" >
 
     <application
-        android:name=".BootstrapApplication"
+        android:name=".application.BootstrapApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -11,7 +11,7 @@
 
         <!-- activity declarations -->
         <activity
-            android:name=".SplashActivity"
+            android:name=".activity.SplashActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,8 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DashboardActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".fragment.DashboardFragment" />
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.NavigationActivity" />
 
         <!-- meta data declarations -->
         <meta-data
@@ -30,10 +31,6 @@
             android:name="CLOUDINARY_URL"
             android:value="cloudinary://413734277452647:oR5axeqCqSYPepzFua2s9CI2M_w@dxspdhqz3" />
 
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
-        </activity>
     </application>
 
     <!-- user permission declaration -->

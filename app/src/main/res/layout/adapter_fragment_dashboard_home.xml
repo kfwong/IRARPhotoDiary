@@ -10,10 +10,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/dashboardHomeItemImage"
         android:layout_alignParentTop="true"
+        android:src="@drawable/sample"
+        android:background="#50eeeeee"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/splash"
-        android:padding="10dp"
-        android:background="#ffeeeeee" />
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:adjustViewBounds="true"/>
 
     <TextView
         android:layout_width="fill_parent"
@@ -23,9 +25,10 @@
         android:id="@+id/dashboardHomeItemTitle"
         android:layout_below="@+id/dashboardHomeItemImage"
         android:layout_centerHorizontal="true"
-        android:background="#ffffffff"
-        android:textColor="#ff000000"
-        android:padding="10dp" />
+        android:background="#ff000000"
+        android:textColor="#ffffffff"
+        android:padding="10dp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -35,7 +38,7 @@
         android:id="@+id/dashboardHomeItemDescription"
         android:layout_below="@+id/dashboardHomeItemTitle"
         android:layout_centerHorizontal="true"
-        android:background="#ffffffff"
-        android:textColor="#ff888888"
+        android:background="#ff000000"
+        android:textColor="#ffffffff"
         android:padding="10dp" />
 </RelativeLayout>

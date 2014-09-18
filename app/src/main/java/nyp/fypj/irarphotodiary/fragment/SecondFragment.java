@@ -1,4 +1,4 @@
-package nyp.fypj.irarphotodiary;
+package nyp.fypj.irarphotodiary.fragment;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import nyp.fypj.irarphotodiary.util.ColorProfiler;
+import nyp.fypj.irarphotodiary.R;
 
 public class SecondFragment extends Fragment {
 
@@ -30,6 +30,7 @@ public class SecondFragment extends Fragment {
         tv.setText(getArguments().getString("msg"));
 
         ImageView imageView = (ImageView) v.findViewById(R.id.imageView);
+        /*
         ImageLoader.getInstance().displayImage("http://res.cloudinary.com/dxspdhqz3/image/upload/v1410399897/sample.jpg", imageView,new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -45,7 +46,6 @@ public class SecondFragment extends Fragment {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 progressBar.setVisibility(View.GONE);
-                tv.setText(ColorProfiler.generateJsonProfile(loadedImage));
                 Toast.makeText(v.getContext(), "Image loading completed.", Toast.LENGTH_SHORT).show();
             }
 
@@ -55,7 +55,7 @@ public class SecondFragment extends Fragment {
                 Toast.makeText(v.getContext(), "Image loading cancelled.", Toast.LENGTH_SHORT).show();
             }
         });
-
+        */
         return v;
     }
 
