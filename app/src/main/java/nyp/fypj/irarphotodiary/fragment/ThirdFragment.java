@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,7 +52,7 @@ public class ThirdFragment extends Fragment{
                         Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-                startActivityForResult(i, 1);
+                getParentFragment().startActivityForResult(i, 1);
             }
         });
 
@@ -77,17 +80,22 @@ public class ThirdFragment extends Fragment{
                 protected String doInBackground(String... strings) {
 
                     try {
-                        // Generate image profile (dominant color, etc)
-                        Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
-                        String jsonProfile = ColorProfiler.generateJsonProfile(bitmap);
-
                         // Get instance from application constant DO NOT INITIALIZE ANOTHER.
                         // Upload image to cloudinary
+                        Log.e(this.getClass().getName(), "Uploading image to cloudinary.");
                         File inputStream = new File(picturePath);
                         Cloudinary cloudinary = ((BootstrapApplication) ThirdFragment.this.getActivity().getApplication()).getCloudinary();
-                        cloudinary.uploader().upload(inputStream, Cloudinary.emptyMap());
+                        JSONObject uploadResult = cloudinary.uploader().upload(inputStream, Cloudinary.emptyMap());
+
+                        // Generate image profile (dominant color, etc)
+                        // success: return jsonProfile
+                        // failed: response with error json, the public_id etc key will not be found, throw jsonexception instead
+                        Log.e(this.getClass().getName(), "Generating image profile.");
+                        Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
+                        String jsonProfile = ColorProfiler.generateJsonProfile(bitmap, uploadResult.get("public_id").toString(), uploadResult.get("format").toString(), uploadResult.get("url").toString());
 
                         // Upload image profile in json format to database
+                        Log.e(this.getClass().getName(), "Uploading image profile to db.");
                         HttpClient httpClient = new DefaultHttpClient();
                         HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/images");
                         httpPost.setHeader("Content-Type", "application/json");
@@ -100,6 +108,8 @@ public class ThirdFragment extends Fragment{
                         return "filenotfound";
                     }catch (IOException ex){
                         return "ioexception";
+                    }catch (JSONException ex){
+                        return "jsonexception";
                     }
                 }
 

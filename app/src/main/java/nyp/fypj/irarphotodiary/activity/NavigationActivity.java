@@ -1,17 +1,22 @@
 package nyp.fypj.irarphotodiary.activity;
 
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.Image;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -23,36 +28,88 @@ import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.fragment.DashboardFragment;
+import nyp.fypj.irarphotodiary.fragment.SecondFragment;
 
 
 public class NavigationActivity extends FragmentActivity {
+
+    private ActionBarDrawerToggle navigationToggle;
+    private ListView navigationList;
+    private DrawerLayout navigationDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
+        //TODO: should move all these stuff to strings.xml
         List<String> data = new ArrayList<String>();
         data.add("Home");
+        data.add("Create Story");
         data.add("School");
         data.add("Work");
 
-        DrawerLayout navigationDrawer = (DrawerLayout) findViewById(R.id.navigationDrawer);
+        navigationDrawer = (DrawerLayout) findViewById(R.id.navigationDrawer);
+        navigationToggle = new ActionBarDrawerToggle(
+                this,
+                navigationDrawer,
+                R.drawable.ic_drawer,
+                R.string.app_name,
+                R.string.app_name);
+        navigationDrawer.setDrawerListener(navigationToggle);
+
         this.getActionBar().setDisplayHomeAsUpEnabled(true);
         this.getActionBar().setHomeButtonEnabled(true);
 
-        ListView navigationList = (ListView) findViewById(R.id.navigationList);
         NavigationListAdapter navigationListAdapter = new NavigationListAdapter(this.getApplicationContext(), data);
+        navigationList = (ListView) findViewById(R.id.navigationList);
         navigationList.setAdapter(navigationListAdapter);
+        navigationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                displayFragment(position);
+            }
+        });
 
-        DashboardFragment dashboardFragment = new DashboardFragment();
-        FragmentManager fragmentManager = this.getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content, dashboardFragment).commit();
+        if(savedInstanceState == null) {
+
+
+            DashboardFragment dashboardFragment = new DashboardFragment();
+            FragmentManager fragmentManager = this.getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content, dashboardFragment).commit();
+        }
 
     }
 
+    private void displayFragment(int position){
 
+        Fragment fragment = null;
+
+        switch(position){
+            case 0: //Home
+                fragment = new DashboardFragment();
+            break;
+            case 1:
+                fragment = new SecondFragment();
+                break;
+            default:
+                fragment = null;
+            break;
+        }
+        if(fragment !=null){
+            FragmentManager fragmentManager = this.getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content, fragment).commit();
+
+            navigationList.setItemChecked(position, true);
+            navigationList.setSelection(position);
+            navigationDrawer.closeDrawer(navigationList);
+        }else{
+            Log.e(this.getClass().getName(), "Cannot load fragment!");
+        }
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -63,14 +120,30 @@ public class NavigationActivity extends FragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        // toggle nav drawer on selecting action bar app icon/title
+        if (navigationToggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * When using the ActionBarDrawerToggle, you must call it during
+     * onPostCreate() and onConfigurationChanged()...
+     */
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        navigationToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggls
+        navigationToggle.onConfigurationChanged(newConfig);
     }
 
     private class NavigationListAdapter extends BaseAdapter{
@@ -114,12 +187,14 @@ public class NavigationActivity extends FragmentActivity {
                 viewHolder = (ViewHolder) view.getTag();
             }
 
-            // the first section of the list, wanted to make it look like a user profile thingy
+            // TODO:the first section of the list, wanted to make it look like a user profile thingy
+            /*
             if(i == 0){
                 view.setBackgroundColor(getResources().getColor(R.color.ICS_BLUE));
                 viewHolder.navigationListItemIcon.setImageResource(R.drawable.ic_action_user);
                 view.invalidate();
             }
+            */
 
             String datum = data.get(i);
             viewHolder.navigationListItemTitle.setText(datum);

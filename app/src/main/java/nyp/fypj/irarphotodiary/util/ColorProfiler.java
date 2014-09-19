@@ -2,12 +2,17 @@ package nyp.fypj.irarphotodiary.util;
 
 import android.graphics.Bitmap;
 
+import com.google.gson.Gson;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import nyp.fypj.irarphotodiary.dto.ImageProfile;
 
 /**
  * Created by L33533 on 9/17/2014.
@@ -50,21 +55,22 @@ public class ColorProfiler {
     }
 
     // get dominant color and color palette, flatten as json and return
-    public static String generateJsonProfile(Bitmap bitmap) {
+    public static String generateJsonProfile(Bitmap bitmap, String filename, String extension, String url) {
         String jsonProfile = "{}";
         try {
             List<int[]> bitmapRGBs = ColorThief.compute(bitmap, COLOR_PALETTE_COUNT);
+            List<double[]> bitmapLabs = new ArrayList<double[]>(COLOR_PALETTE_COUNT);
+            //convert rgb values to lab equivalent
+            for(int i =0; i<bitmapRGBs.size(); i++){
+                bitmapLabs.add(ColorProfiler.RGBtoLAB(bitmapRGBs.get(i)));
+            }
 
-            Map<String, int[]> profile = new HashMap<String, int[]>();
-            profile.put("color0", bitmapRGBs.get(0)); // Dominant color;
-            profile.put("color1", bitmapRGBs.get(1));
-            profile.put("color2", bitmapRGBs.get(2));
-            profile.put("color3", bitmapRGBs.get(3));
-            profile.put("color4", bitmapRGBs.get(4));
-            profile.put("color5", bitmapRGBs.get(5));
+            ImageProfile imageProfile = new ImageProfile(filename, extension, url);
+            imageProfile.setRgbColors(bitmapRGBs);
+            imageProfile.setLabColors(bitmapLabs);
 
-            JSONObject jsonObject = new JSONObject(profile);
-            jsonProfile = jsonObject.toString();
+            Gson gson = new Gson();
+            jsonProfile = gson.toJson(imageProfile);
 
         } catch (IOException ex) {
             ex.printStackTrace();

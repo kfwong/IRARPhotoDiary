@@ -18,18 +18,19 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import nyp.fypj.irarphotodiary.R;
 
 public class SecondFragment extends Fragment {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View v = inflater.inflate(R.layout.second_frag, container, false);
+        final View view = inflater.inflate(R.layout.second_frag, container, false);
 
-        final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+        final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
 
-        final TextView tv = (TextView) v.findViewById(R.id.tvFragSecond);
-        tv.setText(getArguments().getString("msg"));
-
-        ImageView imageView = (ImageView) v.findViewById(R.id.imageView);
+        ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
         /*
         ImageLoader.getInstance().displayImage("http://res.cloudinary.com/dxspdhqz3/image/upload/v1410399897/sample.jpg", imageView,new ImageLoadingListener() {
             @Override
@@ -56,17 +57,6 @@ public class SecondFragment extends Fragment {
             }
         });
         */
-        return v;
-    }
-
-    public static SecondFragment newInstance(String text) {
-
-        SecondFragment f = new SecondFragment();
-        Bundle b = new Bundle();
-        b.putString("msg", text);
-
-        f.setArguments(b);
-
-        return f;
+        return view;
     }
 }
