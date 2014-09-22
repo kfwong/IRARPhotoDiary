@@ -17,6 +17,9 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        // Remove divider under actionbar
+        getActionBar().setBackgroundDrawable(null);
+
         new Handler().postDelayed(new Runnable() {
 
             /*

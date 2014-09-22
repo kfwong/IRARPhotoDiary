@@ -11,8 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.viewpagerindicator.TitlePageIndicator;
+import com.viewpagerindicator.UnderlinePageIndicator;
 
 import java.util.List;
 
@@ -32,6 +36,9 @@ public class DashboardFragment extends Fragment {
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(new DashboardPagerAdapter(getChildFragmentManager()));
 
+        final TitlePageIndicator titlePageIndicator = (TitlePageIndicator) view.findViewById(R.id.indicator);
+        titlePageIndicator.setViewPager(viewPager);
+
         return view;
     }
 
@@ -42,8 +49,8 @@ public class DashboardFragment extends Fragment {
         }
 
         @Override
-        public Fragment getItem(int pos) {
-            switch(pos) {
+        public Fragment getItem(int position) {
+            switch(position) {
 
                 case 0: return new DashboardHomeFragment();
                 case 1: return new SecondFragment();
@@ -56,12 +63,7 @@ public class DashboardFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0: return("Recent Stories").toUpperCase();
-                case 1: return ("Second").toUpperCase();
-                case 2: return ("Third").toUpperCase();
-            }
-            return null;
+            return("Recent Stories").toUpperCase();
         }
 
         @Override

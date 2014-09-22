@@ -18,6 +18,9 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Remove divider under actionbar
+        getActionBar().setBackgroundDrawable(null);
+
         Button loginNormal = (Button) findViewById(R.id.loginNormal);
         loginNormal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -29,7 +32,6 @@ public class LoginActivity extends Activity {
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

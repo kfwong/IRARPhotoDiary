@@ -42,6 +42,9 @@ public class NavigationActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
+        // Remove divider under actionbar
+        getActionBar().setBackgroundDrawable(null);
+
         //TODO: should move all these stuff to strings.xml
         List<String> data = new ArrayList<String>();
         data.add("Home");
@@ -72,8 +75,6 @@ public class NavigationActivity extends FragmentActivity {
         });
 
         if(savedInstanceState == null) {
-
-
             DashboardFragment dashboardFragment = new DashboardFragment();
             FragmentManager fragmentManager = this.getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

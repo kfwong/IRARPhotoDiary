@@ -1,31 +1,21 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+    <com.viewpagerindicator.TitlePageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        app:titlePadding="100dp"/>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <android.support.v4.view.PagerTitleStrip
-            android:id="@+id/pager_title_strip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:background="#00000000"
-            android:textColor="#fff"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp" />
-
+        android:layout_height="0dp"
+        android:layout_weight="1">
     </android.support.v4.view.ViewPager>
-
-    <com.viewpagerindicator.UnderlinePageIndicator
-        android:id="@+id/indicator"
-        android:layout_height="2dp"
-        android:layout_width="fill_parent" />
 </LinearLayout>
 

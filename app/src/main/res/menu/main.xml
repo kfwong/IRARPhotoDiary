@@ -4,11 +4,9 @@
     tools:context="nyp.fypj.irarphotodiary.activity.NavigationActivity" >
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+        android:orderInCategory="100" />
 
     <item android:id="@+id/search"
         android:title="Search"
-        android:orderInCategory="101"
-        app:showAsAction="never" />
+        android:orderInCategory="101" />
 </menu>
