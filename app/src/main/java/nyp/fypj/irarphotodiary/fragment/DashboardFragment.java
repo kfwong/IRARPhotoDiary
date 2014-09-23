@@ -88,7 +88,6 @@ public class DashboardFragment extends Fragment {
             for (Fragment childFragment : nestedFragments) {
                 //TODO: need to prevent double executing while attaching same fragment
                 if (childFragment != null && !childFragment.isDetached() && !childFragment.isRemoving()) {
-                    Log.v(childFragment.getClass().getName(), childFragment.getClass().getName());
                     childFragment.onActivityResult(requestCode, resultCode, data);
                 }
             }

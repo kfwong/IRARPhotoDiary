@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
+import nyp.fypj.irarphotodiary.fragment.CreateStoryFragment;
 import nyp.fypj.irarphotodiary.fragment.DashboardFragment;
 import nyp.fypj.irarphotodiary.fragment.SecondFragment;
 
@@ -48,9 +49,10 @@ public class NavigationActivity extends FragmentActivity {
         //TODO: should move all these stuff to strings.xml
         List<String> data = new ArrayList<String>();
         data.add("Home");
+        data.add("My Profile");
+        data.add("My Gallery");
         data.add("Create Story");
-        data.add("School");
-        data.add("Work");
+        data.add("Search...");
 
         navigationDrawer = (DrawerLayout) findViewById(R.id.navigationDrawer);
         navigationToggle = new ActionBarDrawerToggle(
@@ -93,6 +95,9 @@ public class NavigationActivity extends FragmentActivity {
             break;
             case 1:
                 fragment = new SecondFragment();
+                break;
+            case 3:
+                fragment = new CreateStoryFragment();
                 break;
             default:
                 fragment = null;
@@ -146,6 +151,8 @@ public class NavigationActivity extends FragmentActivity {
         // Pass any configuration change to the drawer toggls
         navigationToggle.onConfigurationChanged(newConfig);
     }
+
+
 
     private class NavigationListAdapter extends BaseAdapter{
         private List<String> data;
