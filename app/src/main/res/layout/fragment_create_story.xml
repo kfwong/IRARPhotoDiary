@@ -5,17 +5,14 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/createStoryFragmentViewPager"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-    </android.support.v4.view.ViewPager>
-
-    <com.viewpagerindicator.CirclePageIndicator
-        android:id="@+id/createStoryFragmentCirclePageIndicator"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"/>
+    <ListView
+        android:id="@+id/createStoryList"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#111"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp" />
 
 </LinearLayout>

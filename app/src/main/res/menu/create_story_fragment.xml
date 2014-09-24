@@ -4,12 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="nyp.fypj.irarphotodiary.fragment.CreateStoryFragment" >
 
-    <item android:id="@+id/createStoryCanvasInsertCanvas"
-        android:title="Insert Canvas"
+    <item android:id="@+id/createStoryAddNew"
+        android:title="Add New"
         android:orderInCategory="100" />
-
-    <item android:id="@+id/createStoryCanvasRemoveCanvas"
-        android:title="Remove Canvas"
-        android:orderInCategory="101" />
 
 </menu>

@@ -1,8 +1,6 @@
 package nyp.fypj.irarphotodiary.activity;
 
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.media.Image;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -115,13 +113,6 @@ public class NavigationActivity extends FragmentActivity {
             Log.e(this.getClass().getName(), "Cannot load fragment!");
         }
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 
     @Override
