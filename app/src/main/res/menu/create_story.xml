@@ -1,13 +1,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="nyp.fypj.irarphotodiary.activity.CreateStoryActivity" >
+    <item android:id="@+id/createStoryTakePhoto"
+        android:title="Take Photo"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+
+    <item android:id="@+id/createStoryChooseFromGallery"
+        android:title="Choose From Gallery"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+
+    <item android:id="@+id/createStoryEditTitle"
+        android:title="Edit Title"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+
+    <item android:id="@+id/createStoryEditDescription"
+        android:title="Edit Description"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+
     <item android:id="@+id/createStorySave"
         android:title="Save"
         android:orderInCategory="100"
         android:showAsAction="never" />
 
     <item android:id="@+id/createStoryCancel"
-        android:title="Cencel"
+        android:title="Cancel"
         android:orderInCategory="100"
         android:showAsAction="never" />
 </menu>

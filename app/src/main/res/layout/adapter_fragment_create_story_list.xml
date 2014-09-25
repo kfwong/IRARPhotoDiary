@@ -4,7 +4,7 @@
     android:padding="6dip" >
 
     <ImageView
-        android:id="@+id/createStoryItemImage"
+        android:id="@+id/createStoryItemThumbnail"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
@@ -16,25 +16,25 @@
         android:id="@+id/createStoryItemTitle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/createStoryItemDescription"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/createStoryItemImage"
         android:gravity="center_vertical"
         android:text="Example application"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:layout_alignTop="@+id/createStoryItemThumbnail"
+        android:layout_toRightOf="@+id/createStoryItemThumbnail"
+        android:layout_toEndOf="@+id/createStoryItemThumbnail" />
 
     <TextView
         android:id="@+id/createStoryItemDescription"
         android:layout_width="fill_parent"
         android:layout_height="26dip"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/createStoryItemImage"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:text="Description"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:layout_toEndOf="@+id/createStoryItemThumbnail"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout> 

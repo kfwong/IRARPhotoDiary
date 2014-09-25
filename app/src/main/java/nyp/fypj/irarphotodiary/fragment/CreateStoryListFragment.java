@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +22,7 @@ import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.activity.CreateStoryActivity;
+import nyp.fypj.irarphotodiary.util.BitmapUtils;
 
 public class CreateStoryListFragment extends ListFragment {
 
@@ -131,7 +131,7 @@ public class CreateStoryListFragment extends ListFragment {
             if(convertView == null){
                 view = layoutInflater.inflate(R.layout.adapter_fragment_create_story_list, parent, false);
                 viewHolder = new ViewHolder();
-                viewHolder.createStoryItemImage = (ImageView) view.findViewById(R.id.createStoryItemImage);
+                viewHolder.createStoryItemThumbnail = (ImageView) view.findViewById(R.id.createStoryItemThumbnail);
                 viewHolder.createStoryItemTitle = (TextView) view.findViewById(R.id.createStoryItemTitle);
                 viewHolder.createStoryItemDescription = (TextView) view.findViewById(R.id.createStoryItemDescription);
 
@@ -143,7 +143,7 @@ public class CreateStoryListFragment extends ListFragment {
             }
 
             HashMap<String, String> datum = data.get(position);
-            //viewHolder.createStoryItemImage
+            viewHolder.createStoryItemThumbnail.setImageBitmap(BitmapUtils.StringToBitmap(datum.get("thumbnail")));
             viewHolder.createStoryItemTitle.setText(datum.get("title"));
             viewHolder.createStoryItemDescription.setText(datum.get("description"));
             return view;
@@ -160,7 +160,7 @@ public class CreateStoryListFragment extends ListFragment {
         }
 
         private class ViewHolder{
-            public ImageView createStoryItemImage;
+            public ImageView createStoryItemThumbnail;
             public TextView createStoryItemTitle;
             public TextView createStoryItemDescription;
         }

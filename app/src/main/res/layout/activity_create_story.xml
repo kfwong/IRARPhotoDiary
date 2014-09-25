@@ -12,14 +12,30 @@
         android:src="@drawable/sample" />
 
     <TextView
-        android:id="@+id/myImageViewText"
+        android:id="@+id/createStoryTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:text="Lorem Ipsum "
+        android:textColor="#ffffffff"
+        android:textIsSelectable="false"
+        android:textSize="16dp"
+        android:background="#80000000"
+        android:padding="10dp"
+        android:layout_above="@+id/createStoryDescription"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/createStoryDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/createStoryImageView"
         android:layout_alignRight="@+id/createStoryImageView"
         android:layout_alignBottom="@+id/createStoryImageView"
         android:gravity="bottom"
-        android:text="Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello "
+        android:text="Any advice would be greatly appreciated. Apologies if the question is disjointed, please ask for clarification and I'll happily tell you the specifics of what I've tried."
         android:textColor="#ffffffff"
         android:textIsSelectable="false"
         android:textSize="16dp"
