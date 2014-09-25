@@ -1,0 +1,29 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativelayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <com.flaviofaria.kenburnsview.KenBurnsView
+        android:id="@+id/createStoryImageView"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="centerInside"
+        android:src="@drawable/sample" />
+
+    <TextView
+        android:id="@+id/myImageViewText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/createStoryImageView"
+        android:layout_alignRight="@+id/createStoryImageView"
+        android:layout_alignBottom="@+id/createStoryImageView"
+        android:gravity="bottom"
+        android:text="Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello "
+        android:textColor="#ffffffff"
+        android:textIsSelectable="false"
+        android:textSize="16dp"
+        android:background="#80000000"
+        android:padding="10dp" />
+
+</RelativeLayout>

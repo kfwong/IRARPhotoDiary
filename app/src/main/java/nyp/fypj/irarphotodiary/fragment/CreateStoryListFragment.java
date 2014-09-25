@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
-import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,17 +17,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.viewpagerindicator.CirclePageIndicator;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
-import nyp.fypj.irarphotodiary.activity.LoginActivity;
-import nyp.fypj.irarphotodiary.activity.SplashActivity;
+import nyp.fypj.irarphotodiary.activity.CreateStoryActivity;
 
-public class CreateStoryFragment extends ListFragment {
+public class CreateStoryListFragment extends ListFragment {
 
     private CreateStoryListAdapter createStoryListAdapter;
 
@@ -61,13 +56,28 @@ public class CreateStoryFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         HashMap<String, String> datum = (HashMap<String, String>) getListAdapter().getItem(position);
-        Intent intent = new Intent(getListView().getContext(), LoginActivity.class);
-        startActivity(intent);
+
+        Intent intent = new Intent(getListView().getContext(), CreateStoryActivity.class);
+        intent.putExtra("position", position);
+        intent.putExtra("datum", datum);
+        startActivityForResult(intent, 1); //TODO: make the request code final
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if(requestCode == 1){
+            if(resultCode == getActivity().RESULT_OK){
+                int position = intent.getIntExtra("position", -1);
+                HashMap<String, String> datum = (HashMap<String, String>)intent.getSerializableExtra("datum");
+
+                createStoryListAdapter.set(position, datum);
+            }
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.create_story_fragment, menu);
+        inflater.inflate(R.menu.create_story_fragment_list, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -79,7 +89,7 @@ public class CreateStoryFragment extends ListFragment {
                 HashMap<String, String> datum = new HashMap<String, String>();
                 datum.put("title","March");
                 datum.put("description","March (Description)");
-                createStoryListAdapter.addNew(datum);
+                createStoryListAdapter.add(datum);
                 break;
             default:
                 break;
@@ -119,7 +129,7 @@ public class CreateStoryFragment extends ListFragment {
             ViewHolder viewHolder;
 
             if(convertView == null){
-                view = layoutInflater.inflate(R.layout.adapter_fragment_create_story, parent, false);
+                view = layoutInflater.inflate(R.layout.adapter_fragment_create_story_list, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.createStoryItemImage = (ImageView) view.findViewById(R.id.createStoryItemImage);
                 viewHolder.createStoryItemTitle = (TextView) view.findViewById(R.id.createStoryItemTitle);
@@ -139,8 +149,13 @@ public class CreateStoryFragment extends ListFragment {
             return view;
         }
 
-        public void addNew(HashMap<String, String> datum){
+        public void add(HashMap<String, String> datum){
             data.add(datum);
+            notifyDataSetChanged();
+        }
+
+        public void set(int position, HashMap<String, String> datum){
+            data.set(position, datum);
             notifyDataSetChanged();
         }
 

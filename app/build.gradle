@@ -27,4 +27,6 @@ dependencies {
     compile 'com.etsy.android.grid:library:1.0.5'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.viewpagerindicator:library:2.4.1@aar'
+    compile files('libs/KenBurnsView-1.0.3.jar')
+    compile 'com.github.chrisbanes.photoview:library:1.2.3'
 }

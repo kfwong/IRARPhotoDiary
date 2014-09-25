@@ -2,7 +2,7 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="nyp.fypj.irarphotodiary.fragment.CreateStoryFragment" >
+    tools:context="nyp.fypj.irarphotodiary.fragment.CreateStoryListFragment" >
 
     <item android:id="@+id/createStoryAddNew"
         android:title="Add New"

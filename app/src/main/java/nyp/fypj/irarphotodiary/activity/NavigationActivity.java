@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
-import nyp.fypj.irarphotodiary.fragment.CreateStoryFragment;
+import nyp.fypj.irarphotodiary.fragment.CreateStoryListFragment;
 import nyp.fypj.irarphotodiary.fragment.DashboardFragment;
 import nyp.fypj.irarphotodiary.fragment.SecondFragment;
 
@@ -95,7 +94,7 @@ public class NavigationActivity extends FragmentActivity {
                 fragment = new SecondFragment();
                 break;
             case 3:
-                fragment = new CreateStoryFragment();
+                fragment = new CreateStoryListFragment();
                 break;
             default:
                 fragment = null;
