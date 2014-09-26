@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -30,6 +31,7 @@ import nyp.fypj.irarphotodiary.util.BitmapUtils;
 
 public class CreateStoryActivity extends FragmentActivity {
     private int position; // keeping track current entry in the parent list view position
+    private String imageUri;
     private KenBurnsView createStoryImageView;
     private TextView createStoryTitle;
     private TextView createStoryDescription;
@@ -44,8 +46,9 @@ public class CreateStoryActivity extends FragmentActivity {
 
         Intent intent = getIntent();
 
-        position = intent.getIntExtra("position", -1);
         HashMap<String, String> datum = (HashMap<String, String>)intent.getSerializableExtra("datum");
+        position = intent.getIntExtra("position", -1);
+        imageUri = datum.get("imageUri");
 
         createStoryTitle = (TextView)findViewById(R.id.createStoryTitle);
         createStoryTitle.setText(datum.get("title"));
@@ -57,26 +60,26 @@ public class CreateStoryActivity extends FragmentActivity {
         createStoryImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isFadedIn){
-                    Animation fadeOut = new AlphaAnimation(1.0f , 0.0f);
-                    fadeOut.setDuration(300);
-                    fadeOut.setFillAfter(true);
-                    createStoryTitle.startAnimation(fadeOut);
-                    createStoryDescription.startAnimation(fadeOut);
-                    isFadedIn = false;
-                }else{
-                    Animation fadeIn = new AlphaAnimation(0.0f , 1.0f ) ;
-                    fadeIn.setDuration(300);
-                    fadeIn.setFillAfter(true);
-                    createStoryTitle.startAnimation(fadeIn);
-                    createStoryDescription.startAnimation(fadeIn);
-                    isFadedIn = true;
-                }
-
-
+            if(isFadedIn){
+                Animation fadeOut = new AlphaAnimation(1.0f , 0.0f);
+                fadeOut.setDuration(300);
+                fadeOut.setFillAfter(true);
+                createStoryTitle.startAnimation(fadeOut);
+                createStoryDescription.startAnimation(fadeOut);
+                isFadedIn = false;
+            }else{
+                Animation fadeIn = new AlphaAnimation(0.0f , 1.0f ) ;
+                fadeIn.setDuration(300);
+                fadeIn.setFillAfter(true);
+                createStoryTitle.startAnimation(fadeIn);
+                createStoryDescription.startAnimation(fadeIn);
+                isFadedIn = true;
+            }
             }
         });
-
+        if(imageUri != "" || imageUri != null){
+            ImageLoader.getInstance().displayImage(imageUri, createStoryImageView);
+        }
     }
 
     @Override
@@ -136,16 +139,15 @@ public class CreateStoryActivity extends FragmentActivity {
                 }).show();
                 break;
             case R.id.createStorySave:
-                Bitmap bitmap = ThumbnailUtils.extractThumbnail(((BitmapDrawable)createStoryImageView.getDrawable()).getBitmap(), 128, 128);
 
                 HashMap<String, String> datum = new HashMap<String, String>();
-                datum.put("thumbnail", BitmapUtils.BitmapToString(bitmap));
+                datum.put("imageUri", imageUri);
                 datum.put("title", createStoryTitle.getText().toString());
                 datum.put("description", createStoryDescription.getText().toString());
 
                 Intent intent = new Intent();
-                intent.putExtra("position", position);
                 intent.putExtra("datum", datum);
+                intent.putExtra("position", position);
 
                 setResult(RESULT_OK, intent);
                 finish();
@@ -166,15 +168,9 @@ public class CreateStoryActivity extends FragmentActivity {
         switch(requestCode) {
             case 1: //TODO
                 if(resultCode == RESULT_OK){
-                    try {
-                        Uri uri = data.getData();
-                        InputStream imageStream = getContentResolver().openInputStream(uri);
-                        Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
-                        createStoryImageView.setImageBitmap(bitmap);
-
-                    }catch(FileNotFoundException ex){
-                        // do nothing
-                    }
+                    Uri uri = data.getData();
+                    imageUri = uri.toString();
+                    ImageLoader.getInstance().displayImage(imageUri, createStoryImageView);
                 }
         }
     }

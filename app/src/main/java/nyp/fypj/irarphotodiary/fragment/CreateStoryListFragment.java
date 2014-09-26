@@ -2,6 +2,8 @@ package nyp.fypj.irarphotodiary.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
@@ -16,46 +18,84 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.mobeta.android.dslv.DragSortController;
+import com.mobeta.android.dslv.DragSortListView;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.activity.CreateStoryActivity;
 import nyp.fypj.irarphotodiary.util.BitmapUtils;
 
 public class CreateStoryListFragment extends ListFragment {
-
+    private DragSortListView createStoryList;
     private CreateStoryListAdapter createStoryListAdapter;
+    private ImageSize thumbnailSize = new ImageSize(128,128);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        createStoryList = (DragSortListView) inflater.inflate(R.layout.fragment_create_story, container, false);
+        return createStoryList;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         HashMap<String, String> datum1 = new HashMap<String, String>();
-        datum1.put("title", "January");
-        datum1.put("description", "January (Description)");
+        datum1.put("title", "New stuff coming up soon!");
+        datum1.put("description", "How about adding some interesting description to this image?");
+        datum1.put("imageUri", "");
         HashMap<String, String> datum2 = new HashMap<String, String>();
-        datum2.put("title", "February");
-        datum2.put("description", "February (Description)");
+        datum2.put("title", "New stuff coming up soon!");
+        datum2.put("description", "How about adding some interesting description to this image?");
+        datum2.put("imageUri", "");
 
         List<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
         data.add(datum1);
         data.add(datum2);
 
         createStoryListAdapter = new CreateStoryListAdapter(this.getListView().getContext(), data);
-        setListAdapter(createStoryListAdapter);
+
+        //http://stackoverflow.com/questions/14813882/bauerca-drag-sort-listview-simple-example
+        createStoryList = (DragSortListView) getListView();
+        createStoryList.setAdapter(createStoryListAdapter);
+        createStoryList.setDropListener(new DragSortListView.DropListener() {
+            @Override
+            public void drop(int to, int from) {
+                if(from != to){
+                    HashMap<String, String> datum = (HashMap<String, String>) createStoryListAdapter.getItem(from);
+                    createStoryListAdapter.remove(from);
+                    createStoryListAdapter.add(to, datum);
+
+//                    createStoryListAdapter.swap(to, from);
+                }
+            }
+        });
+
+        DragSortController dragSortController = new DragSortController(createStoryList);
+        dragSortController.setRemoveEnabled(false);
+        dragSortController.setSortEnabled(true);
+        dragSortController.setDragInitMode(DragSortController.ON_DOWN);
+        dragSortController.setDragHandleId(R.id.createStoryItemPosition);
+
+        createStoryList.setFloatViewManager(dragSortController);
+        createStoryList.setOnTouchListener(dragSortController);
+        createStoryList.setDragEnabled(true);
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        HashMap<String, String> datum = (HashMap<String, String>) getListAdapter().getItem(position);
+        HashMap<String, String> datum = (HashMap<String, String>) createStoryListAdapter.getItem(position);
 
         Intent intent = new Intent(getListView().getContext(), CreateStoryActivity.class);
         intent.putExtra("position", position);
@@ -67,9 +107,8 @@ public class CreateStoryListFragment extends ListFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if(requestCode == 1){
             if(resultCode == getActivity().RESULT_OK){
-                int position = intent.getIntExtra("position", -1);
                 HashMap<String, String> datum = (HashMap<String, String>)intent.getSerializableExtra("datum");
-
+                int position = intent.getIntExtra("position", -1);
                 createStoryListAdapter.set(position, datum);
             }
         }
@@ -87,8 +126,9 @@ public class CreateStoryListFragment extends ListFragment {
         switch(item.getItemId()){
             case R.id.createStoryAddNew:
                 HashMap<String, String> datum = new HashMap<String, String>();
-                datum.put("title","March");
-                datum.put("description","March (Description)");
+                datum.put("title", "New stuff coming up soon!");
+                datum.put("description", "How about adding some interesting description to this image?");
+                datum.put("imageUri","");
                 createStoryListAdapter.add(datum);
                 break;
             default:
@@ -126,7 +166,7 @@ public class CreateStoryListFragment extends ListFragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view;
-            ViewHolder viewHolder;
+            final ViewHolder viewHolder;
 
             if(convertView == null){
                 view = layoutInflater.inflate(R.layout.adapter_fragment_create_story_list, parent, false);
@@ -134,6 +174,7 @@ public class CreateStoryListFragment extends ListFragment {
                 viewHolder.createStoryItemThumbnail = (ImageView) view.findViewById(R.id.createStoryItemThumbnail);
                 viewHolder.createStoryItemTitle = (TextView) view.findViewById(R.id.createStoryItemTitle);
                 viewHolder.createStoryItemDescription = (TextView) view.findViewById(R.id.createStoryItemDescription);
+                viewHolder.createStoryItemPosition = (TextView) view.findViewById(R.id.createStoryItemPosition);
 
                 view.setTag(viewHolder);
 
@@ -143,9 +184,20 @@ public class CreateStoryListFragment extends ListFragment {
             }
 
             HashMap<String, String> datum = data.get(position);
-            viewHolder.createStoryItemThumbnail.setImageBitmap(BitmapUtils.StringToBitmap(datum.get("thumbnail")));
             viewHolder.createStoryItemTitle.setText(datum.get("title"));
             viewHolder.createStoryItemDescription.setText(datum.get("description"));
+            viewHolder.createStoryItemPosition.setText("#"+position);
+            if(datum.get("imageUri") != "" || datum.get("imageUri") != null){
+                ImageLoader.getInstance().loadImage(datum.get("imageUri"), thumbnailSize, new SimpleImageLoadingListener() {
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        Bitmap thumbnail = ThumbnailUtils.extractThumbnail(loadedImage, 128, 128);
+                        viewHolder.createStoryItemThumbnail.setImageBitmap(thumbnail);
+                    }
+
+                });
+            }
             return view;
         }
 
@@ -154,8 +206,23 @@ public class CreateStoryListFragment extends ListFragment {
             notifyDataSetChanged();
         }
 
+        public void add(int position, HashMap<String, String> datum){
+            data.add(position, datum);
+            notifyDataSetChanged();
+        }
+
         public void set(int position, HashMap<String, String> datum){
             data.set(position, datum);
+            notifyDataSetChanged();
+        }
+
+        public void remove(int position){
+            data.remove(position);
+            notifyDataSetChanged();
+        }
+
+        public void swap(int to, int from){
+            Collections.swap(data, to, from);
             notifyDataSetChanged();
         }
 
@@ -163,6 +230,7 @@ public class CreateStoryListFragment extends ListFragment {
             public ImageView createStoryItemThumbnail;
             public TextView createStoryItemTitle;
             public TextView createStoryItemDescription;
+            public TextView createStoryItemPosition;
         }
     }
 

@@ -3,8 +3,12 @@ package nyp.fypj.irarphotodiary.application;
 import android.app.Application;
 
 import com.cloudinary.Cloudinary;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+
+import nyp.fypj.irarphotodiary.R;
 
 /**
  * Created by L33533 on 9/12/2014.
@@ -21,8 +25,20 @@ public class BootstrapApplication extends Application {
         cloudinary = new Cloudinary(this.getApplicationContext());
 
         // Android Universal ImageLoder initialization
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
-        ImageLoader.getInstance().init(config);
+        // IMPORTANT: Enable disk cache for bitmaps!!! Using memory cache is not recommended in this application!!!
+        // Unless you prefer Out of Memory Error blah blah blah
+        DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(false)
+                .cacheOnDisk(true)
+                .displayer(new FadeInBitmapDisplayer(2000)) //milliseconds
+                .showImageForEmptyUri(R.drawable.placeholder)
+                .showImageOnFail(R.drawable.placeholder)
+                .build();
+
+        ImageLoaderConfiguration imageLoaderConfiguration = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                .defaultDisplayImageOptions(displayImageOptions)
+                .build();
+        ImageLoader.getInstance().init(imageLoaderConfiguration);
     }
 
     public Cloudinary getCloudinary() {

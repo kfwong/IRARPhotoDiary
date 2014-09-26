@@ -8,15 +8,14 @@
         android:id="@+id/createStoryImageView"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:scaleType="centerInside"
-        android:src="@drawable/sample" />
+        android:scaleType="centerInside"/>
 
     <TextView
         android:id="@+id/createStoryTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom"
-        android:text="Lorem Ipsum "
+        android:text="Tutorial"
         android:textColor="#ffffffff"
         android:textIsSelectable="false"
         android:textSize="16dp"
@@ -35,7 +34,7 @@
         android:layout_alignRight="@+id/createStoryImageView"
         android:layout_alignBottom="@+id/createStoryImageView"
         android:gravity="bottom"
-        android:text="Any advice would be greatly appreciated. Apologies if the question is disjointed, please ask for clarification and I'll happily tell you the specifics of what I've tried."
+        android:text="Click the menu button at top right corner to change image, add descriptions and more!"
         android:textColor="#ffffffff"
         android:textIsSelectable="false"
         android:textSize="16dp"

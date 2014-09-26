@@ -1,18 +1,21 @@
-<LinearLayout
+<com.mobeta.android.dslv.DragSortListView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@android:id/list"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:layout_gravity="start"
+    android:background="#111"
+    android:choiceMode="singleChoice"
+    android:divider="@android:color/transparent"
+    android:dividerHeight="0dp"
+    app:collapsed_height="2dp"
+    app:drag_enabled="true"
+    app:drag_scroll_start="0.33"
+    app:float_alpha="0.6"
+    app:max_drag_scroll_speed="0.5"
+    app:slide_shuffle_speed="0.3"
+    app:sort_enabled="true"
+    app:track_drag_sort="false"
+    app:use_default_controller="false" />
 
-    <ListView
-        android:id="@+id/createStoryList"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="#111"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp" />
-
-</LinearLayout>
