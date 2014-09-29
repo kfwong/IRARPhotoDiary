@@ -13,6 +13,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -71,13 +73,9 @@ public class CreateStoryListFragment extends ListFragment {
         createStoryList.setAdapter(createStoryListAdapter);
         createStoryList.setDropListener(new DragSortListView.DropListener() {
             @Override
-            public void drop(int to, int from) {
+            public void drop(int from, int to) {
                 if(from != to){
-                    HashMap<String, String> datum = (HashMap<String, String>) createStoryListAdapter.getItem(from);
-                    createStoryListAdapter.remove(from);
-                    createStoryListAdapter.add(to, datum);
-
-//                    createStoryListAdapter.swap(to, from);
+                    createStoryListAdapter.reorder(from, to);
                 }
             }
         });
@@ -188,16 +186,23 @@ public class CreateStoryListFragment extends ListFragment {
             viewHolder.createStoryItemDescription.setText(datum.get("description"));
             viewHolder.createStoryItemPosition.setText("#"+position);
             if(datum.get("imageUri") != "" || datum.get("imageUri") != null){
+                viewHolder.createStoryItemThumbnail.setImageBitmap(null);
                 ImageLoader.getInstance().loadImage(datum.get("imageUri"), thumbnailSize, new SimpleImageLoadingListener() {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         Bitmap thumbnail = ThumbnailUtils.extractThumbnail(loadedImage, 128, 128);
                         viewHolder.createStoryItemThumbnail.setImageBitmap(thumbnail);
+
+                        Animation fadeIn = new AlphaAnimation(0.0f , 1.0f ) ;
+                        fadeIn.setDuration(300);
+                        fadeIn.setFillAfter(true);
+                        viewHolder.createStoryItemThumbnail.startAnimation(fadeIn);
                     }
 
                 });
             }
+
             return view;
         }
 
@@ -221,8 +226,15 @@ public class CreateStoryListFragment extends ListFragment {
             notifyDataSetChanged();
         }
 
-        public void swap(int to, int from){
-            Collections.swap(data, to, from);
+        public void reorder(int from, int to){
+            HashMap<String, String> datum = data.get(from);
+            data.remove(from);
+            data.add(to,datum);
+            notifyDataSetChanged();
+        }
+
+        public void swap(int from, int to){
+            Collections.swap(data, from, to);
             notifyDataSetChanged();
         }
 
