@@ -1,12 +1,18 @@
 package nyp.fypj.irarphotodiary.fragment;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.media.ThumbnailUtils;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +25,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.cloudinary.Cloudinary;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -28,6 +36,17 @@ import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,7 +55,10 @@ import java.util.Map;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.activity.CreateStoryActivity;
+import nyp.fypj.irarphotodiary.application.BootstrapApplication;
+import nyp.fypj.irarphotodiary.dto.ImageProfile;
 import nyp.fypj.irarphotodiary.util.BitmapUtils;
+import nyp.fypj.irarphotodiary.util.ColorProfiler;
 
 public class CreateStoryListFragment extends ListFragment {
     private DragSortListView createStoryList;
@@ -53,20 +75,20 @@ public class CreateStoryListFragment extends ListFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        HashMap<String, String> datum1 = new HashMap<String, String>();
-        datum1.put("title", "New stuff coming up soon!");
-        datum1.put("description", "How about adding some interesting description to this image?");
-        datum1.put("imageUri", "");
-        HashMap<String, String> datum2 = new HashMap<String, String>();
-        datum2.put("title", "New stuff coming up soon!");
-        datum2.put("description", "How about adding some interesting description to this image?");
-        datum2.put("imageUri", "");
 
-        List<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
-        data.add(datum1);
-        data.add(datum2);
+        ImageProfile imageProfile1 = new ImageProfile();
+        imageProfile1.setTitle("New stuff coming up soon!");
+        imageProfile1.setDescription("How about adding some interesting description to this image?");
 
-        createStoryListAdapter = new CreateStoryListAdapter(this.getListView().getContext(), data);
+        ImageProfile imageProfile2 = new ImageProfile();
+        imageProfile2.setTitle("New stuff coming up soon!");
+        imageProfile2.setDescription("How about adding some interesting description to this image?");
+
+        List<ImageProfile> imageProfiles = new ArrayList<ImageProfile>();
+        imageProfiles.add(imageProfile1);
+        imageProfiles.add(imageProfile2);
+
+        createStoryListAdapter = new CreateStoryListAdapter(this.getListView().getContext(), imageProfiles);
 
         //http://stackoverflow.com/questions/14813882/bauerca-drag-sort-listview-simple-example
         createStoryList = (DragSortListView) getListView();
@@ -93,11 +115,11 @@ public class CreateStoryListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        HashMap<String, String> datum = (HashMap<String, String>) createStoryListAdapter.getItem(position);
+        ImageProfile imageProfile = (ImageProfile) createStoryListAdapter.getItem(position);
 
         Intent intent = new Intent(getListView().getContext(), CreateStoryActivity.class);
         intent.putExtra("position", position);
-        intent.putExtra("datum", datum);
+        intent.putExtra("imageProfile", imageProfile);
         startActivityForResult(intent, 1); //TODO: make the request code final
     }
 
@@ -105,9 +127,9 @@ public class CreateStoryListFragment extends ListFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if(requestCode == 1){
             if(resultCode == getActivity().RESULT_OK){
-                HashMap<String, String> datum = (HashMap<String, String>)intent.getSerializableExtra("datum");
                 int position = intent.getIntExtra("position", -1);
-                createStoryListAdapter.set(position, datum);
+                ImageProfile imageProfile = intent.getExtras().getParcelable("imageProfile");
+                createStoryListAdapter.set(position, imageProfile);
             }
         }
     }
@@ -123,11 +145,45 @@ public class CreateStoryListFragment extends ListFragment {
 
         switch(item.getItemId()){
             case R.id.createStoryAddNew:
-                HashMap<String, String> datum = new HashMap<String, String>();
-                datum.put("title", "New stuff coming up soon!");
-                datum.put("description", "How about adding some interesting description to this image?");
-                datum.put("imageUri","");
-                createStoryListAdapter.add(datum);
+                ImageProfile imageProfile = new ImageProfile();
+                imageProfile.setTitle("New stuff coming up soon!");
+                imageProfile.setDescription("How about adding some interesting description to this image?");
+                createStoryListAdapter.add(imageProfile);
+                break;
+            case R.id.createStoryUpload:
+                final List<ImageProfile> imageProfiles = createStoryListAdapter.imageProfiles;
+
+                final NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                final NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(this.getView().getContext());
+                notificationCompat.setSmallIcon(R.drawable.ic_launcher);
+                notificationCompat.setContentTitle("Upload Album");
+
+                ///// test & debugging
+                new Thread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            notificationCompat.setProgress(0, 0, true);
+                            notificationManager.notify(1, notificationCompat.build());
+
+                            try {
+                                for(int i = 0; i<4;i++){
+                                    notificationCompat.setContentText("Uploading in progress. ("+(i+1)+"/4)");
+                                    notificationManager.notify(1, notificationCompat.build());
+                                    Thread.sleep(3*1000);
+                                }
+
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            // When the loop is finished, updates the notification
+                            notificationCompat.setContentText("Upload completed.");
+                            notificationCompat.setProgress(0, 0, false);
+                            notificationManager.notify(1, notificationCompat.build());
+                        }
+                    }
+                ).start();
+                /////
                 break;
             default:
                 break;
@@ -138,22 +194,22 @@ public class CreateStoryListFragment extends ListFragment {
 
     private class CreateStoryListAdapter extends BaseAdapter {
 
-        private List<HashMap<String, String>> data;
+        private List<ImageProfile> imageProfiles;
         private LayoutInflater layoutInflater;
 
-        private CreateStoryListAdapter(Context context, List<HashMap<String, String>> data) {
-            this.data = data;
+        private CreateStoryListAdapter(Context context, List<ImageProfile> imageProfiles) {
+            this.imageProfiles = imageProfiles;
             this.layoutInflater = LayoutInflater.from(context);
         }
 
         @Override
         public int getCount() {
-            return data.size();
+            return imageProfiles.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return data.get(position);
+            return imageProfiles.get(position);
         }
 
         @Override
@@ -181,13 +237,13 @@ public class CreateStoryListFragment extends ListFragment {
                 viewHolder = (ViewHolder) view.getTag();
             }
 
-            HashMap<String, String> datum = data.get(position);
-            viewHolder.createStoryItemTitle.setText(datum.get("title"));
-            viewHolder.createStoryItemDescription.setText(datum.get("description"));
+            ImageProfile imageProfile = imageProfiles.get(position);
+            viewHolder.createStoryItemTitle.setText(imageProfile.getTitle());
+            viewHolder.createStoryItemDescription.setText(imageProfile.getDescription());
             viewHolder.createStoryItemPosition.setText("#"+position);
-            if(datum.get("imageUri") != "" || datum.get("imageUri") != null){
+            if(imageProfile.getUri() != "" || imageProfile.getUri() != null){
                 viewHolder.createStoryItemThumbnail.setImageBitmap(null);
-                ImageLoader.getInstance().loadImage(datum.get("imageUri"), thumbnailSize, new SimpleImageLoadingListener() {
+                ImageLoader.getInstance().loadImage(imageProfile.getUri(), thumbnailSize, new SimpleImageLoadingListener() {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
@@ -206,35 +262,35 @@ public class CreateStoryListFragment extends ListFragment {
             return view;
         }
 
-        public void add(HashMap<String, String> datum){
-            data.add(datum);
+        public void add(ImageProfile imageProfile){
+            imageProfiles.add(imageProfile);
             notifyDataSetChanged();
         }
 
-        public void add(int position, HashMap<String, String> datum){
-            data.add(position, datum);
+        public void add(int position, ImageProfile imageProfile){
+            imageProfiles.add(position, imageProfile);
             notifyDataSetChanged();
         }
 
-        public void set(int position, HashMap<String, String> datum){
-            data.set(position, datum);
+        public void set(int position, ImageProfile imageProfile){
+            imageProfiles.set(position, imageProfile);
             notifyDataSetChanged();
         }
 
         public void remove(int position){
-            data.remove(position);
+            imageProfiles.remove(position);
             notifyDataSetChanged();
         }
 
         public void reorder(int from, int to){
-            HashMap<String, String> datum = data.get(from);
-            data.remove(from);
-            data.add(to,datum);
+            ImageProfile imageProfile = imageProfiles.get(from);
+            imageProfiles.remove(from);
+            imageProfiles.add(to,imageProfile);
             notifyDataSetChanged();
         }
 
         public void swap(int from, int to){
-            Collections.swap(data, from, to);
+            Collections.swap(imageProfiles, from, to);
             notifyDataSetChanged();
         }
 

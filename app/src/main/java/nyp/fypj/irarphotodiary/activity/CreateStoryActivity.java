@@ -27,11 +27,12 @@ import java.io.InputStream;
 import java.util.HashMap;
 
 import nyp.fypj.irarphotodiary.R;
+import nyp.fypj.irarphotodiary.dto.ImageProfile;
 import nyp.fypj.irarphotodiary.util.BitmapUtils;
 
 public class CreateStoryActivity extends FragmentActivity {
     private int position; // keeping track current entry in the parent list view position
-    private String imageUri;
+    private ImageProfile imageProfile;
     private KenBurnsView createStoryImageView;
     private TextView createStoryTitle;
     private TextView createStoryDescription;
@@ -46,15 +47,14 @@ public class CreateStoryActivity extends FragmentActivity {
 
         Intent intent = getIntent();
 
-        HashMap<String, String> datum = (HashMap<String, String>)intent.getSerializableExtra("datum");
         position = intent.getIntExtra("position", -1);
-        imageUri = datum.get("imageUri");
+        imageProfile = (ImageProfile) intent.getExtras().getParcelable("imageProfile");
 
         createStoryTitle = (TextView)findViewById(R.id.createStoryTitle);
-        createStoryTitle.setText(datum.get("title"));
+        createStoryTitle.setText(imageProfile.getTitle());
 
         createStoryDescription = (TextView) findViewById(R.id.createStoryDescription);
-        createStoryDescription.setText(datum.get("description"));
+        createStoryDescription.setText(imageProfile.getDescription());
 
         createStoryImageView = (KenBurnsView) findViewById(R.id.createStoryImageView);
         createStoryImageView.setOnClickListener(new View.OnClickListener() {
@@ -77,8 +77,8 @@ public class CreateStoryActivity extends FragmentActivity {
             }
             }
         });
-        if(imageUri != "" || imageUri != null){
-            ImageLoader.getInstance().displayImage(imageUri, createStoryImageView);
+        if(imageProfile.getUri() != "" || imageProfile.getUri() != null){
+            ImageLoader.getInstance().displayImage(imageProfile.getUri(), createStoryImageView);
         }
     }
 
@@ -110,6 +110,7 @@ public class CreateStoryActivity extends FragmentActivity {
                         .setView(editTitle)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
+                                imageProfile.setTitle(editTitle.getText().toString());
                                 createStoryTitle.setText(editTitle.getText());
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -130,6 +131,7 @@ public class CreateStoryActivity extends FragmentActivity {
                         .setView(editDescription)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
+                                imageProfile.setDescription(editDescription.getText().toString());
                                 createStoryDescription.setText(editDescription.getText());
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -140,14 +142,9 @@ public class CreateStoryActivity extends FragmentActivity {
                 break;
             case R.id.createStorySave:
 
-                HashMap<String, String> datum = new HashMap<String, String>();
-                datum.put("imageUri", imageUri);
-                datum.put("title", createStoryTitle.getText().toString());
-                datum.put("description", createStoryDescription.getText().toString());
-
                 Intent intent = new Intent();
-                intent.putExtra("datum", datum);
                 intent.putExtra("position", position);
+                intent.putExtra("imageProfile", imageProfile);
 
                 setResult(RESULT_OK, intent);
                 finish();
@@ -169,8 +166,8 @@ public class CreateStoryActivity extends FragmentActivity {
             case 1: //TODO
                 if(resultCode == RESULT_OK){
                     Uri uri = data.getData();
-                    imageUri = uri.toString();
-                    ImageLoader.getInstance().displayImage(imageUri, createStoryImageView);
+                    imageProfile.setUri(uri.toString());
+                    ImageLoader.getInstance().displayImage(imageProfile.getUri(), createStoryImageView);
                 }
         }
     }
