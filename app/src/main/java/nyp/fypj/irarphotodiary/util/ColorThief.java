@@ -37,7 +37,9 @@ public class ColorThief {
 
     public static List<int[]> compute(Bitmap image, int maxcolors) throws IOException {
         List<int[]> pixels = getPixels(image);
-        return compute(pixels, maxcolors);
+        List<int[]> result = compute(pixels, maxcolors);
+        pixels = null; //release the memory
+        return result;
     }
 
     public static List<int[]> compute(List<int[]> pixels, int maxcolors) {

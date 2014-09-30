@@ -4,8 +4,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,15 +23,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cloudinary.Cloudinary;
+import com.google.gson.Gson;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.apache.http.HttpResponse;
@@ -45,20 +41,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.activity.CreateStoryActivity;
 import nyp.fypj.irarphotodiary.application.BootstrapApplication;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
-import nyp.fypj.irarphotodiary.util.BitmapUtils;
 import nyp.fypj.irarphotodiary.util.ColorProfiler;
+import nyp.fypj.irarphotodiary.util.ColorThief;
 
 public class CreateStoryListFragment extends ListFragment {
     private DragSortListView createStoryList;
@@ -151,39 +144,95 @@ public class CreateStoryListFragment extends ListFragment {
                 createStoryListAdapter.add(imageProfile);
                 break;
             case R.id.createStoryUpload:
-                final List<ImageProfile> imageProfiles = createStoryListAdapter.imageProfiles;
+                ///// async task
+                AsyncTask<String,Void,String> task = new AsyncTask<String,Void,String>() {
+                    private List<ImageProfile> imageProfiles = createStoryListAdapter.imageProfiles;
+                    private NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                    private NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(CreateStoryListFragment.this.getView().getContext());
 
-                final NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-                final NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(this.getView().getContext());
-                notificationCompat.setSmallIcon(R.drawable.ic_launcher);
-                notificationCompat.setContentTitle("Upload Album");
+                    @Override
+                    protected String doInBackground(String... strings) {
+                        // For each of the imageProfile
+                        for (final ImageProfile imageProfile : imageProfiles) {
+                            ImageSize imageSize = new ImageSize(320,480);
 
-                ///// test & debugging
-                new Thread(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            notificationCompat.setProgress(0, 0, true);
-                            notificationManager.notify(1, notificationCompat.build());
+                            // load the bitmap image from disk cache
+                            ImageLoader.getInstance().loadImage("file://"+imageProfile.getActualUri(), imageSize, new SimpleImageLoadingListener() {
+                                @Override
+                                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                    try {
+                                        // Compute dominant colors from the bitmap
+                                        List<int[]> rgbColors = ColorThief.compute(loadedImage, 5); //TODO: THE MAX NUMBER!! FINAL CONSTANT
 
-                            try {
-                                for(int i = 0; i<4;i++){
-                                    notificationCompat.setContentText("Uploading in progress. ("+(i+1)+"/4)");
-                                    notificationManager.notify(1, notificationCompat.build());
-                                    Thread.sleep(3*1000);
+                                        // convert rgb to lab color space
+                                        List<double[]> labColors = new ArrayList<double[]>(5);
+                                        for (int[] rgbColor : rgbColors) {
+                                            labColors.add(ColorProfiler.RGBtoLAB(rgbColor));
+                                        }
+                                        // set the color profiles to the image POJO
+                                        imageProfile.setRgbColors(rgbColors);
+                                        imageProfile.setLabColors(labColors);
+
+                                        // Upload image to cloudinary
+                                        // Get instance from application constant DO NOT INITIALIZE ANOTHER.
+                                        File file = new File(imageProfile.getActualUri());
+
+                                        Cloudinary cloudinary = ((BootstrapApplication) CreateStoryListFragment.this.getActivity().getApplication()).getCloudinary();
+                                        JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
+
+                                        // set the format and public url from cloudinary uplaod response
+                                        // if the key is not present in the upload result (meaning upload failed), a JSONException will be thrown
+                                        imageProfile.setFilename(uploadResult.get("public_id").toString());
+                                        imageProfile.setExtension(uploadResult.get("format").toString());
+
+                                        // flatten imageProfile to json
+                                        Gson gson = new Gson();
+                                        String imageProfileJson = gson.toJson(imageProfile);
+
+                                        // Upload json to database
+                                        HttpClient httpClient = new DefaultHttpClient();
+                                        HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/images");
+                                        httpPost.setHeader("Content-Type", "application/json");
+                                        httpPost.setEntity(new StringEntity(imageProfileJson));
+                                        HttpResponse httpResponse = httpClient.execute(httpPost); //TODO: not used?
+
+                                    } catch (IOException ex) {
+                                        ex.printStackTrace();
+                                    } catch (JSONException ex) {
+                                        ex.printStackTrace();
+                                    }
                                 }
-
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            // When the loop is finished, updates the notification
-                            notificationCompat.setContentText("Upload completed.");
-                            notificationCompat.setProgress(0, 0, false);
-                            notificationManager.notify(1, notificationCompat.build());
+                            });
                         }
+
+                        //TODO
+                        return null;
                     }
-                ).start();
-                /////
+
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+
+                        // start the notification progress
+                        notificationCompat.setSmallIcon(R.drawable.ic_launcher);
+                        notificationCompat.setContentTitle("Upload Album");
+                        notificationCompat.setProgress(0, 0, true);
+                        notificationManager.notify(1, notificationCompat.build());
+                    }
+
+                    @Override
+                    protected void onPostExecute(String s) {
+                        super.onPostExecute(s);
+
+                        // When the loop is finished, updates the notification
+                        notificationCompat.setContentText("Upload completed.");
+                        notificationCompat.setProgress(0, 0, false);
+                        notificationManager.notify(1, notificationCompat.build());
+                    }
+                };
+
+                task.execute();
+                ///// end of async task
                 break;
             default:
                 break;
@@ -241,9 +290,9 @@ public class CreateStoryListFragment extends ListFragment {
             viewHolder.createStoryItemTitle.setText(imageProfile.getTitle());
             viewHolder.createStoryItemDescription.setText(imageProfile.getDescription());
             viewHolder.createStoryItemPosition.setText("#"+position);
-            if(imageProfile.getUri() != "" || imageProfile.getUri() != null){
+            if(imageProfile.getCachedUri() != "" || imageProfile.getCachedUri() != null){
                 viewHolder.createStoryItemThumbnail.setImageBitmap(null);
-                ImageLoader.getInstance().loadImage(imageProfile.getUri(), thumbnailSize, new SimpleImageLoadingListener() {
+                ImageLoader.getInstance().loadImage(imageProfile.getCachedUri(), thumbnailSize, new SimpleImageLoadingListener() {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {

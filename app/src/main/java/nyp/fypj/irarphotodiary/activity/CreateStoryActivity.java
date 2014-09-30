@@ -3,12 +3,10 @@ package nyp.fypj.irarphotodiary.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.ThumbnailUtils;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.Menu;
@@ -22,13 +20,8 @@ import android.widget.TextView;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.HashMap;
-
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
-import nyp.fypj.irarphotodiary.util.BitmapUtils;
 
 public class CreateStoryActivity extends FragmentActivity {
     private int position; // keeping track current entry in the parent list view position
@@ -77,8 +70,8 @@ public class CreateStoryActivity extends FragmentActivity {
             }
             }
         });
-        if(imageProfile.getUri() != "" || imageProfile.getUri() != null){
-            ImageLoader.getInstance().displayImage(imageProfile.getUri(), createStoryImageView);
+        if(imageProfile.getCachedUri() != "" || imageProfile.getCachedUri() != null){
+            ImageLoader.getInstance().displayImage(imageProfile.getCachedUri(), createStoryImageView);
         }
     }
 
@@ -165,9 +158,21 @@ public class CreateStoryActivity extends FragmentActivity {
         switch(requestCode) {
             case 1: //TODO
                 if(resultCode == RESULT_OK){
-                    Uri uri = data.getData();
-                    imageProfile.setUri(uri.toString());
-                    ImageLoader.getInstance().displayImage(imageProfile.getUri(), createStoryImageView);
+                    Uri cachedUri = data.getData();
+
+                    String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+                    Cursor cursor = getContentResolver().query(cachedUri,
+                            filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    final String actualUri = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    imageProfile.setCachedUri(cachedUri.toString());
+                    imageProfile.setActualUri(actualUri);
+                    ImageLoader.getInstance().displayImage(cachedUri.toString(), createStoryImageView);
                 }
         }
     }

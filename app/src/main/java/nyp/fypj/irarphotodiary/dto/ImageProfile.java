@@ -1,6 +1,5 @@
 package nyp.fypj.irarphotodiary.dto;
 
-import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,7 +16,8 @@ public class ImageProfile implements Parcelable {
     private List labColors;
     private String title;
     private String description;
-    private transient String uri;
+    private transient String cachedUri;
+    private transient String actualUri;
 
     public ImageProfile(){//required
     }
@@ -78,12 +78,20 @@ public class ImageProfile implements Parcelable {
         this.description = description;
     }
 
-    public String getUri() {
-        return uri;
+    public String getCachedUri() {
+        return cachedUri;
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setCachedUri(String cachedUri) {
+        this.cachedUri = cachedUri;
+    }
+
+    public String getActualUri() {
+        return actualUri;
+    }
+
+    public void setActualUri(String actualUri) {
+        this.actualUri = actualUri;
     }
 
     // implementation of Parcelable interface to allow this object to pass within intents
@@ -103,7 +111,8 @@ public class ImageProfile implements Parcelable {
         parcel.writeList(labColors);
         parcel.writeString(title);
         parcel.writeString(description);
-        parcel.writeString(uri);
+        parcel.writeString(cachedUri);
+        parcel.writeString(actualUri);
     }
 
     public static final Creator<ImageProfile> CREATOR = new Creator<ImageProfile>(){
@@ -126,6 +135,7 @@ public class ImageProfile implements Parcelable {
         parcel.readList(labColors, List.class.getClassLoader());
         this.title = parcel.readString();
         this.description = parcel.readString();
-        this.uri = parcel.readString();
+        this.cachedUri = parcel.readString();
+        this.actualUri = parcel.readString();
     }
 }

@@ -1,11 +1,14 @@
 package nyp.fypj.irarphotodiary.application;
 
+import android.app.ActivityManager;
 import android.app.Application;
+import android.util.Log;
 
 import com.cloudinary.Cloudinary;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import nyp.fypj.irarphotodiary.R;
@@ -30,6 +33,7 @@ public class BootstrapApplication extends Application {
         DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(false)
                 .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
                 .displayer(new FadeInBitmapDisplayer(2000)) //milliseconds
                 .showImageForEmptyUri(R.drawable.placeholder)
                 .showImageOnFail(R.drawable.placeholder)
