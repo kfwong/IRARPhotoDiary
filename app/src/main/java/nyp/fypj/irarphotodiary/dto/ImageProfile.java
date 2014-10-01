@@ -18,6 +18,7 @@ public class ImageProfile implements Parcelable {
     private String description;
     private transient String cachedUri;
     private transient String actualUri;
+    private int order;
 
     public ImageProfile(){//required
     }
@@ -94,6 +95,14 @@ public class ImageProfile implements Parcelable {
         this.actualUri = actualUri;
     }
 
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
     // implementation of Parcelable interface to allow this object to pass within intents
     // you can use serializable interface or gson to avoid all these implementations but they are generally slower/ bad performace, see: http://stackoverflow.com/questions/5550670/benefit-of-using-parcelable-instead-of-serializing-object
     // http://stackoverflow.com/questions/15543033/how-to-write-list-into-parcel
@@ -113,6 +122,7 @@ public class ImageProfile implements Parcelable {
         parcel.writeString(description);
         parcel.writeString(cachedUri);
         parcel.writeString(actualUri);
+        parcel.writeInt(order);
     }
 
     public static final Creator<ImageProfile> CREATOR = new Creator<ImageProfile>(){
@@ -137,5 +147,6 @@ public class ImageProfile implements Parcelable {
         this.description = parcel.readString();
         this.cachedUri = parcel.readString();
         this.actualUri = parcel.readString();
+        this.order = parcel.readInt();
     }
 }

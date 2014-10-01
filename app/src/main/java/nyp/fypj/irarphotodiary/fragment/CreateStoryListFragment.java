@@ -145,67 +145,70 @@ public class CreateStoryListFragment extends ListFragment {
                 break;
             case R.id.createStoryUpload:
                 ///// async task
-                AsyncTask<String,Void,String> task = new AsyncTask<String,Void,String>() {
+                AsyncTask<Void,Integer,Void> task = new AsyncTask<Void,Integer,Void>() {
                     private List<ImageProfile> imageProfiles = createStoryListAdapter.imageProfiles;
                     private NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                     private NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(CreateStoryListFragment.this.getView().getContext());
 
                     @Override
-                    protected String doInBackground(String... strings) {
+                    protected Void doInBackground(Void... voids) {
+
                         // For each of the imageProfile
-                        for (final ImageProfile imageProfile : imageProfiles) {
+                        //for (final ImageProfile imageProfile : imageProfiles) {
+                        for(int i = 0; i< imageProfiles.size();i++){
+                            publishProgress(i+1, imageProfiles.size());
+
+                            final ImageProfile imageProfile = imageProfiles.get(i);
+                            imageProfile.setOrder(i); // IMPORTANT: the final position/index/order is only saved to the entity just before uploading to avoid confusion
+
                             ImageSize imageSize = new ImageSize(320,480);
 
                             // load the bitmap image from disk cache
-                            ImageLoader.getInstance().loadImage("file://"+imageProfile.getActualUri(), imageSize, new SimpleImageLoadingListener() {
-                                @Override
-                                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                                    try {
-                                        // Compute dominant colors from the bitmap
-                                        List<int[]> rgbColors = ColorThief.compute(loadedImage, 5); //TODO: THE MAX NUMBER!! FINAL CONSTANT
+                            // IMPORTANT: Use loadImageSync so that the async task will not spawn additional threads, which will cause out of memory error if too many concurrent upload exist.
+                            Bitmap loadedImage = ImageLoader.getInstance().loadImageSync("file://"+imageProfile.getActualUri(), imageSize);
+                            try {
+                                // Compute dominant colors from the bitmap
+                                List<int[]> rgbColors = ColorThief.compute(loadedImage, 5); //TODO: THE MAX NUMBER!! FINAL CONSTANT
 
-                                        // convert rgb to lab color space
-                                        List<double[]> labColors = new ArrayList<double[]>(5);
-                                        for (int[] rgbColor : rgbColors) {
-                                            labColors.add(ColorProfiler.RGBtoLAB(rgbColor));
-                                        }
-                                        // set the color profiles to the image POJO
-                                        imageProfile.setRgbColors(rgbColors);
-                                        imageProfile.setLabColors(labColors);
-
-                                        // Upload image to cloudinary
-                                        // Get instance from application constant DO NOT INITIALIZE ANOTHER.
-                                        File file = new File(imageProfile.getActualUri());
-
-                                        Cloudinary cloudinary = ((BootstrapApplication) CreateStoryListFragment.this.getActivity().getApplication()).getCloudinary();
-                                        JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
-
-                                        // set the format and public url from cloudinary uplaod response
-                                        // if the key is not present in the upload result (meaning upload failed), a JSONException will be thrown
-                                        imageProfile.setFilename(uploadResult.get("public_id").toString());
-                                        imageProfile.setExtension(uploadResult.get("format").toString());
-
-                                        // flatten imageProfile to json
-                                        Gson gson = new Gson();
-                                        String imageProfileJson = gson.toJson(imageProfile);
-
-                                        // Upload json to database
-                                        HttpClient httpClient = new DefaultHttpClient();
-                                        HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/images");
-                                        httpPost.setHeader("Content-Type", "application/json");
-                                        httpPost.setEntity(new StringEntity(imageProfileJson));
-                                        HttpResponse httpResponse = httpClient.execute(httpPost); //TODO: not used?
-
-                                    } catch (IOException ex) {
-                                        ex.printStackTrace();
-                                    } catch (JSONException ex) {
-                                        ex.printStackTrace();
-                                    }
+                                // convert rgb to lab color space
+                                List<double[]> labColors = new ArrayList<double[]>(5);
+                                for (int[] rgbColor : rgbColors) {
+                                    labColors.add(ColorProfiler.RGBtoLAB(rgbColor));
                                 }
-                            });
-                        }
+                                // set the color profiles to the image POJO
+                                imageProfile.setRgbColors(rgbColors);
+                                imageProfile.setLabColors(labColors);
 
-                        //TODO
+                                // Upload image to cloudinary
+                                // Get instance from application constant DO NOT INITIALIZE ANOTHER.
+                                File file = new File(imageProfile.getActualUri());
+
+                                Cloudinary cloudinary = ((BootstrapApplication) CreateStoryListFragment.this.getActivity().getApplication()).getCloudinary();
+                                JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
+
+                                // set the format and public url from cloudinary uplaod response
+                                // if the key is not present in the upload result (meaning upload failed), a JSONException will be thrown
+                                imageProfile.setFilename(uploadResult.get("public_id").toString());
+                                imageProfile.setExtension(uploadResult.get("format").toString());
+
+                                // flatten imageProfile to json
+                                Gson gson = new Gson();
+                                String imageProfileJson = gson.toJson(imageProfile);
+
+                                // Upload json to database
+                                HttpClient httpClient = new DefaultHttpClient();
+                                HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/images");
+                                httpPost.setHeader("Content-Type", "application/json");
+                                httpPost.setEntity(new StringEntity(imageProfileJson));
+                                HttpResponse httpResponse = httpClient.execute(httpPost); //TODO: not used?
+
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            } catch (JSONException ex) {
+                                ex.printStackTrace();
+                            }
+
+                        }
                         return null;
                     }
 
@@ -221,10 +224,21 @@ public class CreateStoryListFragment extends ListFragment {
                     }
 
                     @Override
-                    protected void onPostExecute(String s) {
-                        super.onPostExecute(s);
+                    protected void onProgressUpdate(Integer... progress) {
+                        super.onProgressUpdate(progress);
 
-                        // When the loop is finished, updates the notification
+                        int count = progress[0];
+                        int total = progress[1];
+
+                        notificationCompat.setContentText("Uploading " + count + " of " + total+"...");
+                        notificationCompat.setProgress(0, 0, true);
+                        notificationManager.notify(1, notificationCompat.build());
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+
                         notificationCompat.setContentText("Upload completed.");
                         notificationCompat.setProgress(0, 0, false);
                         notificationManager.notify(1, notificationCompat.build());
