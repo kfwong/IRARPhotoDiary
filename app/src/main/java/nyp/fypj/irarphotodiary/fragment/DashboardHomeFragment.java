@@ -1,7 +1,6 @@
 package nyp.fypj.irarphotodiary.fragment;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -11,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -91,7 +89,7 @@ public class DashboardHomeFragment extends Fragment {
             ViewHolder viewHolder;
 
             if(convertView == null){
-                view = layoutInflater.inflate(R.layout.adapter_fragment_dashboard_home, parent, false);
+                view = layoutInflater.inflate(R.layout.adapter_fragment_dashboard_home_list_item, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.dashboardHomeItemImage = (ImageView) view.findViewById(R.id.dashboardHomeItemImage);
                 viewHolder.dashboardHomeItemTitle = (TextView) view.findViewById(R.id.dashboardHomeItemTitle);

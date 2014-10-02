@@ -29,6 +29,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.support.v4.app.FragmentActivity" />
         </activity>
+        <activity android:name=".activity.CreateStoryListActivity" />
 
 
         <!-- meta data declarations -->

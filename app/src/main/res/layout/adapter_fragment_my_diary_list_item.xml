@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativelayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/myDiaryItemImage"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/sample"
+        android:background="#50eeeeee"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:adjustViewBounds="true"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Lorem Ipsum Dollar Sit Amet"
+        android:id="@+id/myDiaryItemTitle"
+        android:layout_below="@+id/myDiaryItemImage"
+        android:layout_centerHorizontal="true"
+        android:background="#ff000000"
+        android:textColor="#ffffffff"
+        android:padding="10dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="But it's important to use this workaround in a relative layout for the layout_align settings to be recognized."
+        android:id="@+id/myDiaryItemDescription"
+        android:layout_below="@+id/myDiaryItemTitle"
+        android:layout_centerHorizontal="true"
+        android:background="#ff000000"
+        android:textColor="#ffffffff"
+        android:padding="10dp" />
+</RelativeLayout>

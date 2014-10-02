@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/IRARPhotoDiary.iml" filepath="$PROJECT_DIR$/IRARPhotoDiary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JazzyViewPager/JazzyViewPager.iml" filepath="$PROJECT_DIR$/JazzyViewPager/JazzyViewPager.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

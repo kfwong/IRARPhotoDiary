@@ -1,4 +1,4 @@
-package nyp.fypj.irarphotodiary.fragment;
+package nyp.fypj.irarphotodiary.activity;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -7,21 +7,18 @@ import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cloudinary.Cloudinary;
@@ -47,27 +44,20 @@ import java.util.Collections;
 import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
-import nyp.fypj.irarphotodiary.activity.CreateStoryActivity;
 import nyp.fypj.irarphotodiary.application.BootstrapApplication;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
 import nyp.fypj.irarphotodiary.util.ColorProfiler;
 import nyp.fypj.irarphotodiary.util.ColorThief;
 
-public class CreateStoryListFragment extends ListFragment {
+public class CreateStoryListActivity extends FragmentActivity {
     private DragSortListView createStoryList;
     private CreateStoryListAdapter createStoryListAdapter;
     private ImageSize thumbnailSize = new ImageSize(128,128);
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        createStoryList = (DragSortListView) inflater.inflate(R.layout.fragment_create_story, container, false);
-        return createStoryList;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_story_list);
 
         ImageProfile imageProfile1 = new ImageProfile();
         imageProfile1.setTitle("New stuff coming up soon!");
@@ -81,10 +71,11 @@ public class CreateStoryListFragment extends ListFragment {
         imageProfiles.add(imageProfile1);
         imageProfiles.add(imageProfile2);
 
-        createStoryListAdapter = new CreateStoryListAdapter(this.getListView().getContext(), imageProfiles);
+        createStoryListAdapter = new CreateStoryListAdapter(this, imageProfiles);
 
         //http://stackoverflow.com/questions/14813882/bauerca-drag-sort-listview-simple-example
-        createStoryList = (DragSortListView) getListView();
+        //android:id="@android:id/list"
+        createStoryList = (DragSortListView) findViewById(R.id.createStoryDragSortListView);
         createStoryList.setAdapter(createStoryListAdapter);
         createStoryList.setDropListener(new DragSortListView.DropListener() {
             @Override
@@ -104,22 +95,24 @@ public class CreateStoryListFragment extends ListFragment {
         createStoryList.setFloatViewManager(dragSortController);
         createStoryList.setOnTouchListener(dragSortController);
         createStoryList.setDragEnabled(true);
-    }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        ImageProfile imageProfile = (ImageProfile) createStoryListAdapter.getItem(position);
+        createStoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                ImageProfile imageProfile = (ImageProfile) createStoryListAdapter.getItem(position);
 
-        Intent intent = new Intent(getListView().getContext(), CreateStoryActivity.class);
-        intent.putExtra("position", position);
-        intent.putExtra("imageProfile", imageProfile);
-        startActivityForResult(intent, 1); //TODO: make the request code final
+                Intent intent = new Intent(CreateStoryListActivity.this, CreateStoryActivity.class);
+                intent.putExtra("position", position);
+                intent.putExtra("imageProfile", imageProfile);
+                startActivityForResult(intent, 1); //TODO: make the request code final
+            }
+        });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if(requestCode == 1){
-            if(resultCode == getActivity().RESULT_OK){
+            if(resultCode == RESULT_OK){
                 int position = intent.getIntExtra("position", -1);
                 ImageProfile imageProfile = intent.getExtras().getParcelable("imageProfile");
                 createStoryListAdapter.set(position, imageProfile);
@@ -128,27 +121,27 @@ public class CreateStoryListFragment extends ListFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.create_story_fragment_list, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.create_story_list_activity, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch(item.getItemId()){
-            case R.id.createStoryAddNew:
+            case R.id.createStoryListAddNew:
                 ImageProfile imageProfile = new ImageProfile();
                 imageProfile.setTitle("New stuff coming up soon!");
                 imageProfile.setDescription("How about adding some interesting description to this image?");
                 createStoryListAdapter.add(imageProfile);
                 break;
-            case R.id.createStoryUpload:
+            case R.id.createStoryListUpload:
                 ///// async task
                 AsyncTask<Void,Integer,Void> task = new AsyncTask<Void,Integer,Void>() {
                     private List<ImageProfile> imageProfiles = createStoryListAdapter.imageProfiles;
-                    private NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-                    private NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(CreateStoryListFragment.this.getView().getContext());
+                    private NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    private NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(CreateStoryListActivity.this);
 
                     @Override
                     protected Void doInBackground(Void... voids) {
@@ -183,7 +176,7 @@ public class CreateStoryListFragment extends ListFragment {
                                 // Get instance from application constant DO NOT INITIALIZE ANOTHER.
                                 File file = new File(imageProfile.getActualUri());
 
-                                Cloudinary cloudinary = ((BootstrapApplication) CreateStoryListFragment.this.getActivity().getApplication()).getCloudinary();
+                                Cloudinary cloudinary = ((BootstrapApplication) CreateStoryListActivity.this.getApplication()).getCloudinary();
                                 JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
 
                                 // set the format and public url from cloudinary uplaod response
@@ -248,6 +241,10 @@ public class CreateStoryListFragment extends ListFragment {
                 task.execute();
                 ///// end of async task
                 break;
+            case R.id.createStoryListCancel:
+                setResult(RESULT_CANCELED);
+                finish();
+                break;
             default:
                 break;
         }
@@ -286,7 +283,7 @@ public class CreateStoryListFragment extends ListFragment {
             final ViewHolder viewHolder;
 
             if(convertView == null){
-                view = layoutInflater.inflate(R.layout.adapter_fragment_create_story_list, parent, false);
+                view = layoutInflater.inflate(R.layout.adapter_activity_create_story_list_item, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.createStoryItemThumbnail = (ImageView) view.findViewById(R.id.createStoryItemThumbnail);
                 viewHolder.createStoryItemTitle = (TextView) view.findViewById(R.id.createStoryItemTitle);

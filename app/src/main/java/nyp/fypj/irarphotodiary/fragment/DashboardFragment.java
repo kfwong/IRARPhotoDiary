@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 import com.viewpagerindicator.TitlePageIndicator;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
@@ -24,12 +25,15 @@ import nyp.fypj.irarphotodiary.R;
 
 public class DashboardFragment extends Fragment {
 
+    private JazzyViewPager viewPager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        final ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewPager);
+        viewPager = (JazzyViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(new DashboardPagerAdapter(getChildFragmentManager()));
+        viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.FlipHorizontal);
 
         final TitlePageIndicator titlePageIndicator = (TitlePageIndicator) view.findViewById(R.id.indicator);
         titlePageIndicator.setViewPager(viewPager);
@@ -64,6 +68,14 @@ public class DashboardFragment extends Fragment {
         @Override
         public int getCount() {
             return 5;
+        }
+
+        // required for JazzyViewPager
+        @Override
+        public Object instantiateItem(ViewGroup container, final int position) {
+            Object obj = super.instantiateItem(container, position);
+            viewPager.setObjectForPosition(obj, position);
+            return obj;
         }
     }
 

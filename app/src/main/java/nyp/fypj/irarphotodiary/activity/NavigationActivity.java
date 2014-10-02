@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
-import nyp.fypj.irarphotodiary.fragment.CreateStoryListFragment;
 import nyp.fypj.irarphotodiary.fragment.DashboardFragment;
+import nyp.fypj.irarphotodiary.fragment.MyDiaryFragment;
 import nyp.fypj.irarphotodiary.fragment.SecondFragment;
 
 
@@ -47,8 +47,7 @@ public class NavigationActivity extends FragmentActivity {
         List<String> data = new ArrayList<String>();
         data.add("Home");
         data.add("My Profile");
-        data.add("My Gallery");
-        data.add("Create Story");
+        data.add("My Diary");
         data.add("Search...");
 
         navigationDrawer = (DrawerLayout) findViewById(R.id.navigationDrawer);
@@ -93,8 +92,8 @@ public class NavigationActivity extends FragmentActivity {
             case 1:
                 fragment = new SecondFragment();
                 break;
-            case 3:
-                fragment = new CreateStoryListFragment();
+            case 2:
+                fragment = new MyDiaryFragment();
                 break;
             default:
                 fragment = null;

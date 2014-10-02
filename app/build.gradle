@@ -29,4 +29,5 @@ dependencies {
     compile 'com.viewpagerindicator:library:2.4.1@aar'
     compile files('libs/KenBurnsView-1.0.3.jar')
     compile 'asia.ivity.android:drag-sort-listview:1.0'
+    compile project(':JazzyViewPager')
 }

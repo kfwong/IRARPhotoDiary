@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="nyp.fypj.irarphotodiary.fragment.MyDiaryFragment">
+
+    <item android:id="@+id/myDiaryCreateStory"
+            android:title="Create Story"
+            android:orderInCategory="100"
+            android:showAsAction="never" />
+
+</menu>
