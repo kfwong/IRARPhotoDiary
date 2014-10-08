@@ -2,7 +2,11 @@ package nyp.fypj.irarphotodiary.application;
 
 import android.app.ActivityManager;
 import android.app.Application;
+import android.content.Context;
+import android.graphics.Point;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.cloudinary.Cloudinary;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -19,6 +23,8 @@ import nyp.fypj.irarphotodiary.R;
  */
 public class BootstrapApplication extends Application {
     private Cloudinary cloudinary;
+    public static int DEVICE_WIDTH;
+    public static int DEVICE_HEIGHT;
 
     @Override
     public void onCreate() {
@@ -37,12 +43,21 @@ public class BootstrapApplication extends Application {
                 .displayer(new FadeInBitmapDisplayer(2000)) //milliseconds
                 .showImageForEmptyUri(R.drawable.placeholder)
                 .showImageOnFail(R.drawable.placeholder)
+                .resetViewBeforeLoading(true)
                 .build();
 
         ImageLoaderConfiguration imageLoaderConfiguration = new ImageLoaderConfiguration.Builder(getApplicationContext())
                 .defaultDisplayImageOptions(displayImageOptions)
                 .build();
         ImageLoader.getInstance().init(imageLoaderConfiguration);
+
+        // Screen size
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        DEVICE_WIDTH = size.x;
+        DEVICE_HEIGHT = size.y;
     }
 
     public Cloudinary getCloudinary() {

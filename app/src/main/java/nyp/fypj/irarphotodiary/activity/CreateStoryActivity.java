@@ -4,10 +4,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +23,11 @@ import android.widget.TextView;
 
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
@@ -38,40 +47,50 @@ public class CreateStoryActivity extends FragmentActivity {
 
         getActionBar().setBackgroundDrawable(null);
 
-        Intent intent = getIntent();
-
-        position = intent.getIntExtra("position", -1);
-        imageProfile = (ImageProfile) intent.getExtras().getParcelable("imageProfile");
-
-        createStoryTitle = (TextView)findViewById(R.id.createStoryTitle);
-        createStoryTitle.setText(imageProfile.getTitle());
-
-        createStoryDescription = (TextView) findViewById(R.id.createStoryDescription);
-        createStoryDescription.setText(imageProfile.getDescription());
-
         createStoryImageView = (KenBurnsView) findViewById(R.id.createStoryImageView);
-        createStoryImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            if(isFadedIn){
-                Animation fadeOut = new AlphaAnimation(1.0f , 0.0f);
-                fadeOut.setDuration(300);
-                fadeOut.setFillAfter(true);
-                createStoryTitle.startAnimation(fadeOut);
-                createStoryDescription.startAnimation(fadeOut);
-                isFadedIn = false;
-            }else{
-                Animation fadeIn = new AlphaAnimation(0.0f , 1.0f ) ;
-                fadeIn.setDuration(300);
-                fadeIn.setFillAfter(true);
-                createStoryTitle.startAnimation(fadeIn);
-                createStoryDescription.startAnimation(fadeIn);
-                isFadedIn = true;
+        createStoryDescription = (TextView) findViewById(R.id.createStoryDescription);
+        createStoryTitle = (TextView)findViewById(R.id.createStoryTitle);
+
+        if(savedInstanceState != null){
+            position = savedInstanceState.getInt("position", position);
+            imageProfile = savedInstanceState.getParcelable("imageProfile");
+
+            // DEBUG image problem: Log.e("onCreate", "image-isnotnull: "+imageProfile.getActualUri());
+
+        }else{
+            Intent intent = getIntent();
+
+            position = intent.getIntExtra("position", -1);
+            imageProfile = (ImageProfile) intent.getExtras().getParcelable("imageProfile");
+
+            createStoryTitle.setText(imageProfile.getTitle());
+
+            createStoryDescription.setText(imageProfile.getDescription());
+
+            createStoryImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(isFadedIn){
+                        Animation fadeOut = new AlphaAnimation(1.0f , 0.0f);
+                        fadeOut.setDuration(300);
+                        fadeOut.setFillAfter(true);
+                        createStoryTitle.startAnimation(fadeOut);
+                        createStoryDescription.startAnimation(fadeOut);
+                        isFadedIn = false;
+                    }else{
+                        Animation fadeIn = new AlphaAnimation(0.0f , 1.0f ) ;
+                        fadeIn.setDuration(300);
+                        fadeIn.setFillAfter(true);
+                        createStoryTitle.startAnimation(fadeIn);
+                        createStoryDescription.startAnimation(fadeIn);
+                        isFadedIn = true;
+                    }
+                }
+            });
+            if(imageProfile.getActualUri() != "" || imageProfile.getActualUri() != null){
+                // DEBUG image problem: Log.e("onCreate", "image-isnull: "+imageProfile.getActualUri());
+                ImageLoader.getInstance().displayImage(imageProfile.getActualUri(), createStoryImageView);
             }
-            }
-        });
-        if(imageProfile.getCachedUri() != "" || imageProfile.getCachedUri() != null){
-            ImageLoader.getInstance().displayImage(imageProfile.getCachedUri(), createStoryImageView);
         }
     }
 
@@ -88,6 +107,25 @@ public class CreateStoryActivity extends FragmentActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch(item.getItemId()){
+            case R.id.createStoryTakePhoto:
+                try {
+                    Intent takePhotoIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    File storage = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                    File image = null;
+
+                    image = File.createTempFile("IRAR_"+System.currentTimeMillis(), ".jpg", storage);
+
+                    imageProfile.setActualUri(Uri.fromFile(image).toString());
+
+                    if(image !=null){
+                        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));
+                        startActivityForResult(takePhotoIntent, 2);
+                    }
+                }catch(IOException ex){
+                    ex.printStackTrace();
+                }
+
+                break;
             case R.id.createStoryChooseFromGallery:
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
@@ -170,10 +208,33 @@ public class CreateStoryActivity extends FragmentActivity {
                     final String actualUri = cursor.getString(columnIndex);
                     cursor.close();
 
-                    imageProfile.setCachedUri(cachedUri.toString());
-                    imageProfile.setActualUri(actualUri);
-                    ImageLoader.getInstance().displayImage(cachedUri.toString(), createStoryImageView);
+                    imageProfile.setActualUri("file://"+actualUri);
+
+                    ImageLoader.getInstance().displayImage(imageProfile.getActualUri(), createStoryImageView);
                 }
+                break;
+            case 2: //TODO
+                if(resultCode == RESULT_OK){
+//                    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//                    File f = new File(imageProfile.getActualUri());
+//                    Uri contentUri = Uri.fromFile(f);
+//                    mediaScanIntent.setData(contentUri);
+//                    this.sendBroadcast(mediaScanIntent);
+                    // DEBUG image problem: Log.e("onActivityResult", "image: "+imageProfile.getActualUri());
+
+                    ImageLoader.getInstance().displayImage(imageProfile.getActualUri(), createStoryImageView);
+                }
+                break;
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // DEBUG image problem: Log.e("onSaveInstanceState", "image: "+imageProfile.getActualUri());
+
+        outState.putInt("position", position);
+        outState.putParcelable("imageProfile", imageProfile);
+
+        super.onSaveInstanceState(outState);
     }
 }

@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,23 +54,28 @@ public class CreateStoryListActivity extends FragmentActivity {
     private DragSortListView createStoryList;
     private CreateStoryListAdapter createStoryListAdapter;
     private ImageSize thumbnailSize = new ImageSize(128,128);
+    private ArrayList<ImageProfile> imageProfiles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_story_list);
 
-        ImageProfile imageProfile1 = new ImageProfile();
-        imageProfile1.setTitle("New stuff coming up soon!");
-        imageProfile1.setDescription("How about adding some interesting description to this image?");
+        if(savedInstanceState !=null){
+            imageProfiles = savedInstanceState.getParcelableArrayList("imageProfiles");
+        }else{
+            ImageProfile imageProfile1 = new ImageProfile();
+            imageProfile1.setTitle("New stuff coming up soon!");
+            imageProfile1.setDescription("How about adding some interesting description to this image?");
 
-        ImageProfile imageProfile2 = new ImageProfile();
-        imageProfile2.setTitle("New stuff coming up soon!");
-        imageProfile2.setDescription("How about adding some interesting description to this image?");
+            ImageProfile imageProfile2 = new ImageProfile();
+            imageProfile2.setTitle("New stuff coming up soon!");
+            imageProfile2.setDescription("How about adding some interesting description to this image?");
 
-        List<ImageProfile> imageProfiles = new ArrayList<ImageProfile>();
-        imageProfiles.add(imageProfile1);
-        imageProfiles.add(imageProfile2);
+            imageProfiles = new ArrayList<ImageProfile>();
+            imageProfiles.add(imageProfile1);
+            imageProfiles.add(imageProfile2);
+        }
 
         createStoryListAdapter = new CreateStoryListAdapter(this, imageProfiles);
 
@@ -158,7 +164,7 @@ public class CreateStoryListActivity extends FragmentActivity {
 
                             // load the bitmap image from disk cache
                             // IMPORTANT: Use loadImageSync so that the async task will not spawn additional threads, which will cause out of memory error if too many concurrent upload exist.
-                            Bitmap loadedImage = ImageLoader.getInstance().loadImageSync("file://"+imageProfile.getActualUri(), imageSize);
+                            Bitmap loadedImage = ImageLoader.getInstance().loadImageSync(imageProfile.getActualUri(), imageSize);
                             try {
                                 // Compute dominant colors from the bitmap
                                 List<int[]> rgbColors = ColorThief.compute(loadedImage, 5); //TODO: THE MAX NUMBER!! FINAL CONSTANT
@@ -252,6 +258,13 @@ public class CreateStoryListActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("imageProfiles", imageProfiles);
+
+        super.onSaveInstanceState(outState);
+    }
+
     private class CreateStoryListAdapter extends BaseAdapter {
 
         private List<ImageProfile> imageProfiles;
@@ -301,12 +314,14 @@ public class CreateStoryListActivity extends FragmentActivity {
             viewHolder.createStoryItemTitle.setText(imageProfile.getTitle());
             viewHolder.createStoryItemDescription.setText(imageProfile.getDescription());
             viewHolder.createStoryItemPosition.setText("#"+position);
-            if(imageProfile.getCachedUri() != "" || imageProfile.getCachedUri() != null){
+            if(imageProfile.getActualUri() != "" || imageProfile.getActualUri() != null){
                 viewHolder.createStoryItemThumbnail.setImageBitmap(null);
-                ImageLoader.getInstance().loadImage(imageProfile.getCachedUri(), thumbnailSize, new SimpleImageLoadingListener() {
+                ImageLoader.getInstance().loadImage(imageProfile.getActualUri(), thumbnailSize, new SimpleImageLoadingListener() {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        //DEBUG: Log.e("TADAH", "image"+": "+imageUri);
+
                         Bitmap thumbnail = ThumbnailUtils.extractThumbnail(loadedImage, 128, 128);
                         viewHolder.createStoryItemThumbnail.setImageBitmap(thumbnail);
 
@@ -361,26 +376,4 @@ public class CreateStoryListActivity extends FragmentActivity {
             public TextView createStoryItemPosition;
         }
     }
-
-    // Dumb bug fix for calling nested fragments onActivityResult
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        // notifying nested fragments (support library bug fix)
-//        final FragmentManager childFragmentManager = getChildFragmentManager();
-//
-//        if (childFragmentManager != null) {
-//            final List<Fragment> nestedFragments = childFragmentManager.getFragments();
-//
-//            if (nestedFragments == null || nestedFragments.size() == 0) return;
-//
-//            for (Fragment childFragment : nestedFragments) {
-//                //TODO: need to prevent double executing while attaching same fragment
-//                if (childFragment != null && !childFragment.isDetached() && !childFragment.isRemoving()) {
-//                    childFragment.onActivityResult(requestCode, resultCode, data);
-//                }
-//            }
-//        }
-//    }
 }

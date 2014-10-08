@@ -16,7 +16,6 @@ public class ImageProfile implements Parcelable {
     private List labColors;
     private String title;
     private String description;
-    private transient String cachedUri;
     private transient String actualUri;
     private int order;
 
@@ -79,14 +78,6 @@ public class ImageProfile implements Parcelable {
         this.description = description;
     }
 
-    public String getCachedUri() {
-        return cachedUri;
-    }
-
-    public void setCachedUri(String cachedUri) {
-        this.cachedUri = cachedUri;
-    }
-
     public String getActualUri() {
         return actualUri;
     }
@@ -120,7 +111,6 @@ public class ImageProfile implements Parcelable {
         parcel.writeList(labColors);
         parcel.writeString(title);
         parcel.writeString(description);
-        parcel.writeString(cachedUri);
         parcel.writeString(actualUri);
         parcel.writeInt(order);
     }
@@ -145,7 +135,6 @@ public class ImageProfile implements Parcelable {
         parcel.readList(labColors, List.class.getClassLoader());
         this.title = parcel.readString();
         this.description = parcel.readString();
-        this.cachedUri = parcel.readString();
         this.actualUri = parcel.readString();
         this.order = parcel.readInt();
     }
