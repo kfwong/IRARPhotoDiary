@@ -4,14 +4,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,15 +18,15 @@ import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.cloudinary.Cloudinary;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import nyp.fypj.irarphotodiary.R;
+import nyp.fypj.irarphotodiary.application.BootstrapApplication;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
 
 public class CreateStoryActivity extends FragmentActivity {
@@ -55,7 +52,7 @@ public class CreateStoryActivity extends FragmentActivity {
             position = savedInstanceState.getInt("position", position);
             imageProfile = savedInstanceState.getParcelable("imageProfile");
 
-            // DEBUG image problem: Log.e("onCreate", "image-isnotnull: "+imageProfile.getActualUri());
+            // DEBUG image problem: Log.e("onCreate", "image-isnotnull: "+imageProfile.getUri());
 
         }else{
             Intent intent = getIntent();
@@ -87,10 +84,11 @@ public class CreateStoryActivity extends FragmentActivity {
                     }
                 }
             });
-            if(imageProfile.getActualUri() != "" || imageProfile.getActualUri() != null){
-                // DEBUG image problem: Log.e("onCreate", "image-isnull: "+imageProfile.getActualUri());
-                ImageLoader.getInstance().displayImage(imageProfile.getActualUri(), createStoryImageView);
+            if(imageProfile.getUri() != "" || imageProfile.getUri() != null){
+                // DEBUG image problem: Log.e("onCreate", "image-isnull: "+imageProfile.getUri());
+                ImageLoader.getInstance().displayImage(imageProfile.getUri(), createStoryImageView);
             }
+
         }
     }
 
@@ -115,7 +113,7 @@ public class CreateStoryActivity extends FragmentActivity {
 
                     image = File.createTempFile("IRAR_"+System.currentTimeMillis(), ".jpg", storage);
 
-                    imageProfile.setActualUri(Uri.fromFile(image).toString());
+                    imageProfile.setUri(Uri.fromFile(image).toString());
 
                     if(image !=null){
                         takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));
@@ -208,21 +206,21 @@ public class CreateStoryActivity extends FragmentActivity {
                     final String actualUri = cursor.getString(columnIndex);
                     cursor.close();
 
-                    imageProfile.setActualUri("file://"+actualUri);
+                    imageProfile.setUri("file://" + actualUri);
 
-                    ImageLoader.getInstance().displayImage(imageProfile.getActualUri(), createStoryImageView);
+                    ImageLoader.getInstance().displayImage(imageProfile.getUri(), createStoryImageView);
                 }
                 break;
             case 2: //TODO
                 if(resultCode == RESULT_OK){
 //                    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//                    File f = new File(imageProfile.getActualUri());
+//                    File f = new File(imageProfile.getUri());
 //                    Uri contentUri = Uri.fromFile(f);
 //                    mediaScanIntent.setData(contentUri);
 //                    this.sendBroadcast(mediaScanIntent);
-                    // DEBUG image problem: Log.e("onActivityResult", "image: "+imageProfile.getActualUri());
+                    // DEBUG image problem: Log.e("onActivityResult", "image: "+imageProfile.getUri());
 
-                    ImageLoader.getInstance().displayImage(imageProfile.getActualUri(), createStoryImageView);
+                    ImageLoader.getInstance().displayImage(imageProfile.getUri(), createStoryImageView);
                 }
                 break;
         }
@@ -230,7 +228,7 @@ public class CreateStoryActivity extends FragmentActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        // DEBUG image problem: Log.e("onSaveInstanceState", "image: "+imageProfile.getActualUri());
+        // DEBUG image problem: Log.e("onSaveInstanceState", "image: "+imageProfile.getUri());
 
         outState.putInt("position", position);
         outState.putParcelable("imageProfile", imageProfile);

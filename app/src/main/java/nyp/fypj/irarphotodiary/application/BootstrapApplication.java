@@ -23,6 +23,7 @@ import nyp.fypj.irarphotodiary.R;
  */
 public class BootstrapApplication extends Application {
     private Cloudinary cloudinary;
+    public static final String CLOUDINARY_CLOUD_NAME = "dxspdhqz3";
     public static int DEVICE_WIDTH;
     public static int DEVICE_HEIGHT;
 

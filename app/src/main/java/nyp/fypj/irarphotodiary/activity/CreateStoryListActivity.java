@@ -164,7 +164,7 @@ public class CreateStoryListActivity extends FragmentActivity {
 
                             // load the bitmap image from disk cache
                             // IMPORTANT: Use loadImageSync so that the async task will not spawn additional threads, which will cause out of memory error if too many concurrent upload exist.
-                            Bitmap loadedImage = ImageLoader.getInstance().loadImageSync(imageProfile.getActualUri(), imageSize);
+                            Bitmap loadedImage = ImageLoader.getInstance().loadImageSync(imageProfile.getUri(), imageSize);
                             try {
                                 // Compute dominant colors from the bitmap
                                 List<int[]> rgbColors = ColorThief.compute(loadedImage, 5); //TODO: THE MAX NUMBER!! FINAL CONSTANT
@@ -180,8 +180,7 @@ public class CreateStoryListActivity extends FragmentActivity {
 
                                 // Upload image to cloudinary
                                 // Get instance from application constant DO NOT INITIALIZE ANOTHER.
-                                Log.e("TADAH", imageProfile.getActualUri().substring(7)+":::");
-                                File file = new File(imageProfile.getActualUri().substring(7));
+                                File file = new File(imageProfile.getUri().substring(7));
 
                                 Cloudinary cloudinary = ((BootstrapApplication) CreateStoryListActivity.this.getApplication()).getCloudinary();
                                 JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
@@ -195,7 +194,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                                 Gson gson = new Gson();
                                 String imageProfileJson = gson.toJson(imageProfile);
 
-                                // Upload json to database
+                                // Upload json to databasesss
                                 HttpClient httpClient = new DefaultHttpClient();
                                 HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/images");
                                 httpPost.setHeader("Content-Type", "application/json");
@@ -315,9 +314,9 @@ public class CreateStoryListActivity extends FragmentActivity {
             viewHolder.createStoryItemTitle.setText(imageProfile.getTitle());
             viewHolder.createStoryItemDescription.setText(imageProfile.getDescription());
             viewHolder.createStoryItemPosition.setText("#"+position);
-            if(imageProfile.getActualUri() != "" || imageProfile.getActualUri() != null){
+            if(imageProfile.getUri() != "" || imageProfile.getUri() != null){
                 viewHolder.createStoryItemThumbnail.setImageBitmap(null);
-                ImageLoader.getInstance().loadImage(imageProfile.getActualUri(), thumbnailSize, new SimpleImageLoadingListener() {
+                ImageLoader.getInstance().loadImage(imageProfile.getUri(), thumbnailSize, new SimpleImageLoadingListener() {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {

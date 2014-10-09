@@ -11,12 +11,11 @@ import java.util.List;
 public class ImageProfile implements Parcelable {
     private String filename;
     private String extension;
-    private String url;
     private List rgbColors;
     private List labColors;
     private String title;
     private String description;
-    private transient String actualUri;
+    private transient String uri;
     private int order;
 
     public ImageProfile(){//required
@@ -36,14 +35,6 @@ public class ImageProfile implements Parcelable {
 
     public void setExtension(String extension) {
         this.extension = extension;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public List getRgbColors() {
@@ -78,12 +69,12 @@ public class ImageProfile implements Parcelable {
         this.description = description;
     }
 
-    public String getActualUri() {
-        return actualUri;
+    public String getUri() {
+        return uri;
     }
 
-    public void setActualUri(String actualUri) {
-        this.actualUri = actualUri;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     public int getOrder() {
@@ -106,12 +97,11 @@ public class ImageProfile implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(filename);
         parcel.writeString(extension);
-        parcel.writeString(url);
         parcel.writeList(rgbColors);
         parcel.writeList(labColors);
         parcel.writeString(title);
         parcel.writeString(description);
-        parcel.writeString(actualUri);
+        parcel.writeString(uri);
         parcel.writeInt(order);
     }
 
@@ -130,12 +120,11 @@ public class ImageProfile implements Parcelable {
     private ImageProfile(Parcel parcel){
         this.filename = parcel.readString();
         this.extension = parcel.readString();
-        this.url = parcel.readString();
         parcel.readList(rgbColors, List.class.getClassLoader());
         parcel.readList(labColors, List.class.getClassLoader());
         this.title = parcel.readString();
         this.description = parcel.readString();
-        this.actualUri = parcel.readString();
+        this.uri = parcel.readString();
         this.order = parcel.readInt();
     }
 }
