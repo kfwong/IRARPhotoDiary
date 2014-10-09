@@ -180,7 +180,8 @@ public class CreateStoryListActivity extends FragmentActivity {
 
                                 // Upload image to cloudinary
                                 // Get instance from application constant DO NOT INITIALIZE ANOTHER.
-                                File file = new File(imageProfile.getActualUri());
+                                Log.e("TADAH", imageProfile.getActualUri().substring(7)+":::");
+                                File file = new File(imageProfile.getActualUri().substring(7));
 
                                 Cloudinary cloudinary = ((BootstrapApplication) CreateStoryListActivity.this.getApplication()).getCloudinary();
                                 JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
