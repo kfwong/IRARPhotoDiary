@@ -33,7 +33,7 @@ public class DashboardFragment extends Fragment {
 
         viewPager = (JazzyViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(new DashboardPagerAdapter(getChildFragmentManager()));
-        viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.FlipHorizontal);
+        viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.Accordion);
 
         final TitlePageIndicator titlePageIndicator = (TitlePageIndicator) view.findViewById(R.id.indicator);
         titlePageIndicator.setViewPager(viewPager);
@@ -52,11 +52,11 @@ public class DashboardFragment extends Fragment {
             switch(position) {
 
                 case 0: return new DashboardHomeFragment();
-                case 1: return new SecondFragment();
-                case 2: return ThirdFragment.newInstance("ThirdFragment, Instance 1");
-                case 3: return new SecondFragment();
-                case 4: return new SecondFragment();
-                default: return new SecondFragment();
+                case 1: return new ViewStorySingleFragment();
+                case 2: return new ViewStorySingleFragment();
+                case 3: return new ViewStorySingleFragment();
+                case 4: return new ViewStorySingleFragment();
+                default: return new ViewStorySingleFragment();
             }
         }
 

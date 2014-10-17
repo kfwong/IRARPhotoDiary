@@ -10,5 +10,6 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_create_story">CreateStoryActivity</string>
+    <string name="title_activity_view_story">ViewStoryActivity</string>
 
 </resources>

@@ -27,6 +27,7 @@ import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.fragment.DashboardFragment;
 import nyp.fypj.irarphotodiary.fragment.MyDiaryFragment;
 import nyp.fypj.irarphotodiary.fragment.SecondFragment;
+import nyp.fypj.irarphotodiary.fragment.ViewStorySingleFragment;
 
 
 public class NavigationActivity extends FragmentActivity {
@@ -90,7 +91,7 @@ public class NavigationActivity extends FragmentActivity {
                 fragment = new DashboardFragment();
             break;
             case 1:
-                fragment = new SecondFragment();
+                fragment = new ViewStorySingleFragment(); //TODO: DEBUG
                 break;
             case 2:
                 fragment = new MyDiaryFragment();

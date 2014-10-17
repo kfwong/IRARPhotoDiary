@@ -31,7 +31,6 @@
         </activity>
         <activity android:name=".activity.CreateStoryListActivity" />
 
-
         <!-- meta data declarations -->
         <meta-data
             android:name="com.google.android.gms.version"
@@ -39,6 +38,7 @@
         <meta-data
             android:name="CLOUDINARY_URL"
             android:value="cloudinary://413734277452647:oR5axeqCqSYPepzFua2s9CI2M_w@dxspdhqz3" />
+
     </application>
 
     <!-- user permission declaration -->

@@ -30,4 +30,5 @@ dependencies {
     compile files('libs/KenBurnsView-1.0.3.jar')
     compile 'asia.ivity.android:drag-sort-listview:1.0'
     compile project(':JazzyViewPager')
+    compile 'com.github.nirhart:parallaxscroll:1.0'
 }
