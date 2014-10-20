@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.application.BootstrapApplication;
@@ -143,6 +144,8 @@ public class CreateStoryListActivity extends FragmentActivity {
                 createStoryListAdapter.add(imageProfile);
                 break;
             case R.id.createStoryListUpload:
+                final String albumId = UUID.randomUUID().toString().toLowerCase();
+
                 ///// async task
                 AsyncTask<Void,Integer,Void> task = new AsyncTask<Void,Integer,Void>() {
                     private List<ImageProfile> imageProfiles = createStoryListAdapter.imageProfiles;
@@ -189,6 +192,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                                 // if the key is not present in the upload result (meaning upload failed), a JSONException will be thrown
                                 imageProfile.setFilename(uploadResult.get("public_id").toString());
                                 imageProfile.setExtension(uploadResult.get("format").toString());
+                                imageProfile.setAlbumId(albumId);
 
                                 // flatten imageProfile to json
                                 Gson gson = new Gson();

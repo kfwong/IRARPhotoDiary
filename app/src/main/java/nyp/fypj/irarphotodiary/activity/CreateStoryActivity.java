@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cloudinary.Cloudinary;
@@ -64,26 +65,6 @@ public class CreateStoryActivity extends FragmentActivity {
 
             createStoryDescription.setText(imageProfile.getDescription());
 
-            createStoryImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(isFadedIn){
-                        Animation fadeOut = new AlphaAnimation(1.0f , 0.0f);
-                        fadeOut.setDuration(300);
-                        fadeOut.setFillAfter(true);
-                        createStoryTitle.startAnimation(fadeOut);
-                        createStoryDescription.startAnimation(fadeOut);
-                        isFadedIn = false;
-                    }else{
-                        Animation fadeIn = new AlphaAnimation(0.0f , 1.0f ) ;
-                        fadeIn.setDuration(300);
-                        fadeIn.setFillAfter(true);
-                        createStoryTitle.startAnimation(fadeIn);
-                        createStoryDescription.startAnimation(fadeIn);
-                        isFadedIn = true;
-                    }
-                }
-            });
             if(imageProfile.getUri() != "" || imageProfile.getUri() != null){
                 // DEBUG image problem: Log.e("onCreate", "image-isnull: "+imageProfile.getUri());
                 ImageLoader.getInstance().displayImage(imageProfile.getUri(), createStoryImageView);

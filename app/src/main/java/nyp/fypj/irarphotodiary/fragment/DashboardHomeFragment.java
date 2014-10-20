@@ -97,17 +97,12 @@ public class DashboardHomeFragment extends Fragment {
                     protected void onPreExecute() {
                         super.onPreExecute();
 
-                        Log.e("TADAH", "STARTED REFRESH!");
-
                         swipeRefreshLayout.setRefreshing(true);
                     }
 
                     @Override
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
-
-                        Log.e("TADAH", "ENDED REFRESH!");
-
                         DashboardHomeFragmentAdapter dashboardHomeFragmentAdapter = new DashboardHomeFragmentAdapter(staggeredGridView.getContext(), imageProfiles);
                         staggeredGridView.setAdapter(dashboardHomeFragmentAdapter);
 

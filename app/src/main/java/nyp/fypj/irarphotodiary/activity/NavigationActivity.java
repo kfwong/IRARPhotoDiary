@@ -1,5 +1,6 @@
 package nyp.fypj.irarphotodiary.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -91,10 +92,14 @@ public class NavigationActivity extends FragmentActivity {
                 fragment = new DashboardFragment();
             break;
             case 1:
-                fragment = new ViewStorySingleFragment(); //TODO: DEBUG
+                fragment = new MyDiaryFragment();
                 break;
             case 2:
                 fragment = new MyDiaryFragment();
+                break;
+            case 3:
+                Intent intent = new Intent(this, ViewStoryActivity.class);
+                startActivity(intent);
                 break;
             default:
                 fragment = null;
