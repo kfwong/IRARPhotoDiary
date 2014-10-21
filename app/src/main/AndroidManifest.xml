@@ -52,5 +52,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- Request permission to use a device camera. -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Request permission for GPS location -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 </manifest>

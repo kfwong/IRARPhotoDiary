@@ -23,24 +23,6 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="But it's important to use this workaround in a relative layout for the layout_align settings to be recognized."
-        android:id="@+id/dashboardHomeItemDescription"
-        android:background="#80000000"
-        android:textColor="#ffffffff"
-        android:layout_alignBottom="@+id/dashboardHomeItemImage"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:singleLine="true"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
-        android:textSize="14dp" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Lorem Ipsum"
         android:id="@+id/dashboardHomeItemTitle"
@@ -50,9 +32,28 @@
         android:singleLine="true"
         android:background="#80000000"
         android:paddingTop="5dp"
+        android:paddingBottom="1dp"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:textSize="12dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="But it's important to use this workaround in a relative layout for the layout_align settings to be recognized."
+        android:id="@+id/dashboardHomeItemDescription"
+        android:background="#80000000"
+        android:textColor="#ffffffff"
+        android:layout_alignBottom="@+id/dashboardHomeItemImage"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:singleLine="true"
+        android:paddingTop="1dp"
         android:paddingBottom="5dp"
         android:paddingRight="10dp"
         android:paddingLeft="10dp"
-        android:textSize="16dp"
-        android:textStyle="bold" />
+        android:textSize="10dp" />
+
 </RelativeLayout>

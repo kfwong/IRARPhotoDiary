@@ -4,6 +4,7 @@ package nyp.fypj.irarphotodiary.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,17 +13,35 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.etsy.android.grid.StaggeredGridView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.activity.CreateStoryListActivity;
+import nyp.fypj.irarphotodiary.activity.ViewStoryActivity;
+import nyp.fypj.irarphotodiary.application.BootstrapApplication;
+import nyp.fypj.irarphotodiary.dto.Album;
+import nyp.fypj.irarphotodiary.dto.ImageProfile;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,14 +67,68 @@ public class MyDiaryFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        List<String> data = new ArrayList<String>();
-        data.add("TADAH");
-        data.add("OPPS");
-        data.add("OMG");
+        final StaggeredGridView staggeredGridView = (StaggeredGridView) getView().findViewById(R.id.myDiaryFragmentStaggeredGridView);
+        staggeredGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Album selectedAlbum = (Album)adapterView.getItemAtPosition(i);
 
-        StaggeredGridView staggeredGridView = (StaggeredGridView) getView().findViewById(R.id.myDiaryFragmentStaggeredGridView);
-        MyDiaryFragmentAdapter myDiaryFragmentAdapter = new MyDiaryFragmentAdapter(staggeredGridView.getContext(), data);
-        staggeredGridView.setAdapter(myDiaryFragmentAdapter);
+                Intent intent = new Intent(MyDiaryFragment.this.getActivity().getApplicationContext(), ViewStoryActivity.class);
+                intent.putParcelableArrayListExtra("imageProfiles", selectedAlbum.getImageProfiles());
+                startActivity(intent);
+            }
+        });
+
+        AsyncTask<Void,Void,Void> task = new AsyncTask<Void,Void,Void>() {
+
+            private ArrayList<Album> albums;
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpResponse response;
+                String responseString = null;
+                try {
+                    response = httpclient.execute(new HttpGet("https://fypj-124465r.rhcloud.com/albums/"));
+                    StatusLine statusLine = response.getStatusLine();
+                    if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        response.getEntity().writeTo(out);
+                        out.close();
+                        responseString = out.toString();
+                    } else{
+                        //Closes the connection.
+                        response.getEntity().getContent().close();
+                        throw new IOException(statusLine.getReasonPhrase());
+                    }
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Gson gson = new Gson();
+                albums = gson.fromJson(responseString, new TypeToken<ArrayList<Album>>(){}.getType());
+
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                MyDiaryFragmentAdapter myDiaryFragmentAdapter = new MyDiaryFragmentAdapter(staggeredGridView.getContext(), albums);
+                staggeredGridView.setAdapter(myDiaryFragmentAdapter);
+
+            }
+        }; // AsyncTask
+
+        task.execute();
     }
 
     @Override
@@ -81,21 +154,21 @@ public class MyDiaryFragment extends Fragment {
 
     private class MyDiaryFragmentAdapter extends BaseAdapter {
         private LayoutInflater layoutInflater;
-        private List<String> data;
+        private ArrayList<Album> albums;
 
-        public MyDiaryFragmentAdapter(Context context, List<String> data){
+        public MyDiaryFragmentAdapter(Context context, ArrayList<Album> albums){
             this.layoutInflater = LayoutInflater.from(context);
-            this.data = data;
+            this.albums = albums;
         }
 
         @Override
         public int getCount() {
-            return data.size();
+            return albums.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return data.get(i);
+            return albums.get(i);
         }
 
         @Override
@@ -120,9 +193,12 @@ public class MyDiaryFragment extends Fragment {
                 viewHolder = (ViewHolder) view.getTag();
             }
 
-            String datum = data.get(i);
-            viewHolder.myDiaryItemTitle.setText(datum);
-            viewHolder.myDiaryItemDescription.setText(datum + " (description)");
+            Album album = albums.get(i);
+            ImageProfile coverImage = albums.get(i).getImageProfiles().get(0);
+
+            viewHolder.myDiaryItemTitle.setText(album.getAlbumId());
+            viewHolder.myDiaryItemDescription.setText(album.getAlbumId());
+            ImageLoader.getInstance().displayImage("http://res.cloudinary.com/"+ BootstrapApplication.CLOUDINARY_CLOUD_NAME+"/image/upload/w_0.1/"+coverImage.getFilename()+"."+coverImage.getExtension(), viewHolder.myDiaryItemImage);
             return view;
         }
         private class ViewHolder {
@@ -131,5 +207,4 @@ public class MyDiaryFragment extends Fragment {
             public TextView myDiaryItemDescription;
         }
     }
-
 }

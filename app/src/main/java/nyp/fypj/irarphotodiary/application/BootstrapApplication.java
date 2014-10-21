@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Point;
+import android.location.Location;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
@@ -26,6 +27,7 @@ public class BootstrapApplication extends Application {
     public static final String CLOUDINARY_CLOUD_NAME = "dxspdhqz3";
     public static int DEVICE_WIDTH;
     public static int DEVICE_HEIGHT;
+    public static Location LAST_KNOWN_LOCATION;
 
     @Override
     public void onCreate() {

@@ -53,8 +53,6 @@ public class CreateStoryActivity extends FragmentActivity {
             position = savedInstanceState.getInt("position", position);
             imageProfile = savedInstanceState.getParcelable("imageProfile");
 
-            // DEBUG image problem: Log.e("onCreate", "image-isnotnull: "+imageProfile.getUri());
-
         }else{
             Intent intent = getIntent();
 
@@ -95,6 +93,11 @@ public class CreateStoryActivity extends FragmentActivity {
                     image = File.createTempFile("IRAR_"+System.currentTimeMillis(), ".jpg", storage);
 
                     imageProfile.setUri(Uri.fromFile(image).toString());
+                    //gps
+                    if(BootstrapApplication.LAST_KNOWN_LOCATION !=null){
+                        imageProfile.setLatitude(BootstrapApplication.LAST_KNOWN_LOCATION.getLatitude());
+                        imageProfile.setLongitude(BootstrapApplication.LAST_KNOWN_LOCATION.getLongitude());
+                    }
 
                     if(image !=null){
                         takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));

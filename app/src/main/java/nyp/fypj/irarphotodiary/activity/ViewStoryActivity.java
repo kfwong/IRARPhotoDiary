@@ -1,5 +1,6 @@
 package nyp.fypj.irarphotodiary.activity;
 
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -50,6 +51,14 @@ public class ViewStoryActivity extends FragmentActivity {
         viewPager = (JazzyViewPager) findViewById(R.id.viewPager);
         circlePageIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
 
+        ArrayList<ImageProfile> imageProfiles = getIntent().getParcelableArrayListExtra("imageProfiles");
+
+        ViewStoryPagerAdapter viewStoryPagerAdapter = new ViewStoryPagerAdapter(ViewStoryActivity.this.getSupportFragmentManager(), imageProfiles);
+        viewPager.setAdapter(viewStoryPagerAdapter);
+        viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.Accordion);
+
+        circlePageIndicator.setViewPager(viewPager);
+        /*asynctask
         AsyncTask<Void,Void,Void> task = new AsyncTask<Void,Void,Void>() {
 
             private ArrayList<ImageProfile> imageProfiles;
@@ -102,6 +111,7 @@ public class ViewStoryActivity extends FragmentActivity {
         }; // AsyncTask
 
         task.execute();
+        asynctask*/
     }
 
     private class ViewStoryPagerAdapter extends FragmentPagerAdapter {

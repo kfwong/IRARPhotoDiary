@@ -18,6 +18,8 @@ public class ImageProfile implements Parcelable {
     private transient String uri;
     private int order;
     private String albumId;
+    private double latitude;
+    private double longitude;
 
     public ImageProfile(){//required
     }
@@ -94,6 +96,22 @@ public class ImageProfile implements Parcelable {
         this.albumId = albumId;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     // implementation of Parcelable interface to allow this object to pass within intents
     // you can use serializable interface or gson to avoid all these implementations but they are generally slower/ bad performace, see: http://stackoverflow.com/questions/5550670/benefit-of-using-parcelable-instead-of-serializing-object
     // http://stackoverflow.com/questions/15543033/how-to-write-list-into-parcel
@@ -113,6 +131,8 @@ public class ImageProfile implements Parcelable {
         parcel.writeString(uri);
         parcel.writeInt(order);
         parcel.writeString(albumId);
+        parcel.writeDouble(latitude);
+        parcel.writeDouble(longitude);
     }
 
     public static final Creator<ImageProfile> CREATOR = new Creator<ImageProfile>(){
@@ -137,5 +157,7 @@ public class ImageProfile implements Parcelable {
         this.uri = parcel.readString();
         this.order = parcel.readInt();
         this.albumId = parcel.readString();
+        this.latitude = parcel.readDouble();
+        this.longitude = parcel.readDouble();
     }
 }

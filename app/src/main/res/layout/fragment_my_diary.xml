@@ -11,7 +11,7 @@
         android:id="@+id/myDiaryFragmentStaggeredGridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:item_margin="8dp"
-        app:column_count="1" />
+        app:item_margin="4dp"
+        app:column_count="2" />
 
 </FrameLayout>

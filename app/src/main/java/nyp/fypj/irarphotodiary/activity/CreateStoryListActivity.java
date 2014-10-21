@@ -4,6 +4,9 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cloudinary.Cloudinary;
 import com.google.gson.Gson;
@@ -56,6 +60,23 @@ public class CreateStoryListActivity extends FragmentActivity {
     private CreateStoryListAdapter createStoryListAdapter;
     private ImageSize thumbnailSize = new ImageSize(128,128);
     private ArrayList<ImageProfile> imageProfiles;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        locationListener = new CreateStoryLocationListener();
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        locationManager.removeUpdates(locationListener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +90,8 @@ public class CreateStoryListActivity extends FragmentActivity {
             imageProfile1.setTitle("New stuff coming up soon!");
             imageProfile1.setDescription("How about adding some interesting description to this image?");
 
-            ImageProfile imageProfile2 = new ImageProfile();
-            imageProfile2.setTitle("New stuff coming up soon!");
-            imageProfile2.setDescription("How about adding some interesting description to this image?");
-
             imageProfiles = new ArrayList<ImageProfile>();
             imageProfiles.add(imageProfile1);
-            imageProfiles.add(imageProfile2);
         }
 
         createStoryListAdapter = new CreateStoryListAdapter(this, imageProfiles);
@@ -379,5 +395,22 @@ public class CreateStoryListActivity extends FragmentActivity {
             public TextView createStoryItemDescription;
             public TextView createStoryItemPosition;
         }
+    }
+
+    private class CreateStoryLocationListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location loc) {
+            BootstrapApplication.LAST_KNOWN_LOCATION = loc;
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {}
+
+        @Override
+        public void onProviderEnabled(String provider) {}
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
     }
 }
