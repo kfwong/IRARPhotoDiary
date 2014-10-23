@@ -55,7 +55,8 @@ public class ColorProfiler {
     }
 
     // get dominant color and color palette, flatten as json and return
-    // TODO: refactor!!!
+    // NO LONGER USED
+    /*
     public static String generateJsonProfile(Bitmap bitmap, String filename, String extension, String url) {
         String jsonProfile = "{}";
         try {
@@ -80,6 +81,7 @@ public class ColorProfiler {
 
         return jsonProfile;
     }
+    */
 
     /**
      * Convert LAB to RGB.

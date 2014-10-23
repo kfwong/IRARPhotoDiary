@@ -1,6 +1,7 @@
 package nyp.fypj.irarphotodiary.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import com.cloudinary.Cloudinary;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.wrapp.floatlabelededittext.FloatLabeledEditText;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,8 +37,8 @@ public class CreateStoryActivity extends FragmentActivity {
     private int position; // keeping track current entry in the parent list view position
     private ImageProfile imageProfile;
     private KenBurnsView createStoryImageView;
-    private TextView createStoryTitle;
-    private TextView createStoryDescription;
+    private FloatLabeledEditText createStoryTitle;
+    private FloatLabeledEditText createStoryDescription;
     private boolean isFadedIn = true;
 
     @Override
@@ -46,8 +49,8 @@ public class CreateStoryActivity extends FragmentActivity {
         getActionBar().setBackgroundDrawable(null);
 
         createStoryImageView = (KenBurnsView) findViewById(R.id.createStoryImageView);
-        createStoryDescription = (TextView) findViewById(R.id.createStoryDescription);
-        createStoryTitle = (TextView)findViewById(R.id.createStoryTitle);
+        createStoryTitle = (FloatLabeledEditText)findViewById(R.id.createStoryTitle);
+        createStoryDescription = (FloatLabeledEditText) findViewById(R.id.createStoryDescription);
 
         if(savedInstanceState != null){
             position = savedInstanceState.getInt("position", position);
@@ -60,8 +63,14 @@ public class CreateStoryActivity extends FragmentActivity {
             imageProfile = (ImageProfile) intent.getExtras().getParcelable("imageProfile");
 
             createStoryTitle.setText(imageProfile.getTitle());
-
             createStoryDescription.setText(imageProfile.getDescription());
+
+            // The following is to fix the bug where by the first initialization, hint is not shown.
+            createStoryTitle.requestFieldFocus();
+            createStoryTitle.clearChildFocus(createStoryTitle.getEditText());
+            createStoryDescription.requestFieldFocus();
+            createStoryDescription.clearChildFocus(createStoryDescription.getEditText());
+
 
             if(imageProfile.getUri() != "" || imageProfile.getUri() != null){
                 // DEBUG image problem: Log.e("onCreate", "image-isnull: "+imageProfile.getUri());

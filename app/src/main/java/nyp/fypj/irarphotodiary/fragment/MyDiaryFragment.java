@@ -144,6 +144,7 @@ public class MyDiaryFragment extends Fragment {
             case R.id.myDiaryCreateStory:
                 Intent intent = new Intent(getView().getContext(), CreateStoryListActivity.class);
                 startActivityForResult(intent, 1);// TODO
+
                 break;
             default:
                 break;
@@ -196,8 +197,8 @@ public class MyDiaryFragment extends Fragment {
             Album album = albums.get(i);
             ImageProfile coverImage = albums.get(i).getImageProfiles().get(0);
 
-            viewHolder.myDiaryItemTitle.setText(album.getAlbumId());
-            viewHolder.myDiaryItemDescription.setText(album.getAlbumId());
+            viewHolder.myDiaryItemTitle.setText(album.getTitle());
+            viewHolder.myDiaryItemDescription.setText(album.getDescription());
             ImageLoader.getInstance().displayImage("http://res.cloudinary.com/"+ BootstrapApplication.CLOUDINARY_CLOUD_NAME+"/image/upload/w_0.1/"+coverImage.getFilename()+"."+coverImage.getExtension(), viewHolder.myDiaryItemImage);
             return view;
         }

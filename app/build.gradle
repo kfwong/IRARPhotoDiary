@@ -31,4 +31,5 @@ dependencies {
     compile 'asia.ivity.android:drag-sort-listview:1.0'
     compile project(':JazzyViewPager')
     compile 'com.github.nirhart:parallaxscroll:1.0'
+    compile 'com.wrapp.floatlabelededittext:library:0.0.3'
 }

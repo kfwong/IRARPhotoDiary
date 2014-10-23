@@ -11,13 +11,10 @@ import java.util.List;
 public class ImageProfile implements Parcelable {
     private String filename;
     private String extension;
-    private List rgbColors;
-    private List labColors;
     private String title;
     private String description;
     private transient String uri;
     private int order;
-    private String albumId;
     private double latitude;
     private double longitude;
 
@@ -38,22 +35,6 @@ public class ImageProfile implements Parcelable {
 
     public void setExtension(String extension) {
         this.extension = extension;
-    }
-
-    public List getRgbColors() {
-        return rgbColors;
-    }
-
-    public void setRgbColors(List rgbColors) {
-        this.rgbColors = rgbColors;
-    }
-
-    public List getLabColors() {
-        return labColors;
-    }
-
-    public void setLabColors(List labColors) {
-        this.labColors = labColors;
     }
 
     public String getTitle() {
@@ -88,14 +69,6 @@ public class ImageProfile implements Parcelable {
         this.order = order;
     }
 
-    public String getAlbumId() {
-        return albumId;
-    }
-
-    public void setAlbumId(String albumId) {
-        this.albumId = albumId;
-    }
-
     public double getLatitude() {
         return latitude;
     }
@@ -124,13 +97,10 @@ public class ImageProfile implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(filename);
         parcel.writeString(extension);
-        parcel.writeList(rgbColors);
-        parcel.writeList(labColors);
         parcel.writeString(title);
         parcel.writeString(description);
         parcel.writeString(uri);
         parcel.writeInt(order);
-        parcel.writeString(albumId);
         parcel.writeDouble(latitude);
         parcel.writeDouble(longitude);
     }
@@ -150,13 +120,10 @@ public class ImageProfile implements Parcelable {
     private ImageProfile(Parcel parcel){
         this.filename = parcel.readString();
         this.extension = parcel.readString();
-        parcel.readList(rgbColors, List.class.getClassLoader());
-        parcel.readList(labColors, List.class.getClassLoader());
         this.title = parcel.readString();
         this.description = parcel.readString();
         this.uri = parcel.readString();
         this.order = parcel.readInt();
-        this.albumId = parcel.readString();
         this.latitude = parcel.readDouble();
         this.longitude = parcel.readDouble();
     }

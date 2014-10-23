@@ -46,11 +46,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.application.BootstrapApplication;
+import nyp.fypj.irarphotodiary.dto.Album;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
 import nyp.fypj.irarphotodiary.util.ColorProfiler;
 import nyp.fypj.irarphotodiary.util.ColorThief;
@@ -160,17 +162,17 @@ public class CreateStoryListActivity extends FragmentActivity {
                 createStoryListAdapter.add(imageProfile);
                 break;
             case R.id.createStoryListUpload:
-                final String albumId = UUID.randomUUID().toString().toLowerCase();
-
                 ///// async task
                 AsyncTask<Void,Integer,Void> task = new AsyncTask<Void,Integer,Void>() {
-                    private List<ImageProfile> imageProfiles = createStoryListAdapter.imageProfiles;
+                    private Album album = new Album();
+                    private ArrayList<ImageProfile> imageProfiles = createStoryListAdapter.imageProfiles;
                     private NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     private NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(CreateStoryListActivity.this);
 
                     @Override
                     protected Void doInBackground(Void... voids) {
 
+                        // Upload images
                         // For each of the imageProfile
                         //for (final ImageProfile imageProfile : imageProfiles) {
                         for(int i = 0; i< imageProfiles.size();i++){
@@ -186,6 +188,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                             Bitmap loadedImage = ImageLoader.getInstance().loadImageSync(imageProfile.getUri(), imageSize);
                             try {
                                 // Compute dominant colors from the bitmap
+                                /* NO LONGER USED
                                 List<int[]> rgbColors = ColorThief.compute(loadedImage, 5); //TODO: THE MAX NUMBER!! FINAL CONSTANT
 
                                 // convert rgb to lab color space
@@ -196,6 +199,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                                 // set the color profiles to the image POJO
                                 imageProfile.setRgbColors(rgbColors);
                                 imageProfile.setLabColors(labColors);
+                                */
 
                                 // Upload image to cloudinary
                                 // Get instance from application constant DO NOT INITIALIZE ANOTHER.
@@ -208,18 +212,6 @@ public class CreateStoryListActivity extends FragmentActivity {
                                 // if the key is not present in the upload result (meaning upload failed), a JSONException will be thrown
                                 imageProfile.setFilename(uploadResult.get("public_id").toString());
                                 imageProfile.setExtension(uploadResult.get("format").toString());
-                                imageProfile.setAlbumId(albumId);
-
-                                // flatten imageProfile to json
-                                Gson gson = new Gson();
-                                String imageProfileJson = gson.toJson(imageProfile);
-
-                                // Upload json to databasesss
-                                HttpClient httpClient = new DefaultHttpClient();
-                                HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/images");
-                                httpPost.setHeader("Content-Type", "application/json");
-                                httpPost.setEntity(new StringEntity(imageProfileJson));
-                                HttpResponse httpResponse = httpClient.execute(httpPost); //TODO: not used?
 
                             } catch (IOException ex) {
                                 ex.printStackTrace();
@@ -227,7 +219,31 @@ public class CreateStoryListActivity extends FragmentActivity {
                                 ex.printStackTrace();
                             }
 
+                        }// end for loop
+
+                        // Upload imageProfiles
+                        try {
+
+                            album.setTitle("This is the album title.");
+                            album.setDescription("This is the album description.");
+                            album.setDateUploaded(new Date());
+                            album.setImageProfiles(imageProfiles);
+
+                            // flatten imageProfile to json
+                            Gson gson = new Gson();
+                            String albumJson = gson.toJson(album);
+
+                            // Upload json to databasesss
+                            HttpClient httpClient = new DefaultHttpClient();
+                            HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/albums");
+                            httpPost.setHeader("Content-Type", "application/json");
+                            httpPost.setEntity(new StringEntity(albumJson));
+                            HttpResponse httpResponse = httpClient.execute(httpPost); //TODO: not used?
+
+                        }catch(IOException ex){
+                            ex.printStackTrace();
                         }
+
                         return null;
                     }
 
@@ -237,7 +253,7 @@ public class CreateStoryListActivity extends FragmentActivity {
 
                         // start the notification progress
                         notificationCompat.setSmallIcon(R.drawable.ic_launcher);
-                        notificationCompat.setContentTitle("Upload Album");
+                        notificationCompat.setContentTitle("Uploading Album");
                         notificationCompat.setProgress(0, 0, true);
                         notificationManager.notify(1, notificationCompat.build());
                     }
@@ -249,7 +265,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                         int count = progress[0];
                         int total = progress[1];
 
-                        notificationCompat.setContentText("Uploading " + count + " of " + total+"...");
+                        notificationCompat.setContentText("Uploading image profiles " + count + " of " + total+"...");
                         notificationCompat.setProgress(0, 0, true);
                         notificationManager.notify(1, notificationCompat.build());
                     }
@@ -287,10 +303,10 @@ public class CreateStoryListActivity extends FragmentActivity {
 
     private class CreateStoryListAdapter extends BaseAdapter {
 
-        private List<ImageProfile> imageProfiles;
+        private ArrayList<ImageProfile> imageProfiles;
         private LayoutInflater layoutInflater;
 
-        private CreateStoryListAdapter(Context context, List<ImageProfile> imageProfiles) {
+        private CreateStoryListAdapter(Context context, ArrayList<ImageProfile> imageProfiles) {
             this.imageProfiles = imageProfiles;
             this.layoutInflater = LayoutInflater.from(context);
         }
