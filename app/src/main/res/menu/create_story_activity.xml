@@ -11,16 +11,6 @@
         android:orderInCategory="100"
         android:showAsAction="never" />
 
-    <item android:id="@+id/createStoryEditTitle"
-        android:title="Edit Title"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
-
-    <item android:id="@+id/createStoryEditDescription"
-        android:title="Edit Description"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
-
     <item android:id="@+id/createStorySave"
         android:title="Save"
         android:orderInCategory="100"

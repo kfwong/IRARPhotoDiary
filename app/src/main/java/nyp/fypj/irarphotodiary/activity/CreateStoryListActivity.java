@@ -33,6 +33,7 @@ import com.mobeta.android.dslv.DragSortListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.wrapp.floatlabelededittext.FloatLabeledEditText;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -64,6 +65,8 @@ public class CreateStoryListActivity extends FragmentActivity {
     private ArrayList<ImageProfile> imageProfiles;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private FloatLabeledEditText albumTitle;
+    private FloatLabeledEditText albumDescription;
 
     @Override
     protected void onStart() {
@@ -85,12 +88,18 @@ public class CreateStoryListActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_story_list);
 
+        albumTitle = (FloatLabeledEditText) findViewById(R.id.albumTitle);
+        albumDescription = (FloatLabeledEditText) findViewById(R.id.albumDescription);
+
         if(savedInstanceState !=null){
             imageProfiles = savedInstanceState.getParcelableArrayList("imageProfiles");
         }else{
+            albumTitle.setText("My Album Title");
+            albumDescription.setText("These are some collections of images I have!");
+
             ImageProfile imageProfile1 = new ImageProfile();
-            imageProfile1.setTitle("New stuff coming up soon!");
-            imageProfile1.setDescription("How about adding some interesting description to this image?");
+            imageProfile1.setTitle("Tap here to edit this content!");
+            imageProfile1.setDescription("Select options on top right corner to Add new content to this album.");
 
             imageProfiles = new ArrayList<ImageProfile>();
             imageProfiles.add(imageProfile1);
@@ -158,7 +167,7 @@ public class CreateStoryListActivity extends FragmentActivity {
             case R.id.createStoryListAddNew:
                 ImageProfile imageProfile = new ImageProfile();
                 imageProfile.setTitle("New stuff coming up soon!");
-                imageProfile.setDescription("How about adding some interesting description to this image?");
+                imageProfile.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nisi eros, varius vitae quam quis, mattis dignissim elit. Ut ipsum orci, consequat vitae nisi nec, vulputate commodo mi. Ut eros lectus, malesuada a velit nec, posuere pharetra massa. Vestibulum feugiat egestas orci, sit amet volutpat ligula pretium a. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vestibulum congue urna at varius feugiat. Etiam mattis pellentesque odio, elementum dapibus mauris placerat eu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis nulla nulla, eleifend vitae lectus ac, scelerisque fringilla metus. Proin aliquam in felis eget convallis. Maecenas a est quis eros dapibus facilisis. Nunc ut massa feugiat, suscipit tellus ut, congue arcu. ");
                 createStoryListAdapter.add(imageProfile);
                 break;
             case R.id.createStoryListUpload:
@@ -181,11 +190,11 @@ public class CreateStoryListActivity extends FragmentActivity {
                             final ImageProfile imageProfile = imageProfiles.get(i);
                             imageProfile.setOrder(i); // IMPORTANT: the final position/index/order is only saved to the entity just before uploading to avoid confusion
 
-                            ImageSize imageSize = new ImageSize(320,480);
+                            //ImageSize imageSize = new ImageSize(320,480);
 
                             // load the bitmap image from disk cache
                             // IMPORTANT: Use loadImageSync so that the async task will not spawn additional threads, which will cause out of memory error if too many concurrent upload exist.
-                            Bitmap loadedImage = ImageLoader.getInstance().loadImageSync(imageProfile.getUri(), imageSize);
+                            //Bitmap loadedImage = ImageLoader.getInstance().loadImageSync(imageProfile.getUri(), imageSize);
                             try {
                                 // Compute dominant colors from the bitmap
                                 /* NO LONGER USED
@@ -224,8 +233,8 @@ public class CreateStoryListActivity extends FragmentActivity {
                         // Upload imageProfiles
                         try {
 
-                            album.setTitle("This is the album title.");
-                            album.setDescription("This is the album description.");
+                            album.setTitle(albumTitle.getTextString());
+                            album.setDescription(albumDescription.getTextString());
                             album.setDateUploaded(new Date());
                             album.setImageProfiles(imageProfiles);
 
@@ -350,13 +359,12 @@ public class CreateStoryListActivity extends FragmentActivity {
             viewHolder.createStoryItemTitle.setText(imageProfile.getTitle());
             viewHolder.createStoryItemDescription.setText(imageProfile.getDescription());
             viewHolder.createStoryItemPosition.setText("#"+position);
-            if(imageProfile.getUri() != "" || imageProfile.getUri() != null){
+            if(imageProfile.getUri() != "" && imageProfile.getUri() != null){
                 viewHolder.createStoryItemThumbnail.setImageBitmap(null);
                 ImageLoader.getInstance().loadImage(imageProfile.getUri(), thumbnailSize, new SimpleImageLoadingListener() {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        //DEBUG: Log.e("TADAH", "image"+": "+imageUri);
 
                         Bitmap thumbnail = ThumbnailUtils.extractThumbnail(loadedImage, 128, 128);
                         viewHolder.createStoryItemThumbnail.setImageBitmap(thumbnail);
@@ -368,6 +376,8 @@ public class CreateStoryListActivity extends FragmentActivity {
                     }
 
                 });
+            }else{
+                viewHolder.createStoryItemThumbnail.setImageResource(R.drawable.placeholder);
             }
 
             return view;

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,8 @@ public class MyDiaryFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        final ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.myDiaryFragmentProgressBar);
+
         final StaggeredGridView staggeredGridView = (StaggeredGridView) getView().findViewById(R.id.myDiaryFragmentStaggeredGridView);
         staggeredGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -117,6 +120,7 @@ public class MyDiaryFragment extends Fragment {
             protected void onPreExecute() {
                 super.onPreExecute();
 
+                progressBar.setVisibility(ProgressBar.VISIBLE);
             }
 
             @Override
@@ -125,6 +129,7 @@ public class MyDiaryFragment extends Fragment {
                 MyDiaryFragmentAdapter myDiaryFragmentAdapter = new MyDiaryFragmentAdapter(staggeredGridView.getContext(), albums);
                 staggeredGridView.setAdapter(myDiaryFragmentAdapter);
 
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
             }
         }; // AsyncTask
 

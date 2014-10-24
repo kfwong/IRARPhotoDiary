@@ -39,7 +39,6 @@ public class CreateStoryActivity extends FragmentActivity {
     private KenBurnsView createStoryImageView;
     private FloatLabeledEditText createStoryTitle;
     private FloatLabeledEditText createStoryDescription;
-    private boolean isFadedIn = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,17 +59,10 @@ public class CreateStoryActivity extends FragmentActivity {
             Intent intent = getIntent();
 
             position = intent.getIntExtra("position", -1);
-            imageProfile = (ImageProfile) intent.getExtras().getParcelable("imageProfile");
+            imageProfile = intent.getExtras().getParcelable("imageProfile");
 
             createStoryTitle.setText(imageProfile.getTitle());
             createStoryDescription.setText(imageProfile.getDescription());
-
-            // The following is to fix the bug where by the first initialization, hint is not shown.
-            createStoryTitle.requestFieldFocus();
-            createStoryTitle.clearChildFocus(createStoryTitle.getEditText());
-            createStoryDescription.requestFieldFocus();
-            createStoryDescription.clearChildFocus(createStoryDescription.getEditText());
-
 
             if(imageProfile.getUri() != "" || imageProfile.getUri() != null){
                 // DEBUG image problem: Log.e("onCreate", "image-isnull: "+imageProfile.getUri());
@@ -102,6 +94,7 @@ public class CreateStoryActivity extends FragmentActivity {
                     image = File.createTempFile("IRAR_"+System.currentTimeMillis(), ".jpg", storage);
 
                     imageProfile.setUri(Uri.fromFile(image).toString());
+
                     //gps
                     if(BootstrapApplication.LAST_KNOWN_LOCATION !=null){
                         imageProfile.setLatitude(BootstrapApplication.LAST_KNOWN_LOCATION.getLatitude());
@@ -122,47 +115,9 @@ public class CreateStoryActivity extends FragmentActivity {
                 photoPickerIntent.setType("image/*");
                 startActivityForResult(photoPickerIntent, 1);//TODO: LOOK AT THAT UGLY REQUEST CODE!!!
                 break;
-            case R.id.createStoryEditTitle:
-                final EditText editTitle = new EditText(this);
-                editTitle.setSingleLine(true);
-
-                new AlertDialog.Builder(this)
-                        .setTitle("Edit Title")
-                        .setMessage("E.g: Who are they? Where are you? What is that?")
-                        .setView(editTitle)
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                imageProfile.setTitle(editTitle.getText().toString());
-                                createStoryTitle.setText(editTitle.getText());
-                            }
-                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Do nothing.
-                    }
-                }).show();
-                break;
-            case R.id.createStoryEditDescription:
-                final EditText editDescription = new EditText(this);
-                editDescription.setSingleLine(false);
-                editDescription.setHeight(300);
-                editDescription.setGravity(Gravity.BOTTOM | Gravity.LEFT);
-
-                new AlertDialog.Builder(this)
-                        .setTitle("Edit Description")
-                        .setMessage("Tell others your experience!")
-                        .setView(editDescription)
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                imageProfile.setDescription(editDescription.getText().toString());
-                                createStoryDescription.setText(editDescription.getText());
-                            }
-                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Do nothing.
-                    }
-                }).show();
-                break;
             case R.id.createStorySave:
+                imageProfile.setTitle(createStoryTitle.getTextString());
+                imageProfile.setDescription(createStoryDescription.getTextString());
 
                 Intent intent = new Intent();
                 intent.putExtra("position", position);

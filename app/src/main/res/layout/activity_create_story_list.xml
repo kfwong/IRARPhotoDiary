@@ -1,21 +1,74 @@
-<com.mobeta.android.dslv.DragSortListView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/createStoryDragSortListView"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_gravity="start"
-    android:background="#111"
-    android:choiceMode="singleChoice"
-    android:divider="@android:color/transparent"
-    android:dividerHeight="0dp"
-    app:collapsed_height="2dp"
-    app:drag_enabled="true"
-    app:drag_scroll_start="0.33"
-    app:float_alpha="0.6"
-    app:max_drag_scroll_speed="0.5"
-    app:slide_shuffle_speed="0.3"
-    app:sort_enabled="true"
-    app:track_drag_sort="false"
-    app:use_default_controller="false" />
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="General Information"
+        android:id="@+id/albumInfo"
+        android:textColor="@color/ICS_BLUE"
+        android:textStyle="bold" />
+
+    <com.wrapp.floatlabelededittext.FloatLabeledEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/albumTitle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:inputType="text"
+        app:fletFloatingHint="Album Title"
+        app:fletHintTextColor="@color/ICS_BLUE"
+        app:fletTextColor="#ffffff"/>
+
+    <com.wrapp.floatlabelededittext.FloatLabeledEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/albumDescription"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:inputType="text"
+        app:fletFloatingHint="Album Description"
+        app:fletHintTextColor="@color/ICS_BLUE"
+        app:fletTextColor="#ffffff"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Content"
+        android:id="@+id/albumContent"
+        android:layout_gravity="left|center_vertical"
+        android:textColor="@color/ICS_BLUE"
+        android:textStyle="bold" />
+
+    <com.mobeta.android.dslv.DragSortListView
+        android:id="@+id/createStoryDragSortListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        app:collapsed_height="2dp"
+        app:drag_enabled="true"
+        app:drag_scroll_start="0.33"
+        app:float_alpha="0.6"
+        app:max_drag_scroll_speed="0.5"
+        app:slide_shuffle_speed="0.3"
+        app:sort_enabled="true"
+        app:track_drag_sort="false"
+        app:use_default_controller="false" />
+
+</LinearLayout>
 

@@ -82,11 +82,11 @@
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:textStyle="bold"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:background="@drawable/edittext_background"
             android:inputType="text"
             app:fletFloatingHint="Title"
-            app:fletHintTextColor="#ffffff"
+            app:fletHintTextColor="@color/ICS_BLUE"
             app:fletTextColor="#ffffff"/>
 
         <com.wrapp.floatlabelededittext.FloatLabeledEditText
@@ -97,11 +97,11 @@
             android:layout_column="0"
             android:layout_columnSpan="3"
             android:singleLine="false"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:background="@drawable/edittext_background"
             android:inputType="textMultiLine"
             app:fletFloatingHint="Description"
-            app:fletHintTextColor="#ffffff"
+            app:fletHintTextColor="@color/ICS_BLUE"
             app:fletTextColor="#ffffff"/>
 
     </GridLayout>

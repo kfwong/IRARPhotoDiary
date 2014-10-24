@@ -42,6 +42,8 @@ import nyp.fypj.irarphotodiary.application.BootstrapApplication;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
 
 public class DashboardHomeFragment extends Fragment {
+    private StaggeredGridView staggeredGridView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,67 +54,74 @@ public class DashboardHomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final StaggeredGridView staggeredGridView = (StaggeredGridView) getView().findViewById(R.id.dashboardHomeFragmentStaggeredGridView);
+        staggeredGridView = (StaggeredGridView) getView().findViewById(R.id.dashboardHomeFragmentStaggeredGridView);
 
-        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.dashboardHomeFragmentSwipeRefresh);
+        swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.dashboardHomeFragmentSwipeRefresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.ICS_BLUE, R.color.grey, R.color.ICS_BLUE, R.color.grey);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                AsyncTask<Void,Void,Void> task = new AsyncTask<Void,Void,Void>() {
-
-                    private ArrayList<ImageProfile> imageProfiles;
-
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        HttpClient httpclient = new DefaultHttpClient();
-                        HttpResponse response;
-                        String responseString = null;
-                        try {
-                            response = httpclient.execute(new HttpGet("https://fypj-124465r.rhcloud.com/images/"));
-                            StatusLine statusLine = response.getStatusLine();
-                            if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-                                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                                response.getEntity().writeTo(out);
-                                out.close();
-                                responseString = out.toString();
-                            } else{
-                                //Closes the connection.
-                                response.getEntity().getContent().close();
-                                throw new IOException(statusLine.getReasonPhrase());
-                            }
-                        } catch (ClientProtocolException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        Gson gson = new Gson();
-                        imageProfiles = gson.fromJson(responseString, new TypeToken<ArrayList<ImageProfile>>(){}.getType());
-
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-
-                        swipeRefreshLayout.setRefreshing(true);
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        super.onPostExecute(aVoid);
-                        DashboardHomeFragmentAdapter dashboardHomeFragmentAdapter = new DashboardHomeFragmentAdapter(staggeredGridView.getContext(), imageProfiles);
-                        staggeredGridView.setAdapter(dashboardHomeFragmentAdapter);
-
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }; // AsyncTask
-
-                task.execute();
+                refresh();
             }//onRefresh
         });//onRefreshListener
+
+        //initial refresh
+        refresh();
+    }
+
+    private void refresh(){
+        AsyncTask<Void,Void,Void> task = new AsyncTask<Void,Void,Void>() {
+
+            private ArrayList<ImageProfile> imageProfiles;
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpResponse response;
+                String responseString = null;
+                try {
+                    response = httpclient.execute(new HttpGet("https://fypj-124465r.rhcloud.com/albums/images/"));
+                    StatusLine statusLine = response.getStatusLine();
+                    if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        response.getEntity().writeTo(out);
+                        out.close();
+                        responseString = out.toString();
+                    } else{
+                        //Closes the connection.
+                        response.getEntity().getContent().close();
+                        throw new IOException(statusLine.getReasonPhrase());
+                    }
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Gson gson = new Gson();
+                imageProfiles = gson.fromJson(responseString, new TypeToken<ArrayList<ImageProfile>>(){}.getType());
+
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                swipeRefreshLayout.setRefreshing(true);
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                DashboardHomeFragmentAdapter dashboardHomeFragmentAdapter = new DashboardHomeFragmentAdapter(staggeredGridView.getContext(), imageProfiles);
+                staggeredGridView.setAdapter(dashboardHomeFragmentAdapter);
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }; // AsyncTask
+
+        task.execute();
     }
 
     private class DashboardHomeFragmentAdapter extends BaseAdapter{

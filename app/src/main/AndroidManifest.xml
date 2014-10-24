@@ -24,12 +24,14 @@
         <activity
             android:name=".activity.CreateStoryActivity"
             android:label="@string/title_activity_create_story"
+            android:windowSoftInputMode="stateHidden"
             android:parentActivityName="android.support.v4.app.FragmentActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.support.v4.app.FragmentActivity" />
         </activity>
-        <activity android:name=".activity.CreateStoryListActivity" />
+        <activity android:name=".activity.CreateStoryListActivity"
+            android:windowSoftInputMode="stateHidden" />
 
         <!-- meta data declarations -->
         <meta-data
