@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativelayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="150dp"
+        android:id="@+id/dashboardRecentAlbumItemImage"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/sample"
+        android:background="#50eeeeee"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:adjustViewBounds="true"
+        android:maxHeight="250dp"
+        android:minHeight="250dp"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Lorem Ipsum"
+        android:id="@+id/dashboardRecentAlbumItemTitle"
+        android:layout_above="@+id/dashboardRecentAlbumItemDescription"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:singleLine="true"
+        android:background="#80000000"
+        android:paddingTop="5dp"
+        android:paddingBottom="1dp"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:textSize="12dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="But it's important to use this workaround in a relative layout for the layout_align settings to be recognized."
+        android:id="@+id/dashboardRecentAlbumItemDescription"
+        android:background="#80000000"
+        android:textColor="#ffffffff"
+        android:layout_alignBottom="@+id/dashboardRecentAlbumItemImage"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:singleLine="true"
+        android:paddingTop="1dp"
+        android:paddingBottom="5dp"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:textSize="10dp" />
+</RelativeLayout>

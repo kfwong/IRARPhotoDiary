@@ -52,22 +52,23 @@ public class DashboardFragment extends Fragment {
             switch(position) {
 
                 case 0: return new DashboardHomeFragment();
-                case 1: return new ViewStorySingleFragment();
-                case 2: return new ViewStorySingleFragment();
-                case 3: return new ViewStorySingleFragment();
-                case 4: return new ViewStorySingleFragment();
-                default: return new ViewStorySingleFragment();
+                case 1: return new DashboardRecentAlbumFragment(); //TODO://placeholder
+                default: return null;
             }
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return("Recent Stories").toUpperCase();
+           switch (position){
+               case 0: return ("RECENT IMAGES").toUpperCase();
+               case 1: return ("RECENT ALBUM").toUpperCase();
+               default: return null;
+           }
         }
 
         @Override
         public int getCount() {
-            return 5;
+            return 2;
         }
 
         // required for JazzyViewPager

@@ -1,6 +1,7 @@
 package nyp.fypj.irarphotodiary.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,12 +40,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
+import nyp.fypj.irarphotodiary.activity.ViewStoryActivity;
 import nyp.fypj.irarphotodiary.application.BootstrapApplication;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
 
 public class DashboardHomeFragment extends Fragment {
     private StaggeredGridView staggeredGridView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private DashboardHomeFragmentAdapter dashboardHomeFragmentAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +59,20 @@ public class DashboardHomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         staggeredGridView = (StaggeredGridView) getView().findViewById(R.id.dashboardHomeFragmentStaggeredGridView);
+        staggeredGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ImageProfile selectedImage = (ImageProfile) dashboardHomeFragmentAdapter.getItem(i);
+
+                //TODO: to reuse the ViewStoryActivity, we need to put selectedImage into a list form, even if there's only single image...sort of design flaw haha
+                ArrayList<ImageProfile> imageProfiles = new ArrayList<ImageProfile>();
+                imageProfiles.add(selectedImage);
+
+                Intent intent = new Intent(DashboardHomeFragment.this.getActivity().getApplicationContext(), ViewStoryActivity.class);
+                intent.putParcelableArrayListExtra("imageProfiles", imageProfiles);
+                startActivity(intent);
+            }
+        });
 
         swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.dashboardHomeFragmentSwipeRefresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.ICS_BLUE, R.color.grey, R.color.ICS_BLUE, R.color.grey);
@@ -114,7 +132,7 @@ public class DashboardHomeFragment extends Fragment {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                DashboardHomeFragmentAdapter dashboardHomeFragmentAdapter = new DashboardHomeFragmentAdapter(staggeredGridView.getContext(), imageProfiles);
+                dashboardHomeFragmentAdapter = new DashboardHomeFragmentAdapter(staggeredGridView.getContext(), imageProfiles);
                 staggeredGridView.setAdapter(dashboardHomeFragmentAdapter);
 
                 swipeRefreshLayout.setRefreshing(false);
