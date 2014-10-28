@@ -32,4 +32,5 @@ dependencies {
     compile project(':JazzyViewPager')
     compile 'com.github.nirhart:parallaxscroll:1.0'
     compile project(':floatlabelededittext')
+    compile files('libs/beyondar-v0.9.2.jar')
 }

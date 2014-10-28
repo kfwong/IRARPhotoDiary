@@ -1,5 +1,6 @@
 package nyp.fypj.irarphotodiary.activity;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ public class ViewStoryActivity extends FragmentActivity {
 
     private JazzyViewPager viewPager;
     private CirclePageIndicator circlePageIndicator;
+    private ArrayList<ImageProfile> imageProfiles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,67 +53,38 @@ public class ViewStoryActivity extends FragmentActivity {
         viewPager = (JazzyViewPager) findViewById(R.id.viewPager);
         circlePageIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
 
-        ArrayList<ImageProfile> imageProfiles = getIntent().getParcelableArrayListExtra("imageProfiles");
+        imageProfiles = getIntent().getParcelableArrayListExtra("imageProfiles");
 
         ViewStoryPagerAdapter viewStoryPagerAdapter = new ViewStoryPagerAdapter(ViewStoryActivity.this.getSupportFragmentManager(), imageProfiles);
         viewPager.setAdapter(viewStoryPagerAdapter);
         viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.Accordion);
 
         circlePageIndicator.setViewPager(viewPager);
-        /*asynctask
-        AsyncTask<Void,Void,Void> task = new AsyncTask<Void,Void,Void>() {
+    }
 
-            private ArrayList<ImageProfile> imageProfiles;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.view_story_activity, menu);
+        return true;
+    }
 
-            @Override
-            protected Void doInBackground(Void... voids) {
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpResponse response;
-                String responseString = null;
-                try {
-                    response = httpclient.execute(new HttpGet("https://fypj-124465r.rhcloud.com/images/"));
-                    StatusLine statusLine = response.getStatusLine();
-                    if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        response.getEntity().writeTo(out);
-                        out.close();
-                        responseString = out.toString();
-                    } else{
-                        //Closes the connection.
-                        response.getEntity().getContent().close();
-                        throw new IOException(statusLine.getReasonPhrase());
-                    }
-                } catch (ClientProtocolException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()) {
+            case R.id.viewStoryARMode:
+                Intent i = new Intent(ViewStoryActivity.this, ARActivity.class);
+                i.putParcelableArrayListExtra("imageProfiles", imageProfiles);
+                startActivity(i);
+                break;
+            case R.id.viewStoryMapMode:
+                break;
+        }
 
-                Gson gson = new Gson();
-                imageProfiles = gson.fromJson(responseString, new TypeToken<ArrayList<ImageProfile>>(){}.getType());
-
-                return null;
-            }
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-
-                ViewStoryPagerAdapter viewStoryPagerAdapter = new ViewStoryPagerAdapter(ViewStoryActivity.this.getSupportFragmentManager(), imageProfiles);
-                viewPager.setAdapter(viewStoryPagerAdapter);
-                viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.Accordion);
-
-                circlePageIndicator.setViewPager(viewPager);
-            }
-        }; // AsyncTask
-
-        task.execute();
-        asynctask*/
+        return super.onOptionsItemSelected(item);
     }
 
     private class ViewStoryPagerAdapter extends FragmentPagerAdapter {
@@ -124,6 +97,7 @@ public class ViewStoryActivity extends FragmentActivity {
         }
 
         public ViewStoryPagerAdapter(FragmentManager fm) {
+            // required by default
             super(fm);
         }
 

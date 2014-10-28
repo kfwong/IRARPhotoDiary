@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.beyondar.android.world.World;
 import com.cloudinary.Cloudinary;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
