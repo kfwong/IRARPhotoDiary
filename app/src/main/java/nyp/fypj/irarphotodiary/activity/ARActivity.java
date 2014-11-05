@@ -2,6 +2,7 @@ package nyp.fypj.irarphotodiary.activity;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -51,6 +52,8 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
     private World mWorld;
 
     private List<BeyondarObject> showViewOn;
+
+    ImageProfile imageProfile;
 
     /** Called when the activity is first created. */
     @Override
@@ -118,7 +121,13 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
 
     @Override
     public void onClick(View view) {
-        Toast.makeText(this, "TADAH",Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "TADAH",Toast.LENGTH_LONG).show();
+        ArrayList<ImageProfile> imageProfiles = new ArrayList<ImageProfile>();
+        imageProfiles.add(imageProfile);
+
+        Intent intent = new Intent(ARActivity.this.getApplicationContext(), ViewStoryActivity.class);
+        intent.putParcelableArrayListExtra("imageProfiles", imageProfiles);
+        startActivity(intent);
     }
 
     private class CustomBeyondarViewAdapter extends BeyondarViewAdapter {
@@ -137,7 +146,7 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
             }
 
             Gson gson = new Gson();
-            ImageProfile imageProfile = gson.fromJson(beyondarObject.getName(), ImageProfile.class);
+            imageProfile = gson.fromJson(beyondarObject.getName(), ImageProfile.class);
 
             TextView textView = (TextView) recycledView.findViewById(R.id.titleTextView);
             textView.setText(imageProfile.getTitle() + "("+Math.round(beyondarObject.getDistanceFromUser())+"m)");

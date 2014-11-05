@@ -3,6 +3,7 @@ package nyp.fypj.irarphotodiary.dto;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,8 @@ public class ImageProfile implements Parcelable {
     private int order;
     private double latitude;
     private double longitude;
+    private ArrayList<Tag> tags;
+
 
     public ImageProfile(){//required
     }
@@ -85,6 +88,14 @@ public class ImageProfile implements Parcelable {
         this.longitude = longitude;
     }
 
+    public ArrayList<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<Tag> tags) {
+        this.tags = tags;
+    }
+
     // implementation of Parcelable interface to allow this object to pass within intents
     // you can use serializable interface or gson to avoid all these implementations but they are generally slower/ bad performace, see: http://stackoverflow.com/questions/5550670/benefit-of-using-parcelable-instead-of-serializing-object
     // http://stackoverflow.com/questions/15543033/how-to-write-list-into-parcel
@@ -103,6 +114,7 @@ public class ImageProfile implements Parcelable {
         parcel.writeInt(order);
         parcel.writeDouble(latitude);
         parcel.writeDouble(longitude);
+        parcel.writeList(tags);
     }
 
     public static final Creator<ImageProfile> CREATOR = new Creator<ImageProfile>(){
@@ -126,5 +138,6 @@ public class ImageProfile implements Parcelable {
         this.order = parcel.readInt();
         this.latitude = parcel.readDouble();
         this.longitude = parcel.readDouble();
+        this.tags = parcel.readArrayList(Tag.class.getClassLoader());
     }
 }
