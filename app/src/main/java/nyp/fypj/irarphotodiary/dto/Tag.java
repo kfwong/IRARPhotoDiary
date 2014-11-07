@@ -54,4 +54,5 @@ public class Tag implements Parcelable {
         this.tag = parcel.readString();
         this.confidence = parcel.readDouble();
     }
+
 }

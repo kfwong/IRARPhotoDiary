@@ -27,6 +27,7 @@ import java.util.List;
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.fragment.DashboardFragment;
 import nyp.fypj.irarphotodiary.fragment.MyDiaryFragment;
+import nyp.fypj.irarphotodiary.fragment.SearchFragment;
 
 
 public class NavigationActivity extends FragmentActivity {
@@ -96,9 +97,8 @@ public class NavigationActivity extends FragmentActivity {
                 fragment = new MyDiaryFragment();
                 break;
             case 3:
-                Intent intent = new Intent(this, ViewStoryActivity.class);
-                startActivity(intent);
-                break;
+               fragment = new SearchFragment();
+               break;
             default:
                 fragment = null;
             break;
