@@ -147,6 +147,8 @@ public class NavigationActivity extends FragmentActivity {
 
 
 
+
+
     private class NavigationListAdapter extends BaseAdapter{
         private List<String> data;
         private LayoutInflater layoutInflater;

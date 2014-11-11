@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.etsy.android.grid.StaggeredGridView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.HttpResponse;
@@ -82,58 +84,21 @@ public class MyDiaryFragment extends Fragment {
             }
         });
 
-        AsyncTask<Void,Void,Void> task = new AsyncTask<Void,Void,Void>() {
+        progressBar.setVisibility(ProgressBar.VISIBLE);
 
-            private ArrayList<Album> albums;
+        Ion.with(this)
+                .load("https://fypj-124465r.rhcloud.com/albums/")
+                .as(new TypeToken<ArrayList<Album>>(){})
+                .setCallback(new FutureCallback<ArrayList<Album>>() {
+                    @Override
+                    public void onCompleted(Exception e, ArrayList<Album> albums) {
+                        MyDiaryFragmentAdapter myDiaryFragmentAdapter = new MyDiaryFragmentAdapter(staggeredGridView.getContext(), albums);
+                        staggeredGridView.setAdapter(myDiaryFragmentAdapter);
 
-            @Override
-            protected Void doInBackground(Void... voids) {
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpResponse response;
-                String responseString = null;
-                try {
-                    response = httpclient.execute(new HttpGet("https://fypj-124465r.rhcloud.com/albums/"));
-                    StatusLine statusLine = response.getStatusLine();
-                    if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        response.getEntity().writeTo(out);
-                        out.close();
-                        responseString = out.toString();
-                    } else{
-                        //Closes the connection.
-                        response.getEntity().getContent().close();
-                        throw new IOException(statusLine.getReasonPhrase());
+                        progressBar.setVisibility(ProgressBar.INVISIBLE);
                     }
-                } catch (ClientProtocolException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                });
 
-                Gson gson = new Gson();
-                albums = gson.fromJson(responseString, new TypeToken<ArrayList<Album>>(){}.getType());
-
-                return null;
-            }
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-                progressBar.setVisibility(ProgressBar.VISIBLE);
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                MyDiaryFragmentAdapter myDiaryFragmentAdapter = new MyDiaryFragmentAdapter(staggeredGridView.getContext(), albums);
-                staggeredGridView.setAdapter(myDiaryFragmentAdapter);
-
-                progressBar.setVisibility(ProgressBar.INVISIBLE);
-            }
-        }; // AsyncTask
-
-        task.execute();
     }
 
     @Override

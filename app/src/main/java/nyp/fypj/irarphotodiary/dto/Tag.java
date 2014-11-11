@@ -38,7 +38,7 @@ public class Tag implements Parcelable {
         parcel.writeDouble(confidence);
     }
 
-    public static final Creator<Tag> TAG = new Creator<Tag>() {
+    public static final Creator<Tag> CREATOR = new Creator<Tag>() {
         @Override
         public Tag createFromParcel(Parcel parcel) {
             return new Tag(parcel);

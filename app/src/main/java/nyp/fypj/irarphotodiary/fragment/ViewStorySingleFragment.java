@@ -55,7 +55,7 @@ public class ViewStorySingleFragment extends Fragment {
         TextView viewStorySingleDescription = (TextView) view.findViewById(R.id.viewStorySingleDescription);
 
         if(imageProfile != null){
-            ImageLoader.getInstance().displayImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_0.1/" + imageProfile.getFilename() + "." + imageProfile.getExtension(), viewStorySingleImage);
+            ImageLoader.getInstance().displayImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_300,h_300/" + imageProfile.getFilename() + "." + imageProfile.getExtension(), viewStorySingleImage);
             viewStorySingleTitle.setText(imageProfile.getTitle());
             viewStorySingleDescription.setText(imageProfile.getDescription());
         }

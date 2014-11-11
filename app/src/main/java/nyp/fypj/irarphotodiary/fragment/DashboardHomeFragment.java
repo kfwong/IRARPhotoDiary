@@ -22,6 +22,8 @@ import android.widget.Toast;
 import com.etsy.android.grid.StaggeredGridView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.HttpResponse;
@@ -88,58 +90,22 @@ public class DashboardHomeFragment extends Fragment {
     }
 
     private void refresh(){
-        AsyncTask<Void,Void,Void> task = new AsyncTask<Void,Void,Void>() {
+        ////
+        swipeRefreshLayout.setRefreshing(true);
 
-            private ArrayList<ImageProfile> imageProfiles;
+        Ion.with(this)
+                .load("https://fypj-124465r.rhcloud.com/albums/images/")
+                .as(new TypeToken<ArrayList<ImageProfile>>(){})
+                .setCallback(new FutureCallback<ArrayList<ImageProfile>>() {
+                    @Override
+                    public void onCompleted(Exception e, ArrayList<ImageProfile> imageProfiles) {
+                        dashboardHomeFragmentAdapter = new DashboardHomeFragmentAdapter(staggeredGridView.getContext(), imageProfiles);
+                        staggeredGridView.setAdapter(dashboardHomeFragmentAdapter);
 
-            @Override
-            protected Void doInBackground(Void... voids) {
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpResponse response;
-                String responseString = null;
-                try {
-                    response = httpclient.execute(new HttpGet("https://fypj-124465r.rhcloud.com/albums/images/"));
-                    StatusLine statusLine = response.getStatusLine();
-                    if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        response.getEntity().writeTo(out);
-                        out.close();
-                        responseString = out.toString();
-                    } else{
-                        //Closes the connection.
-                        response.getEntity().getContent().close();
-                        throw new IOException(statusLine.getReasonPhrase());
+                        swipeRefreshLayout.setRefreshing(false);
                     }
-                } catch (ClientProtocolException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Gson gson = new Gson();
-                imageProfiles = gson.fromJson(responseString, new TypeToken<ArrayList<ImageProfile>>(){}.getType());
-
-                return null;
-            }
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-                swipeRefreshLayout.setRefreshing(true);
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                dashboardHomeFragmentAdapter = new DashboardHomeFragmentAdapter(staggeredGridView.getContext(), imageProfiles);
-                staggeredGridView.setAdapter(dashboardHomeFragmentAdapter);
-
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        }; // AsyncTask
-
-        task.execute();
+                });
+        ////
     }
 
     private class DashboardHomeFragmentAdapter extends BaseAdapter{
@@ -184,7 +150,7 @@ public class DashboardHomeFragment extends Fragment {
             }
 
             ImageProfile datum = data.get(i);
-            ImageLoader.getInstance().displayImage("http://res.cloudinary.com/"+ BootstrapApplication.CLOUDINARY_CLOUD_NAME+"/image/upload/w_0.1/"+datum.getFilename()+"."+datum.getExtension(), viewHolder.dashboardHomeItemImage);
+            ImageLoader.getInstance().displayImage("http://res.cloudinary.com/"+ BootstrapApplication.CLOUDINARY_CLOUD_NAME+"/image/upload/w_150,h_150/"+datum.getFilename()+"."+datum.getExtension(), viewHolder.dashboardHomeItemImage);
             viewHolder.dashboardHomeItemTitle.setText(datum.getTitle());
             viewHolder.dashboardHomeItemDescription.setText(datum.getDescription());
             return view;

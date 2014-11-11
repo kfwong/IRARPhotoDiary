@@ -28,6 +28,9 @@ import android.widget.Toast;
 
 import com.cloudinary.Cloudinary;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.ion.Ion;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -50,11 +53,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.application.BootstrapApplication;
 import nyp.fypj.irarphotodiary.dto.Album;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
+import nyp.fypj.irarphotodiary.dto.Tag;
 import nyp.fypj.irarphotodiary.util.ColorProfiler;
 import nyp.fypj.irarphotodiary.util.ColorThief;
 
@@ -213,9 +218,27 @@ public class CreateStoryListActivity extends FragmentActivity {
                                 // Upload image to cloudinary
                                 // Get instance from application constant DO NOT INITIALIZE ANOTHER.
                                 File file = new File(imageProfile.getUri().substring(7));
-
+                                Log.e("TADAH", "uploading image");
                                 Cloudinary cloudinary = ((BootstrapApplication) CreateStoryListActivity.this.getApplication()).getCloudinary();
                                 JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
+
+                                Log.e("TADAH", "uploaded: "+ uploadResult);
+
+                                // autotagging
+                                Log.e("TADAH", "processing autotagging");
+                                JsonObject jsonObject= Ion.with(CreateStoryListActivity.this)
+                                        .load("http://api.imagga.com/draft/tags?api_key=acc_31de762e407a6a3&url="+uploadResult.getString("url"))
+                                        .asJsonObject()
+                                        .get();
+
+                                Log.e("TADAH", "done autotagging: "+ jsonObject.get("tags"));
+
+                                ArrayList<Tag> tags = new Gson().fromJson(jsonObject.get("tags"), new TypeToken<ArrayList<Tag>>(){}.getType());
+
+                                Log.e("TADAH", "done conversion to entity");
+
+                                //set to image's tags
+                                imageProfile.setTags(tags);
 
                                 // set the format and public url from cloudinary uplaod response
                                 // if the key is not present in the upload result (meaning upload failed), a JSONException will be thrown
@@ -225,6 +248,10 @@ public class CreateStoryListActivity extends FragmentActivity {
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             } catch (JSONException ex) {
+                                ex.printStackTrace();
+                            } catch( ExecutionException ex){
+                                ex.printStackTrace();
+                            } catch (InterruptedException ex){
                                 ex.printStackTrace();
                             }
 
