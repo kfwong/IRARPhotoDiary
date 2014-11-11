@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cloudinary.Cloudinary;
@@ -30,23 +30,15 @@ import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import org.apache.http.ParseException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.application.BootstrapApplication;
@@ -61,6 +53,8 @@ public class SearchFragment extends Fragment {
     private ExpandableListViewAdapter expandableListViewAdapter;
     private ImageView selectedImageView;
     private String takenPhotoTempUri;
+    private ProgressBar searchProgressBar;
+    private TextView searchStatus;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,6 +85,10 @@ public class SearchFragment extends Fragment {
         expandableListView = (ExpandableListView) getView().findViewById(R.id.expandableListView);
 
         expandableListView.setIndicatorBoundsRelative(BootstrapApplication.DEVICE_WIDTH - GetDipsFromPixel(35), BootstrapApplication.DEVICE_WIDTH - GetDipsFromPixel(5));
+
+        searchProgressBar = (ProgressBar) getView().findViewById(R.id.searchProgressBar);
+
+        searchStatus = (TextView) getView().findViewById(R.id.searchStatus);
 
     }
 
@@ -166,18 +164,18 @@ public class SearchFragment extends Fragment {
 
                                     try {
 
-                                        Log.e("TADAH", "uploading...");
+                                        publishProgress(1);
                                         Cloudinary cloudinary = ((BootstrapApplication) SearchFragment.this.getActivity().getApplication()).getCloudinary();
                                         JSONObject uploadResult = cloudinary.uploader().upload(new File(actualUri), Cloudinary.asMap("public_id", "temp"));
 
-                                        Log.e("TADAH", "uploaded: "+uploadResult);
+                                        publishProgress(2);
                                         Ion.with(SearchFragment.this)
                                                 .load("http://api.imagga.com/draft/tags?api_key=acc_31de762e407a6a3&url="+uploadResult.getString("url"))
                                                 .asString()
                                                 .setCallback(new FutureCallback<String>() {
                                                     @Override
                                                     public void onCompleted(Exception e, String result) {
-                                                        Log.e("TADAH", "compareResult:" +result);
+                                                        publishProgress(3);
                                                         Ion.with(SearchFragment.this)
                                                                 .load("http://fypj-124465r.rhcloud.com/albums/images")
                                                                 .addHeader("Content-Type", "application/json")
@@ -189,6 +187,8 @@ public class SearchFragment extends Fragment {
                                                                     public void onCompleted(Exception e, ArrayList<ImageProfile> imageProfiles) {
                                                                         expandableListViewAdapter = new ExpandableListViewAdapter(SearchFragment.this.getActivity().getApplicationContext(), imageProfiles);
                                                                         expandableListView.setAdapter(expandableListViewAdapter);
+
+                                                                        publishProgress(4);
                                                                     }
                                                                 });
                                                     }
@@ -200,8 +200,29 @@ public class SearchFragment extends Fragment {
                                         ex.printStackTrace();
                                     }
                                     return null;
-                                }
+                                }//doInBackground
 
+                                @Override
+                                protected void onProgressUpdate(Integer... values) {
+                                    super.onProgressUpdate(values);
+
+                                    switch (values[0]){
+                                        case 1:
+                                            searchProgressBar.setVisibility(ProgressBar.VISIBLE);
+                                            searchStatus.setText("Uploading image...");
+                                            break;
+                                        case 2:
+                                            searchStatus.setText("Analyzing in progress...");
+                                            break;
+                                        case 3:
+                                            searchStatus.setText("Formatting results...");
+                                            break;
+                                        case 4:
+                                            searchProgressBar.setVisibility(ProgressBar.GONE);
+                                            searchStatus.setText("Search completed on \n"+ new Date());
+                                            break;
+                                    }
+                                }
                             };
 
                             task.execute();
@@ -316,7 +337,7 @@ public class SearchFragment extends Fragment {
                 view = inflater.inflate(R.layout.adapter_fragment_search_list_parent, null);
                 parentViewHolder = new ParentViewHolder();
                 parentViewHolder.title = (TextView) view.findViewById(R.id.textView);
-                parentViewHolder.description = (TextView) view.findViewById(R.id.textView8);
+                parentViewHolder.numOfMatchedTags = (TextView) view.findViewById(R.id.numOfMatchedTags);
                 parentViewHolder.imageView = (ImageView) view.findViewById(R.id.imageView);
                 parentViewHolder.averageConfidenceLevel = (TextView) view.findViewById(R.id.textView9);
 
@@ -338,8 +359,8 @@ public class SearchFragment extends Fragment {
             }
 
             parentViewHolder.title.setText(imageProfile.getTitle());
-            parentViewHolder.description.setText(imageProfile.getDescription());
-            parentViewHolder.averageConfidenceLevel.setText("Average Confidence Level: "+ Math.round(averageConfidenceLevel)+"%");
+            parentViewHolder.numOfMatchedTags.setText("Matching Tags Count: " + count);
+            parentViewHolder.averageConfidenceLevel.setText("Average Tags Confidence Level: "+ Math.round(averageConfidenceLevel)+"%");
 
             ImageLoader.getInstance().displayImage("http://res.cloudinary.com/"+ BootstrapApplication.CLOUDINARY_CLOUD_NAME+"/image/upload/w_92,h_92,c_thumb/"+imageProfile.getFilename()+"."+imageProfile.getExtension(), parentViewHolder.imageView);
 
@@ -377,7 +398,7 @@ public class SearchFragment extends Fragment {
 
         private final class ParentViewHolder {
             TextView title;
-            TextView description;
+            TextView numOfMatchedTags;
             ImageView imageView;
             TextView averageConfidenceLevel;
         }
