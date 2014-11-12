@@ -2,14 +2,10 @@ package nyp.fypj.irarphotodiary.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,29 +13,14 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.etsy.android.grid.StaggeredGridView;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.activity.ViewStoryActivity;
@@ -89,13 +70,14 @@ public class DashboardHomeFragment extends Fragment {
         refresh();
     }
 
-    private void refresh(){
+    private void refresh() {
         ////
         swipeRefreshLayout.setRefreshing(true);
 
         Ion.with(this)
                 .load("https://fypj-124465r.rhcloud.com/albums/images/")
-                .as(new TypeToken<ArrayList<ImageProfile>>(){})
+                .as(new TypeToken<ArrayList<ImageProfile>>() {
+                })
                 .setCallback(new FutureCallback<ArrayList<ImageProfile>>() {
                     @Override
                     public void onCompleted(Exception e, ArrayList<ImageProfile> imageProfiles) {
@@ -108,11 +90,11 @@ public class DashboardHomeFragment extends Fragment {
         ////
     }
 
-    private class DashboardHomeFragmentAdapter extends BaseAdapter{
+    private class DashboardHomeFragmentAdapter extends BaseAdapter {
         private LayoutInflater layoutInflater;
         private ArrayList<ImageProfile> data;
 
-        public DashboardHomeFragmentAdapter(Context context, ArrayList<ImageProfile> data){
+        public DashboardHomeFragmentAdapter(Context context, ArrayList<ImageProfile> data) {
             this.layoutInflater = LayoutInflater.from(context);
             this.data = data;
         }
@@ -137,24 +119,25 @@ public class DashboardHomeFragment extends Fragment {
             View view;
             ViewHolder viewHolder;
 
-            if(convertView == null){
+            if (convertView == null) {
                 view = layoutInflater.inflate(R.layout.adapter_fragment_dashboard_home_list_item, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.dashboardHomeItemImage = (ImageView) view.findViewById(R.id.dashboardHomeItemImage);
                 viewHolder.dashboardHomeItemTitle = (TextView) view.findViewById(R.id.dashboardHomeItemTitle);
                 viewHolder.dashboardHomeItemDescription = (TextView) view.findViewById(R.id.dashboardHomeItemDescription);
                 view.setTag(viewHolder);
-            }else{
+            } else {
                 view = convertView;
                 viewHolder = (ViewHolder) view.getTag();
             }
 
             ImageProfile datum = data.get(i);
-            ImageLoader.getInstance().displayImage("http://res.cloudinary.com/"+ BootstrapApplication.CLOUDINARY_CLOUD_NAME+"/image/upload/w_150,h_150/"+datum.getFilename()+"."+datum.getExtension(), viewHolder.dashboardHomeItemImage);
+            ImageLoader.getInstance().displayImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_150,h_150/" + datum.getFilename() + "." + datum.getExtension(), viewHolder.dashboardHomeItemImage);
             viewHolder.dashboardHomeItemTitle.setText(datum.getTitle());
             viewHolder.dashboardHomeItemDescription.setText(datum.getDescription());
             return view;
         }
+
         private class ViewHolder {
             public ImageView dashboardHomeItemImage;
             public TextView dashboardHomeItemTitle;

@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
 
-    android:padding="6dip" >
+    android:padding="6dip">
 
     <ImageView
         android:id="@+id/createStoryItemThumbnail"
@@ -15,57 +15,57 @@
         android:src="@drawable/placeholder" />
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/createStoryItemThumbnail"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentStart="false"
-        android:id="@+id/linearLayout"
+        android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="false"
+        android:layout_toEndOf="@+id/createStoryItemThumbnail"
+        android:orientation="vertical"
         android:paddingRight="50dp">
 
         <TextView
             android:id="@+id/createStoryItemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/createStoryItemThumbnail"
             android:layout_alignWithParentIfMissing="true"
+            android:layout_toEndOf="@+id/createStoryItemThumbnail"
+            android:layout_toRightOf="@+id/createStoryItemThumbnail"
             android:gravity="center_vertical"
             android:text="Example application"
-            android:textSize="16sp"
-            android:layout_alignTop="@+id/createStoryItemThumbnail"
-            android:layout_toRightOf="@+id/createStoryItemThumbnail"
-            android:layout_toEndOf="@+id/createStoryItemThumbnail" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/createStoryItemDescription"
             android:layout_width="wrap_content"
             android:layout_height="26dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_toEndOf="@+id/createStoryItemThumbnail"
             android:ellipsize="marquee"
+            android:gravity="center_vertical"
             android:singleLine="true"
             android:text="Description"
-            android:textSize="12sp"
-            android:layout_toEndOf="@+id/createStoryItemThumbnail"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:gravity="center_vertical" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 
     <TextView
+        android:id="@+id/createStoryItemPosition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="#100"
-        android:id="@+id/createStoryItemPosition"
-        android:singleLine="true"
-        android:minHeight="50dp"
-        android:minWidth="50dp"
+        android:layout_alignParentEnd="true"
         android:layout_gravity="right"
         android:gravity="center_vertical|center_horizontal"
-        android:layout_alignParentEnd="true" />
+        android:minHeight="50dp"
+        android:minWidth="50dp"
+        android:singleLine="true"
+        android:text="#100"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

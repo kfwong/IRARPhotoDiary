@@ -6,18 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 import com.viewpagerindicator.TitlePageIndicator;
-import com.viewpagerindicator.UnderlinePageIndicator;
 
 import java.util.List;
 
@@ -41,45 +35,6 @@ public class DashboardFragment extends Fragment {
         return view;
     }
 
-    private class DashboardPagerAdapter extends FragmentPagerAdapter {
-
-        public DashboardPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch(position) {
-
-                case 0: return new DashboardHomeFragment();
-                case 1: return new DashboardRecentAlbumFragment(); //TODO://placeholder
-                default: return null;
-            }
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-           switch (position){
-               case 0: return ("RECENT IMAGES").toUpperCase();
-               case 1: return ("RECENT ALBUM").toUpperCase();
-               default: return null;
-           }
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        // required for JazzyViewPager
-        @Override
-        public Object instantiateItem(ViewGroup container, final int position) {
-            Object obj = super.instantiateItem(container, position);
-            viewPager.setObjectForPosition(obj, position);
-            return obj;
-        }
-    }
-
     // Dumb bug fix for calling nested fragments onActivityResult
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -99,6 +54,51 @@ public class DashboardFragment extends Fragment {
                     childFragment.onActivityResult(requestCode, resultCode, data);
                 }
             }
+        }
+    }
+
+    private class DashboardPagerAdapter extends FragmentPagerAdapter {
+
+        public DashboardPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+
+                case 0:
+                    return new DashboardHomeFragment();
+                case 1:
+                    return new DashboardRecentAlbumFragment(); //TODO://placeholder
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return ("RECENT IMAGES").toUpperCase();
+                case 1:
+                    return ("RECENT ALBUM").toUpperCase();
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        // required for JazzyViewPager
+        @Override
+        public Object instantiateItem(ViewGroup container, final int position) {
+            Object obj = super.instantiateItem(container, position);
+            viewPager.setObjectForPosition(obj, position);
+            return obj;
         }
     }
 }

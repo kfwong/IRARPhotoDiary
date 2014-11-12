@@ -1,19 +1,5 @@
 package nyp.fypj.irarphotodiary.util;
 
-import android.graphics.Bitmap;
-
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import nyp.fypj.irarphotodiary.dto.ImageProfile;
-
 /**
  * Created by L33533 on 9/17/2014.
  * http://www.colorwiki.com/wiki/Delta_E:_The_Color_Difference

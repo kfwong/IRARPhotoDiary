@@ -24,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cloudinary.Cloudinary;
 import com.google.gson.Gson;
@@ -51,8 +50,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import nyp.fypj.irarphotodiary.R;
@@ -60,13 +57,11 @@ import nyp.fypj.irarphotodiary.application.BootstrapApplication;
 import nyp.fypj.irarphotodiary.dto.Album;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
 import nyp.fypj.irarphotodiary.dto.Tag;
-import nyp.fypj.irarphotodiary.util.ColorProfiler;
-import nyp.fypj.irarphotodiary.util.ColorThief;
 
 public class CreateStoryListActivity extends FragmentActivity {
     private DragSortListView createStoryList;
     private CreateStoryListAdapter createStoryListAdapter;
-    private ImageSize thumbnailSize = new ImageSize(128,128);
+    private ImageSize thumbnailSize = new ImageSize(128, 128);
     private ArrayList<ImageProfile> imageProfiles;
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -78,7 +73,7 @@ public class CreateStoryListActivity extends FragmentActivity {
         super.onStart();
 
         locationListener = new CreateStoryLocationListener();
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
     }
 
@@ -96,9 +91,9 @@ public class CreateStoryListActivity extends FragmentActivity {
         albumTitle = (FloatLabeledEditText) findViewById(R.id.albumTitle);
         albumDescription = (FloatLabeledEditText) findViewById(R.id.albumDescription);
 
-        if(savedInstanceState !=null){
+        if (savedInstanceState != null) {
             imageProfiles = savedInstanceState.getParcelableArrayList("imageProfiles");
-        }else{
+        } else {
             albumTitle.setText("My Album Title");
             albumDescription.setText("These are some collections of images I have!");
 
@@ -119,7 +114,7 @@ public class CreateStoryListActivity extends FragmentActivity {
         createStoryList.setDropListener(new DragSortListView.DropListener() {
             @Override
             public void drop(int from, int to) {
-                if(from != to){
+                if (from != to) {
                     createStoryListAdapter.reorder(from, to);
                 }
             }
@@ -150,8 +145,8 @@ public class CreateStoryListActivity extends FragmentActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if(requestCode == 1){
-            if(resultCode == RESULT_OK){
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
                 int position = intent.getIntExtra("position", -1);
                 ImageProfile imageProfile = intent.getExtras().getParcelable("imageProfile");
                 createStoryListAdapter.set(position, imageProfile);
@@ -168,7 +163,7 @@ public class CreateStoryListActivity extends FragmentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.createStoryListAddNew:
                 ImageProfile imageProfile = new ImageProfile();
                 imageProfile.setTitle("New stuff coming up soon!");
@@ -177,7 +172,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                 break;
             case R.id.createStoryListUpload:
                 ///// async task
-                AsyncTask<Void,Integer,Void> task = new AsyncTask<Void,Integer,Void>() {
+                AsyncTask<Void, Integer, Void> task = new AsyncTask<Void, Integer, Void>() {
                     private Album album = new Album();
                     private ArrayList<ImageProfile> imageProfiles = createStoryListAdapter.imageProfiles;
                     private NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -189,8 +184,8 @@ public class CreateStoryListActivity extends FragmentActivity {
                         // Upload images
                         // For each of the imageProfile
                         //for (final ImageProfile imageProfile : imageProfiles) {
-                        for(int i = 0; i< imageProfiles.size();i++){
-                            publishProgress(i+1, imageProfiles.size());
+                        for (int i = 0; i < imageProfiles.size(); i++) {
+                            publishProgress(i + 1, imageProfiles.size());
 
                             final ImageProfile imageProfile = imageProfiles.get(i);
                             imageProfile.setOrder(i); // IMPORTANT: the final position/index/order is only saved to the entity just before uploading to avoid confusion
@@ -222,18 +217,19 @@ public class CreateStoryListActivity extends FragmentActivity {
                                 Cloudinary cloudinary = ((BootstrapApplication) CreateStoryListActivity.this.getApplication()).getCloudinary();
                                 JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
 
-                                Log.e("TADAH", "uploaded: "+ uploadResult);
+                                Log.e("TADAH", "uploaded: " + uploadResult);
 
                                 // autotagging
                                 Log.e("TADAH", "processing autotagging");
-                                JsonObject jsonObject= Ion.with(CreateStoryListActivity.this)
-                                        .load("http://api.imagga.com/draft/tags?api_key=acc_31de762e407a6a3&url="+uploadResult.getString("url"))
+                                JsonObject jsonObject = Ion.with(CreateStoryListActivity.this)
+                                        .load("http://api.imagga.com/draft/tags?api_key=acc_31de762e407a6a3&url=" + uploadResult.getString("url"))
                                         .asJsonObject()
                                         .get();
 
-                                Log.e("TADAH", "done autotagging: "+ jsonObject.get("tags"));
+                                Log.e("TADAH", "done autotagging: " + jsonObject.get("tags"));
 
-                                ArrayList<Tag> tags = new Gson().fromJson(jsonObject.get("tags"), new TypeToken<ArrayList<Tag>>(){}.getType());
+                                ArrayList<Tag> tags = new Gson().fromJson(jsonObject.get("tags"), new TypeToken<ArrayList<Tag>>() {
+                                }.getType());
 
                                 Log.e("TADAH", "done conversion to entity");
 
@@ -249,9 +245,9 @@ public class CreateStoryListActivity extends FragmentActivity {
                                 ex.printStackTrace();
                             } catch (JSONException ex) {
                                 ex.printStackTrace();
-                            } catch( ExecutionException ex){
+                            } catch (ExecutionException ex) {
                                 ex.printStackTrace();
-                            } catch (InterruptedException ex){
+                            } catch (InterruptedException ex) {
                                 ex.printStackTrace();
                             }
 
@@ -276,7 +272,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                             httpPost.setEntity(new StringEntity(albumJson));
                             HttpResponse httpResponse = httpClient.execute(httpPost); //TODO: not used?
 
-                        }catch(IOException ex){
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
 
@@ -301,7 +297,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                         int count = progress[0];
                         int total = progress[1];
 
-                        notificationCompat.setContentText("Uploading image profiles " + count + " of " + total+"...");
+                        notificationCompat.setContentText("Uploading image profiles " + count + " of " + total + "...");
                         notificationCompat.setProgress(0, 0, true);
                         notificationManager.notify(1, notificationCompat.build());
                     }
@@ -367,7 +363,7 @@ public class CreateStoryListActivity extends FragmentActivity {
             View view;
             final ViewHolder viewHolder;
 
-            if(convertView == null){
+            if (convertView == null) {
                 view = layoutInflater.inflate(R.layout.adapter_activity_create_story_list_item, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.createStoryItemThumbnail = (ImageView) view.findViewById(R.id.createStoryItemThumbnail);
@@ -377,7 +373,7 @@ public class CreateStoryListActivity extends FragmentActivity {
 
                 view.setTag(viewHolder);
 
-            }else{
+            } else {
                 view = convertView;
                 viewHolder = (ViewHolder) view.getTag();
             }
@@ -385,8 +381,8 @@ public class CreateStoryListActivity extends FragmentActivity {
             ImageProfile imageProfile = imageProfiles.get(position);
             viewHolder.createStoryItemTitle.setText(imageProfile.getTitle());
             viewHolder.createStoryItemDescription.setText(imageProfile.getDescription());
-            viewHolder.createStoryItemPosition.setText("#"+position);
-            if(imageProfile.getUri() != "" && imageProfile.getUri() != null){
+            viewHolder.createStoryItemPosition.setText("#" + position);
+            if (imageProfile.getUri() != "" && imageProfile.getUri() != null) {
                 viewHolder.createStoryItemThumbnail.setImageBitmap(null);
                 ImageLoader.getInstance().loadImage(imageProfile.getUri(), thumbnailSize, new SimpleImageLoadingListener() {
 
@@ -396,53 +392,53 @@ public class CreateStoryListActivity extends FragmentActivity {
                         Bitmap thumbnail = ThumbnailUtils.extractThumbnail(loadedImage, 128, 128);
                         viewHolder.createStoryItemThumbnail.setImageBitmap(thumbnail);
 
-                        Animation fadeIn = new AlphaAnimation(0.0f , 1.0f ) ;
+                        Animation fadeIn = new AlphaAnimation(0.0f, 1.0f);
                         fadeIn.setDuration(300);
                         fadeIn.setFillAfter(true);
                         viewHolder.createStoryItemThumbnail.startAnimation(fadeIn);
                     }
 
                 });
-            }else{
+            } else {
                 viewHolder.createStoryItemThumbnail.setImageResource(R.drawable.placeholder);
             }
 
             return view;
         }
 
-        public void add(ImageProfile imageProfile){
+        public void add(ImageProfile imageProfile) {
             imageProfiles.add(imageProfile);
             notifyDataSetChanged();
         }
 
-        public void add(int position, ImageProfile imageProfile){
+        public void add(int position, ImageProfile imageProfile) {
             imageProfiles.add(position, imageProfile);
             notifyDataSetChanged();
         }
 
-        public void set(int position, ImageProfile imageProfile){
+        public void set(int position, ImageProfile imageProfile) {
             imageProfiles.set(position, imageProfile);
             notifyDataSetChanged();
         }
 
-        public void remove(int position){
+        public void remove(int position) {
             imageProfiles.remove(position);
             notifyDataSetChanged();
         }
 
-        public void reorder(int from, int to){
+        public void reorder(int from, int to) {
             ImageProfile imageProfile = imageProfiles.get(from);
             imageProfiles.remove(from);
-            imageProfiles.add(to,imageProfile);
+            imageProfiles.add(to, imageProfile);
             notifyDataSetChanged();
         }
 
-        public void swap(int from, int to){
+        public void swap(int from, int to) {
             Collections.swap(imageProfiles, from, to);
             notifyDataSetChanged();
         }
 
-        private class ViewHolder{
+        private class ViewHolder {
             public ImageView createStoryItemThumbnail;
             public TextView createStoryItemTitle;
             public TextView createStoryItemDescription;
@@ -458,12 +454,15 @@ public class CreateStoryListActivity extends FragmentActivity {
         }
 
         @Override
-        public void onProviderDisabled(String provider) {}
+        public void onProviderDisabled(String provider) {
+        }
 
         @Override
-        public void onProviderEnabled(String provider) {}
+        public void onProviderEnabled(String provider) {
+        }
 
         @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
     }
 }

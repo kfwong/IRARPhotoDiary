@@ -3,59 +3,51 @@ package nyp.fypj.irarphotodiary.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
-import com.beyondar.android.util.ImageUtils;
 import com.beyondar.android.view.BeyondarViewAdapter;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.world.BeyondarObject;
-import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.application.BootstrapApplication;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
 
-public class ARActivity extends FragmentActivity implements OnClickBeyondarObjectListener, View.OnClickListener{
+public class ARActivity extends FragmentActivity implements OnClickBeyondarObjectListener, View.OnClickListener {
 
+    float headingAngle;
+    float pitchAngle;
+    float rollAngle;
     private BeyondarFragmentSupport mBeyondarFragment;
     private World mWorld;
-
     private List<BeyondarObject> showViewOn;
+    private ImageProfile imageProfile;
+    private ArrayList<ImageProfile> imageProfiles;
+    private SensorManager sensorManager;
+    private int orientationSensor;
 
-    ImageProfile imageProfile;
-
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,10 +66,10 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
 
         mWorld.setDefaultImage(R.drawable.placeholder);
 
-        ArrayList<ImageProfile> imageProfiles = getIntent().getParcelableArrayListExtra("imageProfiles");
+        imageProfiles = getIntent().getParcelableArrayListExtra("imageProfiles");
 
         // Loop through each imageProfiles, create GeoObjects
-        for(ImageProfile imageProfile : imageProfiles){
+        for (ImageProfile imageProfile : imageProfiles) {
             GeoObject geoObject = new GeoObject();
             geoObject.setGeoPosition(imageProfile.getLatitude(), imageProfile.getLongitude());
 
@@ -88,7 +80,7 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
 
             //WORKING: geoObject.setImageUri("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_512,h_512,c_thumb/" + imageProfile.getFilename() + "." + imageProfile.getExtension());
             //PARTIAL WORKING: geoObject.setImageUri("http://res.cloudinary.com/dxspdhqz3/image/upload/w_512,h_512,c_thumb/w_348,h_128,c_pad,g_south_west,bo_5px_solid_rgb:00000090,b_rgb:000000/l_text:arial_18_bold_underline:Title,g_north_west,x_138,y_15,c_fit,w_192,h_65,co_white/l_text:arial_16:Description.,g_north_west,x_138,y_40,c_fit,w_192,h_95,co_white/sfls6bydbraqv4im43n0.jpg");
-            geoObject.setImageUri("http://res.cloudinary.com/"+BootstrapApplication.CLOUDINARY_CLOUD_NAME+"/image/upload/w_512,h_512,c_thumb,bo_50px_solid_rgb:33b5e5/"+imageProfile.getFilename()+"."+imageProfile.getExtension());
+            geoObject.setImageUri("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_512,h_512,c_thumb,bo_50px_solid_rgb:33b5e5/" + imageProfile.getFilename() + "." + imageProfile.getExtension());
 
             // Add the GeoObjects to the world
             mWorld.addBeyondarObject(geoObject, 1);
@@ -104,7 +96,40 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
 
         CustomBeyondarViewAdapter customBeyondarViewAdapter = new CustomBeyondarViewAdapter(this);
         mBeyondarFragment.setBeyondarViewAdapter(customBeyondarViewAdapter);
-    }
+
+        //////
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        orientationSensor = Sensor.TYPE_ORIENTATION;
+        sensorManager.registerListener(sensorEventListener, sensorManager
+                .getDefaultSensor(orientationSensor), SensorManager.SENSOR_DELAY_NORMAL);
+    }    final SensorEventListener sensorEventListener = new SensorEventListener() {
+        public void onSensorChanged(SensorEvent sensorEvent) {
+            if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
+                headingAngle = sensorEvent.values[0];
+                pitchAngle = sensorEvent.values[1];
+                rollAngle = sensorEvent.values[2];
+
+                if (pitchAngle < 7 && pitchAngle > -7 && rollAngle < 7 &&
+                        rollAngle > -7) {
+                    sensorManager.unregisterListener(sensorEventListener);
+                    launchGoogleMapActivity();
+                }
+            }
+        }
+
+        public void launchGoogleMapActivity() {
+            ARActivity.this.finish();
+            Intent i = new Intent(ARActivity.this, GoogleMapActivity.class);
+            i.putParcelableArrayListExtra("imageProfiles", imageProfiles);
+            startActivity(i);
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor arg0, int arg1) {
+            // TODO Auto-generated method stub
+        }
+    };
 
     @Override
     public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
@@ -132,10 +157,12 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
 
     private class CustomBeyondarViewAdapter extends BeyondarViewAdapter {
         LayoutInflater inflater;
+
         public CustomBeyondarViewAdapter(Context context) {
             super(context);
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
+
         @Override
         public View getView(BeyondarObject beyondarObject, View recycledView, ViewGroup parent) {
             if (!showViewOn.contains(beyondarObject)) {
@@ -149,16 +176,18 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
             imageProfile = gson.fromJson(beyondarObject.getName(), ImageProfile.class);
 
             TextView textView = (TextView) recycledView.findViewById(R.id.titleTextView);
-            textView.setText(imageProfile.getTitle() + "("+Math.round(beyondarObject.getDistanceFromUser())+"m)");
+            textView.setText(imageProfile.getTitle() + "(" + Math.round(beyondarObject.getDistanceFromUser()) + "m)");
 
             TextView descriptionTextView = (TextView) recycledView.findViewById(R.id.descriptionTextView);
             descriptionTextView.setText(imageProfile.getDescription());
 
             Button button = (Button) recycledView.findViewById(R.id.button);
             button.setOnClickListener(ARActivity.this);
-// Once the view is ready we specify the position
+            // Once the view is ready we specify the position
             setPosition(beyondarObject.getScreenPositionTopRight());
             return recycledView;
         }
     }
+
+
 }

@@ -4,23 +4,22 @@
     android:layout_height="match_parent">
 
     <!-- TODO: Update blank fragment layout -->
-    <com.etsy.android.grid.StaggeredGridView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.etsy.android.grid.StaggeredGridView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/myDiaryFragmentStaggeredGridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:item_margin="4dp"
-        app:column_count="2" />
+        app:column_count="2"
+        app:item_margin="4dp" />
 
     <ProgressBar
+        android:id="@+id/myDiaryFragmentProgressBar"
+        style="@android:style/Widget.ProgressBar.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@android:style/Widget.ProgressBar.Large"
         android:layout_alignParentEnd="false"
         android:layout_alignParentStart="false"
         android:layout_centerInParent="true"
-        android:visibility="visible"
-        android:id="@+id/myDiaryFragmentProgressBar"/>
+        android:visibility="visible" />
 
 </RelativeLayout>

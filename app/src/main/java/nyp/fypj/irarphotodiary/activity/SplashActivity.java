@@ -1,11 +1,9 @@
 package nyp.fypj.irarphotodiary.activity;
 
-import android.support.v4.app.FragmentActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.FragmentActivity;
 
 import nyp.fypj.irarphotodiary.R;
 

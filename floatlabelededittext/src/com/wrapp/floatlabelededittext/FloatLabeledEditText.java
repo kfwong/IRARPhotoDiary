@@ -1,6 +1,5 @@
 package com.wrapp.floatlabelededittext;
 
-import com.wrapp.floatlabelededittext.Utils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -14,7 +13,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -45,6 +43,31 @@ public class FloatLabeledEditText extends LinearLayout {
     private EditText editText;
 
     private Context mContext;
+    private TextWatcher onTextChanged = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            setShowHint(editable.length() != 0);
+        }
+    };
+    private OnFocusChangeListener onFocusChanged = new OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View view, boolean gotFocus) {
+            if (gotFocus && hintTextView.getVisibility() == VISIBLE) {
+                ObjectAnimator.ofFloat(hintTextView, "alpha", 0.33f, 1f).start();
+            } else if (hintTextView.getVisibility() == VISIBLE) {
+                AnimatorProxy.wrap(hintTextView).setAlpha(1f);  //Need this for compat reasons
+                ObjectAnimator.ofFloat(hintTextView, "alpha", 1f, 0.33f).start();
+            }
+        }
+    };
 
     public FloatLabeledEditText(Context context) {
         super(context);
@@ -65,6 +88,10 @@ public class FloatLabeledEditText extends LinearLayout {
         mContext = context;
         setAttributes(attrs);
         initialize();
+    }
+
+    private static boolean isIcsOrAbove() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
     }
 
     private void setAttributes(AttributeSet attrs) {
@@ -120,33 +147,6 @@ public class FloatLabeledEditText extends LinearLayout {
         editText.setOnFocusChangeListener(onFocusChanged);
     }
 
-    private TextWatcher onTextChanged = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            setShowHint(editable.length() != 0);
-        }
-    };
-
-    private OnFocusChangeListener onFocusChanged = new OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View view, boolean gotFocus) {
-            if (gotFocus && hintTextView.getVisibility() == VISIBLE) {
-                ObjectAnimator.ofFloat(hintTextView, "alpha", 0.33f, 1f).start();
-            } else if (hintTextView.getVisibility() == VISIBLE){
-                AnimatorProxy.wrap(hintTextView).setAlpha(1f);  //Need this for compat reasons
-                ObjectAnimator.ofFloat(hintTextView, "alpha", 1f, 0.33f).start();
-            }
-        }
-    };
-
     private void setShowHint(final boolean show) {
         AnimatorSet animation = null;
         if ((hintTextView.getVisibility() == VISIBLE) && !show) {
@@ -159,9 +159,9 @@ public class FloatLabeledEditText extends LinearLayout {
             ObjectAnimator move = ObjectAnimator.ofFloat(hintTextView, "translationY", hintTextView.getHeight() / 8, 0);
             ObjectAnimator fade;
             if (editText.isFocused()) {
-            	fade = ObjectAnimator.ofFloat(hintTextView, "alpha", 0, 1);
+                fade = ObjectAnimator.ofFloat(hintTextView, "alpha", 0, 1);
             } else {
-            	fade = ObjectAnimator.ofFloat(hintTextView, "alpha", 0, 0.33f);
+                fade = ObjectAnimator.ofFloat(hintTextView, "alpha", 0, 0.33f);
             }
             animation.playTogether(move, fade);
         }
@@ -188,14 +188,14 @@ public class FloatLabeledEditText extends LinearLayout {
         return editText;
     }
 
+    public String getHint() {
+        return editText.getHint().toString();
+    }
+
     public void setHint(String hint) {
         this.hint = hint;
         editText.setHint(hint);
         hintTextView.setText(hint);
-    }
-
-    public String getHint() {
-        return editText.getHint().toString();
     }
 
     public Editable getText() {
@@ -346,14 +346,14 @@ public class FloatLabeledEditText extends LinearLayout {
         editText.selectAll();
     }
 
+    // Dealing with saving the state
+
     /**
      * See {@link android.widget.EditText#extendSelection(int)}.
      */
     public void extendSelection(int index) {
         editText.extendSelection(index);
     }
-
-    // Dealing with saving the state
 
     @Override
     public Parcelable onSaveInstanceState() {
@@ -388,11 +388,18 @@ public class FloatLabeledEditText extends LinearLayout {
         }
     }
 
-    private static boolean isIcsOrAbove() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
-    }
-
     static class FloatEditTextSavedState extends BaseSavedState {
+        //required field that makes Parcelables from a Parcel
+        public static final Parcelable.Creator<FloatEditTextSavedState> CREATOR =
+                new Parcelable.Creator<FloatEditTextSavedState>() {
+                    public FloatEditTextSavedState createFromParcel(Parcel in) {
+                        return new FloatEditTextSavedState(in);
+                    }
+
+                    public FloatEditTextSavedState[] newArray(int size) {
+                        return new FloatEditTextSavedState[size];
+                    }
+                };
         String text;
         String hint;
         int inputType;
@@ -433,17 +440,5 @@ public class FloatLabeledEditText extends LinearLayout {
             out.writeParcelable(hintColor, flags);
             out.writeParcelable(textColor, flags);
         }
-
-        //required field that makes Parcelables from a Parcel
-        public static final Parcelable.Creator<FloatEditTextSavedState> CREATOR =
-                new Parcelable.Creator<FloatEditTextSavedState>() {
-                    public FloatEditTextSavedState createFromParcel(Parcel in) {
-                        return new FloatEditTextSavedState(in);
-                    }
-
-                    public FloatEditTextSavedState[] newArray(int size) {
-                        return new FloatEditTextSavedState[size];
-                    }
-                };
     }
 }

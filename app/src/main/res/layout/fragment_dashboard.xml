@@ -1,22 +1,20 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
 
     <com.viewpagerindicator.TitlePageIndicator
         android:id="@+id/indicator"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        app:titlePadding="100dp"/>
+        app:titlePadding="100dp" />
 
     <com.jfeinstein.jazzyviewpager.JazzyViewPager
         android:id="@+id/viewPager"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-    </com.jfeinstein.jazzyviewpager.JazzyViewPager>
+        android:layout_weight="1"></com.jfeinstein.jazzyviewpager.JazzyViewPager>
 
 </LinearLayout>
 

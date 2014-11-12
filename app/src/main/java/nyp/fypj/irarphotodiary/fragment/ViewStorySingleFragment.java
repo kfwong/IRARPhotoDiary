@@ -1,10 +1,8 @@
 package nyp.fypj.irarphotodiary.fragment;
 
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +17,6 @@ import nyp.fypj.irarphotodiary.dto.ImageProfile;
 
 /**
  * A simple {@link Fragment} subclass.
- *
  */
 public class ViewStorySingleFragment extends Fragment {
     private ImageProfile imageProfile;
@@ -28,7 +25,7 @@ public class ViewStorySingleFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ViewStorySingleFragment newInstance(ImageProfile imageProfile){
+    public static ViewStorySingleFragment newInstance(ImageProfile imageProfile) {
         ViewStorySingleFragment viewStorySingleFragment = new ViewStorySingleFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("imageProfile", imageProfile);
@@ -40,7 +37,7 @@ public class ViewStorySingleFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getArguments() != null){
+        if (getArguments() != null) {
             imageProfile = getArguments().getParcelable("imageProfile");
         }
     }
@@ -54,7 +51,7 @@ public class ViewStorySingleFragment extends Fragment {
         TextView viewStorySingleTitle = (TextView) view.findViewById(R.id.viewStorySingleTitle);
         TextView viewStorySingleDescription = (TextView) view.findViewById(R.id.viewStorySingleDescription);
 
-        if(imageProfile != null){
+        if (imageProfile != null) {
             ImageLoader.getInstance().displayImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_300,h_300/" + imageProfile.getFilename() + "." + imageProfile.getExtension(), viewStorySingleImage);
             viewStorySingleTitle.setText(imageProfile.getTitle());
             viewStorySingleDescription.setText(imageProfile.getDescription());

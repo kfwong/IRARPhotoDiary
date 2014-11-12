@@ -1,42 +1,22 @@
 package nyp.fypj.irarphotodiary.activity;
 
 import android.content.Intent;
-import android.media.Image;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 import com.viewpagerindicator.CirclePageIndicator;
-import com.viewpagerindicator.TitlePageIndicator;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
-import nyp.fypj.irarphotodiary.fragment.DashboardHomeFragment;
 import nyp.fypj.irarphotodiary.fragment.ViewStorySingleFragment;
 
 public class ViewStoryActivity extends FragmentActivity {
@@ -81,6 +61,9 @@ public class ViewStoryActivity extends FragmentActivity {
                 startActivity(i);
                 break;
             case R.id.viewStoryMapMode:
+                Intent j = new Intent(ViewStoryActivity.this, GoogleMapActivity.class);
+                j.putParcelableArrayListExtra("imageProfiles", imageProfiles);
+                startActivity(j);
                 break;
         }
 
@@ -91,7 +74,7 @@ public class ViewStoryActivity extends FragmentActivity {
 
         private ArrayList<ImageProfile> imageProfiles;
 
-        public ViewStoryPagerAdapter(FragmentManager fm, ArrayList<ImageProfile> imageProfiles){
+        public ViewStoryPagerAdapter(FragmentManager fm, ArrayList<ImageProfile> imageProfiles) {
             super(fm);
             this.imageProfiles = imageProfiles;
         }

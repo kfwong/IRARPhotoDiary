@@ -6,49 +6,49 @@
     android:padding="15dp">
 
     <TextView
+        android:id="@+id/albumInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="General Information"
-        android:id="@+id/albumInfo"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/ICS_BLUE"
         android:textStyle="bold" />
 
     <com.wrapp.floatlabelededittext.FloatLabeledEditText
+        android:id="@+id/albumTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/albumTitle"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
-        android:textStyle="bold"
-        android:textSize="12sp"
+        android:layout_marginTop="15dp"
         android:inputType="text"
+        android:textSize="12sp"
+        android:textStyle="bold"
         app:fletFloatingHint="Album Title"
         app:fletHintTextColor="@color/ICS_BLUE"
-        app:fletTextColor="#ffffff"/>
+        app:fletTextColor="#ffffff" />
 
     <com.wrapp.floatlabelededittext.FloatLabeledEditText
+        android:id="@+id/albumDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/albumDescription"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
-        android:textStyle="bold"
-        android:textSize="12sp"
+        android:layout_marginTop="15dp"
         android:inputType="text"
+        android:textSize="12sp"
+        android:textStyle="bold"
         app:fletFloatingHint="Album Description"
         app:fletHintTextColor="@color/ICS_BLUE"
-        app:fletTextColor="#ffffff"/>
+        app:fletTextColor="#ffffff" />
 
     <TextView
+        android:id="@+id/albumContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Content"
-        android:id="@+id/albumContent"
         android:layout_gravity="left|center_vertical"
+        android:text="Content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/ICS_BLUE"
         android:textStyle="bold" />
 

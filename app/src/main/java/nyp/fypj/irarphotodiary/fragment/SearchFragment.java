@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -26,15 +25,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.cloudinary.Cloudinary;
 import com.google.gson.reflect.TypeToken;
-import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,8 +60,7 @@ public class SearchFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
-    public int GetDipsFromPixel(float pixels)
-    {
+    public int GetDipsFromPixel(float pixels) {
         // Get the screen's density scale
         final float scale = getResources().getDisplayMetrics().density;
         // Convert the dps to pixels, based on density scale
@@ -78,7 +71,7 @@ public class SearchFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             takenPhotoTempUri = savedInstanceState.getString("takenPhotoTempUri");
         }
 
@@ -103,7 +96,7 @@ public class SearchFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.searchChooseFromGallery:
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
@@ -115,16 +108,16 @@ public class SearchFragment extends Fragment {
                     File storage = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
                     File image = null;
 
-                    image = File.createTempFile("IRAR_"+System.currentTimeMillis(), ".jpg", storage);
+                    image = File.createTempFile("IRAR_" + System.currentTimeMillis(), ".jpg", storage);
 
-                   takenPhotoTempUri = Uri.fromFile(image).toString();
-                   Log.e("onOptionsItemSelected", "image: " + takenPhotoTempUri);
+                    takenPhotoTempUri = Uri.fromFile(image).toString();
+                    Log.e("onOptionsItemSelected", "image: " + takenPhotoTempUri);
 
-                    if(image !=null){
+                    if (image != null) {
                         takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));
                         startActivityForResult(takePhotoIntent, 2);
                     }
-                }catch(IOException ex){
+                } catch (IOException ex) {
                     ex.printStackTrace();
                 }
 
@@ -139,12 +132,12 @@ public class SearchFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch(requestCode) {
+        switch (requestCode) {
             case 1: //TODO
-                if(resultCode == getActivity().RESULT_OK){
+                if (resultCode == getActivity().RESULT_OK) {
                     Uri cachedUri = data.getData();
 
-                    String[] filePathColumn = { MediaStore.Images.Media.DATA };
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
                     Cursor cursor = getActivity().getContentResolver().query(cachedUri,
                             filePathColumn, null, null, null);
@@ -154,13 +147,13 @@ public class SearchFragment extends Fragment {
                     final String actualUri = cursor.getString(columnIndex);
                     cursor.close();
 
-                    ImageLoader.getInstance().loadImage("file://" + actualUri, new SimpleImageLoadingListener(){
+                    ImageLoader.getInstance().loadImage("file://" + actualUri, new SimpleImageLoadingListener() {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             super.onLoadingComplete(imageUri, view, loadedImage);
 
 
-                            AsyncTask<Void,Integer,Void> task = new AsyncTask<Void,Integer,Void>() {
+                            AsyncTask<Void, Integer, Void> task = new AsyncTask<Void, Integer, Void>() {
                                 private ArrayList<ImageProfile> imageProfiles;
 
                                 @Override
@@ -188,9 +181,9 @@ public class SearchFragment extends Fragment {
                                                 .get();
 
                                         publishProgress(3);
-                                    }catch (InterruptedException ex){
+                                    } catch (InterruptedException ex) {
                                         ex.printStackTrace();
-                                    }catch (ExecutionException ex){
+                                    } catch (ExecutionException ex) {
                                         publishProgress(5);
                                         ex.printStackTrace();
                                     }
@@ -203,7 +196,7 @@ public class SearchFragment extends Fragment {
                                 protected void onProgressUpdate(Integer... values) {
                                     super.onProgressUpdate(values);
 
-                                    switch (values[0]){
+                                    switch (values[0]) {
                                         case 1:
                                             searchProgressBar.setVisibility(ProgressBar.VISIBLE);
                                             searchStatus.setText("Analyzing in progress...\nThis may take a while depending on the size of the image.");
@@ -216,7 +209,7 @@ public class SearchFragment extends Fragment {
                                             break;
                                         case 4:
                                             searchProgressBar.setVisibility(ProgressBar.GONE);
-                                            searchStatus.setText("Search completed on \n"+ new Date());
+                                            searchStatus.setText("Search completed on \n" + new Date());
                                             break;
                                         case 5:
                                             searchProgressBar.setVisibility(ProgressBar.GONE);
@@ -237,7 +230,7 @@ public class SearchFragment extends Fragment {
 
                             task.execute();
 
-                            loadedImage = ThumbnailUtils.extractThumbnail(loadedImage, 92,92);
+                            loadedImage = ThumbnailUtils.extractThumbnail(loadedImage, 92, 92);
 
                             selectedImageView.setImageBitmap(loadedImage);
                         }
@@ -246,7 +239,7 @@ public class SearchFragment extends Fragment {
                 }
                 break;
             case 2: //TODO
-                if(resultCode == getActivity().RESULT_OK){
+                if (resultCode == getActivity().RESULT_OK) {
 //                    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 //                    File f = new File(imageProfile.getUri());
 //                    Uri contentUri = Uri.fromFile(f);
@@ -254,12 +247,12 @@ public class SearchFragment extends Fragment {
 //                    this.sendBroadcast(mediaScanIntent);
                     //Log.e("onActivityResult", "image: " + takenPhotoTempUri);
 
-                    ImageLoader.getInstance().loadImage(takenPhotoTempUri, new SimpleImageLoadingListener(){
+                    ImageLoader.getInstance().loadImage(takenPhotoTempUri, new SimpleImageLoadingListener() {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             super.onLoadingComplete(imageUri, view, loadedImage);
 
-                            loadedImage = ThumbnailUtils.extractThumbnail(loadedImage, 92,92);
+                            loadedImage = ThumbnailUtils.extractThumbnail(loadedImage, 92, 92);
 
                             selectedImageView.setImageBitmap(loadedImage);
                         }
@@ -278,11 +271,11 @@ public class SearchFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    private class ExpandableListViewAdapter extends BaseExpandableListAdapter{
+    private class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         private final ArrayList<ImageProfile> imageProfiles;
         private final LayoutInflater inflater;
 
-        public ExpandableListViewAdapter(Context context, ArrayList<ImageProfile> imageProfiles){
+        public ExpandableListViewAdapter(Context context, ArrayList<ImageProfile> imageProfiles) {
             this.inflater = LayoutInflater.from(context);
             this.imageProfiles = imageProfiles;
 
@@ -328,7 +321,7 @@ public class SearchFragment extends Fragment {
             View view = theConvertView;
             ParentViewHolder parentViewHolder;
 
-            if(view == null){
+            if (view == null) {
                 view = inflater.inflate(R.layout.adapter_fragment_search_list_parent, null);
                 parentViewHolder = new ParentViewHolder();
                 parentViewHolder.title = (TextView) view.findViewById(R.id.textView);
@@ -337,7 +330,7 @@ public class SearchFragment extends Fragment {
                 parentViewHolder.averageConfidenceLevel = (TextView) view.findViewById(R.id.textView9);
 
                 view.setTag(parentViewHolder);
-            }else{
+            } else {
                 parentViewHolder = (ParentViewHolder) view.getTag();
             }
 
@@ -345,19 +338,19 @@ public class SearchFragment extends Fragment {
 
             double averageConfidenceLevel = 0;
             int count = 0;
-            for(Tag tag : imageProfile.getTags()){
+            for (Tag tag : imageProfile.getTags()) {
                 averageConfidenceLevel += tag.getConfidence();
                 count++;
             }
-            if(count >0) {
-                averageConfidenceLevel = averageConfidenceLevel/count;
+            if (count > 0) {
+                averageConfidenceLevel = averageConfidenceLevel / count;
             }
 
             parentViewHolder.title.setText(imageProfile.getTitle());
             parentViewHolder.numOfMatchedTags.setText("Matching Tags Count: " + count);
-            parentViewHolder.averageConfidenceLevel.setText("Average Tags Confidence Level: "+ Math.round(averageConfidenceLevel)+"%");
+            parentViewHolder.averageConfidenceLevel.setText("Average Tags Confidence Level: " + Math.round(averageConfidenceLevel) + "%");
 
-            ImageLoader.getInstance().displayImage("http://res.cloudinary.com/"+ BootstrapApplication.CLOUDINARY_CLOUD_NAME+"/image/upload/w_92,h_92,c_thumb/"+imageProfile.getFilename()+"."+imageProfile.getExtension(), parentViewHolder.imageView);
+            ImageLoader.getInstance().displayImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_92,h_92,c_thumb/" + imageProfile.getFilename() + "." + imageProfile.getExtension(), parentViewHolder.imageView);
 
             return view;
         }
@@ -368,13 +361,13 @@ public class SearchFragment extends Fragment {
             View resultView = theConvertView;
             ChildViewHolder childViewHolder;
 
-            if(resultView == null){
+            if (resultView == null) {
                 resultView = inflater.inflate(R.layout.adapter_fragment_search_list_child, null);
                 childViewHolder = new ChildViewHolder();
                 childViewHolder.tag = (TextView) resultView.findViewById(R.id.textView3);
                 childViewHolder.confidence = (TextView) resultView.findViewById(R.id.textView7);
                 resultView.setTag(childViewHolder);
-            }else{
+            } else {
                 childViewHolder = (ChildViewHolder) resultView.getTag();
             }
 
@@ -398,7 +391,7 @@ public class SearchFragment extends Fragment {
             TextView averageConfidenceLevel;
         }
 
-        private final class ChildViewHolder{
+        private final class ChildViewHolder {
             TextView tag;
             TextView confidence;
         }

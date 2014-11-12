@@ -8,8 +8,24 @@ import android.os.Parcelable;
  */
 public class Tag implements Parcelable {
 
+    public static final Creator<Tag> CREATOR = new Creator<Tag>() {
+        @Override
+        public Tag createFromParcel(Parcel parcel) {
+            return new Tag(parcel);
+        }
+
+        @Override
+        public Tag[] newArray(int i) {
+            return new Tag[i];
+        }
+    };
     private String tag;
     private double confidence;
+
+    private Tag(Parcel parcel) {
+        this.tag = parcel.readString();
+        this.confidence = parcel.readDouble();
+    }
 
     public String getTag() {
         return tag;
@@ -36,23 +52,6 @@ public class Tag implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(tag);
         parcel.writeDouble(confidence);
-    }
-
-    public static final Creator<Tag> CREATOR = new Creator<Tag>() {
-        @Override
-        public Tag createFromParcel(Parcel parcel) {
-            return new Tag(parcel);
-        }
-
-        @Override
-        public Tag[] newArray(int i) {
-            return new Tag[i];
-        }
-    };
-
-    private Tag(Parcel parcel){
-        this.tag = parcel.readString();
-        this.confidence = parcel.readDouble();
     }
 
 }

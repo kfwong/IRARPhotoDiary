@@ -2,23 +2,26 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="nyp.fypj.irarphotodiary.activity.CreateStoryListActivity" >
+    tools:context="nyp.fypj.irarphotodiary.activity.CreateStoryListActivity">
 
-    <item android:id="@+id/createStoryListUpload"
+    <item
+        android:id="@+id/createStoryListUpload"
         android:icon="@drawable/ic_action_upload"
-        android:title="Upload"
         android:orderInCategory="100"
-        android:showAsAction="always"/>
+        android:showAsAction="always"
+        android:title="Upload" />
 
-    <item android:id="@+id/createStoryListAddNew"
+    <item
+        android:id="@+id/createStoryListAddNew"
         android:icon="@drawable/ic_action_new"
-        android:title="Add New"
         android:orderInCategory="101"
-        android:showAsAction="always"/>
+        android:showAsAction="always"
+        android:title="Add New" />
 
-    <item android:id="@+id/createStoryListCancel"
+    <item
+        android:id="@+id/createStoryListCancel"
         android:icon="@drawable/ic_action_cancel"
-        android:title="Cancel"
         android:orderInCategory="102"
-        android:showAsAction="always"/>
+        android:showAsAction="always"
+        android:title="Cancel" />
 </menu>

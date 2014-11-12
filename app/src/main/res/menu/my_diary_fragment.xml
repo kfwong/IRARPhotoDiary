@@ -2,10 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="nyp.fypj.irarphotodiary.fragment.MyDiaryFragment">
 
-    <item android:id="@+id/myDiaryCreateStory"
+    <item
+        android:id="@+id/myDiaryCreateStory"
         android:icon="@drawable/ic_action_new"
-        android:title="Create Story"
         android:orderInCategory="100"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        android:title="Create Story" />
 
 </menu>

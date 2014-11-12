@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="nyp.fypj.irarphotodiary.fragment.SearchFragment">
@@ -7,88 +8,89 @@
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
+        android:id="@+id/textView10"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Selected Image"
-        android:id="@+id/textView10"
-        android:textStyle="bold"
-        android:textColor="@color/ICS_BLUE"
+        android:paddingBottom="15dp"
         android:paddingLeft="5dp"
-        android:paddingTop="5dp"
         android:paddingRight="5dp"
-        android:paddingBottom="15dp" />
+        android:paddingTop="5dp"
+        android:text="Selected Image"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/ICS_BLUE"
+        android:textStyle="bold" />
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical" android:layout_width="fill_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:columnCount="2"
-        android:rowCount="1"
         android:columnOrderPreserved="false"
-        android:useDefaultMargins="false"
-        android:rowOrderPreserved="false"
+        android:orientation="vertical"
         android:paddingEnd="5dp"
-        android:paddingStart="5dp">
+        android:paddingStart="5dp"
+        android:rowCount="1"
+        android:rowOrderPreserved="false"
+        android:useDefaultMargins="false">
 
         <ImageView
+            android:id="@+id/searchSelectedImage"
             android:layout_width="92dp"
             android:layout_height="92dp"
-            android:id="@+id/searchSelectedImage"
-            android:src="@drawable/placeholder"
-            android:layout_row="0"
             android:layout_column="0"
             android:layout_columnSpan="1"
+            android:layout_row="0"
             android:layout_rowSpan="1"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"
+            android:src="@drawable/placeholder" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="0"
             android:layout_column="1"
             android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_row="0"
             android:gravity="center">
 
             <ProgressBar
+                android:id="@+id/searchProgressBar"
                 style="?android:attr/progressBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/searchProgressBar"
+                android:indeterminate="false"
                 android:padding="10dp"
-                android:visibility="gone"
-                android:indeterminate="false" />
+                android:visibility="gone" />
 
             <TextView
+                android:id="@+id/searchStatus"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="To search, select an image or take a photo!"
-                android:id="@+id/searchStatus"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/searchProgressBar" />
+                android:layout_toEndOf="@+id/searchProgressBar"
+                android:text="To search, select an image or take a photo!"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
         </RelativeLayout>
 
     </GridLayout>
 
     <TextView
+        android:id="@+id/textView11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Search Results"
-        android:id="@+id/textView11"
-        android:textColor="@color/ICS_BLUE"
-        android:textStyle="bold"
+        android:paddingBottom="15dp"
         android:paddingLeft="5dp"
-        android:paddingTop="15dp"
         android:paddingRight="5dp"
-        android:paddingBottom="15dp" />
+        android:paddingTop="15dp"
+        android:text="Search Results"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/ICS_BLUE"
+        android:textStyle="bold" />
 
     <ExpandableListView
+        android:id="@+id/expandableListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/expandableListView"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
 </LinearLayout>

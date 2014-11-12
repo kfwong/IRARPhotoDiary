@@ -4,12 +4,22 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by L33533 on 9/19/2014.
  */
 public class ImageProfile implements Parcelable {
+    public static final Creator<ImageProfile> CREATOR = new Creator<ImageProfile>() {
+        @Override
+        public ImageProfile createFromParcel(Parcel parcel) {
+            return new ImageProfile(parcel);
+        }
+
+        @Override
+        public ImageProfile[] newArray(int i) {
+            return new ImageProfile[i];
+        }
+    };
     private String filename;
     private String extension;
     private String title;
@@ -20,8 +30,19 @@ public class ImageProfile implements Parcelable {
     private double longitude;
     private ArrayList<Tag> tags;
 
+    public ImageProfile() {//required
+    }
 
-    public ImageProfile(){//required
+    private ImageProfile(Parcel parcel) {
+        this.filename = parcel.readString();
+        this.extension = parcel.readString();
+        this.title = parcel.readString();
+        this.description = parcel.readString();
+        this.uri = parcel.readString();
+        this.order = parcel.readInt();
+        this.latitude = parcel.readDouble();
+        this.longitude = parcel.readDouble();
+        this.tags = parcel.readArrayList(Tag.class.getClassLoader());
     }
 
     public String getFilename() {
@@ -115,29 +136,5 @@ public class ImageProfile implements Parcelable {
         parcel.writeDouble(latitude);
         parcel.writeDouble(longitude);
         parcel.writeList(tags);
-    }
-
-    public static final Creator<ImageProfile> CREATOR = new Creator<ImageProfile>(){
-        @Override
-        public ImageProfile createFromParcel(Parcel parcel) {
-            return new ImageProfile(parcel);
-        }
-
-        @Override
-        public ImageProfile[] newArray(int i) {
-            return new ImageProfile[i];
-        }
-    };
-
-    private ImageProfile(Parcel parcel){
-        this.filename = parcel.readString();
-        this.extension = parcel.readString();
-        this.title = parcel.readString();
-        this.description = parcel.readString();
-        this.uri = parcel.readString();
-        this.order = parcel.readInt();
-        this.latitude = parcel.readDouble();
-        this.longitude = parcel.readDouble();
-        this.tags = parcel.readArrayList(Tag.class.getClassLoader());
     }
 }

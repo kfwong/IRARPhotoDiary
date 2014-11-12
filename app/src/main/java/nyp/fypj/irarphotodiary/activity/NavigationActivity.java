@@ -1,12 +1,12 @@
 package nyp.fypj.irarphotodiary.activity;
 
-import android.content.Intent;
+import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.content.Context;
-import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -19,7 +19,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.support.v4.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +72,7 @@ public class NavigationActivity extends FragmentActivity {
             }
         });
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             DashboardFragment dashboardFragment = new DashboardFragment();
             FragmentManager fragmentManager = this.getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -82,14 +81,14 @@ public class NavigationActivity extends FragmentActivity {
 
     }
 
-    private void displayFragment(int position){
+    private void displayFragment(int position) {
 
         Fragment fragment = null;
 
-        switch(position){
+        switch (position) {
             case 0: //Home
                 fragment = new DashboardFragment();
-            break;
+                break;
             case 1:
                 fragment = new MyDiaryFragment();
                 break;
@@ -97,13 +96,13 @@ public class NavigationActivity extends FragmentActivity {
                 fragment = new MyDiaryFragment();
                 break;
             case 3:
-               fragment = new SearchFragment();
-               break;
+                fragment = new SearchFragment();
+                break;
             default:
                 fragment = null;
-            break;
+                break;
         }
-        if(fragment !=null){
+        if (fragment != null) {
             FragmentManager fragmentManager = this.getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.content, fragment).commit();
@@ -111,7 +110,7 @@ public class NavigationActivity extends FragmentActivity {
             navigationList.setItemChecked(position, true);
             navigationList.setSelection(position);
             navigationDrawer.closeDrawer(navigationList);
-        }else{
+        } else {
             Log.e(this.getClass().getName(), "Cannot load fragment!");
         }
 
@@ -146,14 +145,11 @@ public class NavigationActivity extends FragmentActivity {
     }
 
 
-
-
-
-    private class NavigationListAdapter extends BaseAdapter{
+    private class NavigationListAdapter extends BaseAdapter {
         private List<String> data;
         private LayoutInflater layoutInflater;
 
-        public NavigationListAdapter(Context context, List<String> data){
+        public NavigationListAdapter(Context context, List<String> data) {
             this.data = data;
             this.layoutInflater = LayoutInflater.from(context);
         }
@@ -174,18 +170,18 @@ public class NavigationActivity extends FragmentActivity {
         }
 
         @Override
-        public View getView(int i, View convertView, ViewGroup parent){
+        public View getView(int i, View convertView, ViewGroup parent) {
             View view;
             ViewHolder viewHolder;
 
-            if(convertView == null){
+            if (convertView == null) {
                 view = layoutInflater.inflate(R.layout.adapter_activity_navigation, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.navigationListItemTitle = (TextView) view.findViewById(R.id.navigationListItemTitle);
                 viewHolder.navigationListItemIcon = (ImageView) view.findViewById(R.id.navigationListItemIcon);
                 view.setTag(viewHolder);
 
-            }else{
+            } else {
                 view = convertView;
                 viewHolder = (ViewHolder) view.getTag();
             }
@@ -204,7 +200,7 @@ public class NavigationActivity extends FragmentActivity {
             return view;
         }
 
-        private class ViewHolder{
+        private class ViewHolder {
             public TextView navigationListItemTitle;
             public ImageView navigationListItemIcon;
         }

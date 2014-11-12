@@ -1,16 +1,11 @@
 package nyp.fypj.irarphotodiary.fragment;
 
 
-
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,26 +15,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.etsy.android.grid.StaggeredGridView;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import nyp.fypj.irarphotodiary.R;
-import nyp.fypj.irarphotodiary.activity.CreateStoryListActivity;
 import nyp.fypj.irarphotodiary.activity.ViewStoryActivity;
 import nyp.fypj.irarphotodiary.application.BootstrapApplication;
 import nyp.fypj.irarphotodiary.dto.Album;
@@ -47,7 +30,6 @@ import nyp.fypj.irarphotodiary.dto.ImageProfile;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
- *
  */
 public class DashboardRecentAlbumFragment extends Fragment {
 
@@ -75,7 +57,7 @@ public class DashboardRecentAlbumFragment extends Fragment {
         staggeredGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Album selectedAlbum = (Album)adapterView.getItemAtPosition(i);
+                Album selectedAlbum = (Album) adapterView.getItemAtPosition(i);
 
                 Intent intent = new Intent(DashboardRecentAlbumFragment.this.getActivity().getApplicationContext(), ViewStoryActivity.class);
                 intent.putParcelableArrayListExtra("imageProfiles", selectedAlbum.getImageProfiles());
@@ -87,7 +69,8 @@ public class DashboardRecentAlbumFragment extends Fragment {
 
         Ion.with(this)
                 .load("https://fypj-124465r.rhcloud.com/albums/")
-                .as(new TypeToken<ArrayList<Album>>(){})
+                .as(new TypeToken<ArrayList<Album>>() {
+                })
                 .setCallback(new FutureCallback<ArrayList<Album>>() {
                     @Override
                     public void onCompleted(Exception e, ArrayList<Album> albums) {
@@ -103,7 +86,7 @@ public class DashboardRecentAlbumFragment extends Fragment {
         private LayoutInflater layoutInflater;
         private ArrayList<Album> albums;
 
-        public dashboardRecentAlbumFragmentAdapter(Context context, ArrayList<Album> albums){
+        public dashboardRecentAlbumFragmentAdapter(Context context, ArrayList<Album> albums) {
             this.layoutInflater = LayoutInflater.from(context);
             this.albums = albums;
         }
@@ -128,14 +111,14 @@ public class DashboardRecentAlbumFragment extends Fragment {
             View view;
             ViewHolder viewHolder;
 
-            if(convertView == null){
+            if (convertView == null) {
                 view = layoutInflater.inflate(R.layout.adapter_fragment_dashboard_recent_album_list_item, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.dashboardRecentAlbumItemImage = (ImageView) view.findViewById(R.id.dashboardRecentAlbumItemImage);
                 viewHolder.dashboardRecentAlbumItemTitle = (TextView) view.findViewById(R.id.dashboardRecentAlbumItemTitle);
                 viewHolder.dashboardRecentAlbumItemDescription = (TextView) view.findViewById(R.id.dashboardRecentAlbumItemDescription);
                 view.setTag(viewHolder);
-            }else{
+            } else {
                 view = convertView;
                 viewHolder = (ViewHolder) view.getTag();
             }
@@ -145,9 +128,10 @@ public class DashboardRecentAlbumFragment extends Fragment {
 
             viewHolder.dashboardRecentAlbumItemTitle.setText(album.getTitle());
             viewHolder.dashboardRecentAlbumItemDescription.setText(album.getDescription());
-            ImageLoader.getInstance().displayImage("http://res.cloudinary.com/"+ BootstrapApplication.CLOUDINARY_CLOUD_NAME+"/image/upload/w_0.1/"+coverImage.getFilename()+"."+coverImage.getExtension(), viewHolder.dashboardRecentAlbumItemImage);
+            ImageLoader.getInstance().displayImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_0.1/" + coverImage.getFilename() + "." + coverImage.getExtension(), viewHolder.dashboardRecentAlbumItemImage);
             return view;
         }
+
         private class ViewHolder {
             public ImageView dashboardRecentAlbumItemImage;
             public TextView dashboardRecentAlbumItemTitle;

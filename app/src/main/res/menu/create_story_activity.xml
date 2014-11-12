@@ -1,29 +1,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="nyp.fypj.irarphotodiary.activity.CreateStoryActivity" >
+    tools:context="nyp.fypj.irarphotodiary.activity.CreateStoryActivity">
 
-    <item android:id="@+id/createStoryTakePhoto"
+    <item
+        android:id="@+id/createStoryTakePhoto"
         android:icon="@drawable/ic_action_camera"
-        android:title="Take Photo"
         android:orderInCategory="100"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        android:title="Take Photo" />
 
-    <item android:id="@+id/createStoryChooseFromGallery"
+    <item
+        android:id="@+id/createStoryChooseFromGallery"
         android:icon="@drawable/ic_action_picture"
-        android:title="Choose From Gallery"
         android:orderInCategory="100"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        android:title="Choose From Gallery" />
 
-    <item android:id="@+id/createStorySave"
+    <item
+        android:id="@+id/createStorySave"
         android:icon="@drawable/ic_action_save"
-        android:title="Save"
         android:orderInCategory="100"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        android:title="Save" />
 
-    <item android:id="@+id/createStoryCancel"
+    <item
+        android:id="@+id/createStoryCancel"
         android:icon="@drawable/ic_action_cancel"
-        android:title="Cancel"
         android:orderInCategory="100"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        android:title="Cancel" />
 
 </menu>

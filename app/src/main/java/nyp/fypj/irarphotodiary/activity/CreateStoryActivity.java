@@ -1,8 +1,5 @@
 package nyp.fypj.irarphotodiary.activity;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,18 +7,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.cloudinary.Cloudinary;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wrapp.floatlabelededittext.FloatLabeledEditText;
@@ -48,14 +36,14 @@ public class CreateStoryActivity extends FragmentActivity {
         getActionBar().setBackgroundDrawable(null);
 
         createStoryImageView = (KenBurnsView) findViewById(R.id.createStoryImageView);
-        createStoryTitle = (FloatLabeledEditText)findViewById(R.id.createStoryTitle);
+        createStoryTitle = (FloatLabeledEditText) findViewById(R.id.createStoryTitle);
         createStoryDescription = (FloatLabeledEditText) findViewById(R.id.createStoryDescription);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             position = savedInstanceState.getInt("position", position);
             imageProfile = savedInstanceState.getParcelable("imageProfile");
 
-        }else{
+        } else {
             Intent intent = getIntent();
 
             position = intent.getIntExtra("position", -1);
@@ -64,7 +52,7 @@ public class CreateStoryActivity extends FragmentActivity {
             createStoryTitle.setText(imageProfile.getTitle());
             createStoryDescription.setText(imageProfile.getDescription());
 
-            if(imageProfile.getUri() != "" || imageProfile.getUri() != null){
+            if (imageProfile.getUri() != "" || imageProfile.getUri() != null) {
                 // DEBUG image problem: Log.e("onCreate", "image-isnull: "+imageProfile.getUri());
                 ImageLoader.getInstance().displayImage(imageProfile.getUri(), createStoryImageView);
             }
@@ -73,7 +61,7 @@ public class CreateStoryActivity extends FragmentActivity {
     }
 
     @Override
-      public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.create_story_activity, menu);
         return true;
@@ -84,28 +72,28 @@ public class CreateStoryActivity extends FragmentActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.createStoryTakePhoto:
                 try {
                     Intent takePhotoIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     File storage = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
                     File image = null;
 
-                    image = File.createTempFile("IRAR_"+System.currentTimeMillis(), ".jpg", storage);
+                    image = File.createTempFile("IRAR_" + System.currentTimeMillis(), ".jpg", storage);
 
                     imageProfile.setUri(Uri.fromFile(image).toString());
 
                     //gps
-                    if(BootstrapApplication.LAST_KNOWN_LOCATION !=null){
+                    if (BootstrapApplication.LAST_KNOWN_LOCATION != null) {
                         imageProfile.setLatitude(BootstrapApplication.LAST_KNOWN_LOCATION.getLatitude());
                         imageProfile.setLongitude(BootstrapApplication.LAST_KNOWN_LOCATION.getLongitude());
                     }
 
-                    if(image !=null){
+                    if (image != null) {
                         takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));
                         startActivityForResult(takePhotoIntent, 2);
                     }
-                }catch(IOException ex){
+                } catch (IOException ex) {
                     ex.printStackTrace();
                 }
 
@@ -139,12 +127,12 @@ public class CreateStoryActivity extends FragmentActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch(requestCode) {
+        switch (requestCode) {
             case 1: //TODO
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     Uri cachedUri = data.getData();
 
-                    String[] filePathColumn = { MediaStore.Images.Media.DATA };
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
                     Cursor cursor = getContentResolver().query(cachedUri,
                             filePathColumn, null, null, null);
@@ -160,7 +148,7 @@ public class CreateStoryActivity extends FragmentActivity {
                 }
                 break;
             case 2: //TODO
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
 //                    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 //                    File f = new File(imageProfile.getUri());
 //                    Uri contentUri = Uri.fromFile(f);
