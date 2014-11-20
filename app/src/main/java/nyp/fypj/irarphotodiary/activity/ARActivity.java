@@ -91,6 +91,10 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
         // set on object click listener
         mBeyondarFragment.setOnClickBeyondarObjectListener(this);
 
+        //static image size for all distance
+        //https://github.com/BeyondAR/beyondar/issues/53
+        mBeyondarFragment.setPushAwayDistance(25);
+
         // We also can see the Frames per seconds
         //mBeyondarFragment.showFPS(true);
 

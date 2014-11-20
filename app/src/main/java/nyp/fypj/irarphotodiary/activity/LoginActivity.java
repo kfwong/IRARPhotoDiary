@@ -50,9 +50,9 @@ public class LoginActivity extends Activity {
         });
 
         LoginButton authButton = (LoginButton) findViewById(R.id.loginFacebook);
-        authButton.setBackgroundResource(R.drawable.ic_launcher);
+        authButton.setBackgroundResource(R.drawable.ic_facebook);
         authButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        authButton.setReadPermissions(Arrays.asList("user_likes", "user_status", "email"));
+        authButton.setReadPermissions(Arrays.asList("user_likes", "user_status", "email", "user_about_me", "user_location"));
     }
 
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {

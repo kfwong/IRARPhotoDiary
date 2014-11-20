@@ -29,6 +29,7 @@ import java.util.List;
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.fragment.DashboardFragment;
 import nyp.fypj.irarphotodiary.fragment.MyDiaryFragment;
+import nyp.fypj.irarphotodiary.fragment.ProfileFragment;
 import nyp.fypj.irarphotodiary.fragment.SearchFragment;
 
 
@@ -94,7 +95,7 @@ public class NavigationActivity extends FragmentActivity {
                 fragment = new DashboardFragment();
                 break;
             case 1:
-                fragment = null;
+                fragment = new ProfileFragment();
 
                 break;
             case 2:
