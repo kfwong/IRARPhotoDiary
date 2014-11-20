@@ -58,7 +58,7 @@ public class JazzyViewPager extends ViewPager {
         setClipChildren(false);
         // now style everything!
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.JazzyViewPager);
-        int effect = ta.getInt(R.styleable.JazzyViewPager_style, 0);
+        int effect = ta.getInt(R.styleable.JazzyViewPager_style2, 0);
         String[] transitions = getResources().getStringArray(R.array.jazzy_effects);
         setTransitionEffect(TransitionEffect.valueOf(transitions[effect]));
         setFadeEnabled(ta.getBoolean(R.styleable.JazzyViewPager_fadeEnabled, false));

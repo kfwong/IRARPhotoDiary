@@ -1,6 +1,7 @@
 package nyp.fypj.irarphotodiary.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -19,6 +20,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.facebook.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +52,7 @@ public class NavigationActivity extends FragmentActivity {
         data.add("My Profile");
         data.add("My Diary");
         data.add("Search...");
+        data.add("Logout");
 
         navigationDrawer = (DrawerLayout) findViewById(R.id.navigationDrawer);
         navigationToggle = new ActionBarDrawerToggle(
@@ -90,13 +94,29 @@ public class NavigationActivity extends FragmentActivity {
                 fragment = new DashboardFragment();
                 break;
             case 1:
-                fragment = new MyDiaryFragment();
+                fragment = null;
+
                 break;
             case 2:
                 fragment = new MyDiaryFragment();
                 break;
             case 3:
                 fragment = new SearchFragment();
+                break;
+            case 4:
+                fragment = null;
+
+                // find the active session which can only be facebook in my app
+                Session session = Session.getActiveSession();
+                // run the closeAndClearTokenInformation which does the following
+                // DOCS : Closes the local in-memory Session object and clears any persistent
+                // cache related to the Session.
+                session.closeAndClearTokenInformation();
+                // return the user to the login screen
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                // make sure the user can not access the page after he/she is logged out
+                // clear the activity stack
+                finish();
                 break;
             default:
                 fragment = null;
@@ -111,7 +131,7 @@ public class NavigationActivity extends FragmentActivity {
             navigationList.setSelection(position);
             navigationDrawer.closeDrawer(navigationList);
         } else {
-            Log.e(this.getClass().getName(), "Cannot load fragment!");
+            Log.e(this.getClass().getName(), "Cannot load fragment or logout!");
         }
 
     }

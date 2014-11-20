@@ -2,7 +2,7 @@
 <resources>
 
     <declare-styleable name="JazzyViewPager">
-        <attr name="style">
+        <attr name="style2">
             <enum name="standard" value="0" />
             <enum name="tablet" value="1" />
             <enum name="cubein" value="2" />

@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/IRARPhotoDiary.iml" filepath="$PROJECT_DIR$/IRARPhotoDiary.iml" />
       <module fileurl="file://$PROJECT_DIR$/JazzyViewPager/JazzyViewPager.iml" filepath="$PROJECT_DIR$/JazzyViewPager/JazzyViewPager.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facebook/facebook.iml" filepath="$PROJECT_DIR$/facebook/facebook.iml" />
       <module fileurl="file://$PROJECT_DIR$/floatlabelededittext/floatlabelededittext.iml" filepath="$PROJECT_DIR$/floatlabelededittext/floatlabelededittext.iml" />
     </modules>
   </component>

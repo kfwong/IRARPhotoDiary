@@ -72,7 +72,11 @@ public class DashboardHomeFragment extends Fragment {
 
     private void refresh() {
         ////
-        swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.post(new Runnable() {
+            @Override public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+            }
+        });
 
         Ion.with(this)
                 .load("https://fypj-124465r.rhcloud.com/albums/images/")

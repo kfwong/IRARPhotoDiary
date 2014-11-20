@@ -13,5 +13,5 @@
     <string name="title_activity_view_story">ViewStoryActivity</string>
     <string name="title_activity_ar">ARActivity</string>
     <string name="title_activity_google_map">GoogleMapActivity</string>
-
+    <string name="app_id">374182362749448</string>
 </resources>

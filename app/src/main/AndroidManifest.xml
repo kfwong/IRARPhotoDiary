@@ -76,6 +76,11 @@
         <activity
             android:name="nyp.fypj.irarphotodiary.activity.GoogleMapActivity"
             android:label="@string/title_activity_google_map"></activity>
+
+        <activity android:name="com.facebook.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/app_name" />
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/>
     </application>
 
 </manifest>

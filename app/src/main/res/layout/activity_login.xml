@@ -149,16 +149,20 @@
                     android:background="#00ffffff"
                     android:src="@drawable/ic_gplus" />
 
-                <ImageButton
+                <com.facebook.widget.LoginButton
+                    xmlns:fb="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/loginFacebook"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/loginGPlus"
                     android:layout_toEndOf="@+id/loginGPlus"
                     android:layout_toRightOf="@+id/loginGPlus"
-                    android:layout_weight="1"
-                    android:background="#00ffffff"
-                    android:src="@drawable/ic_facebook" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginTop="30dp"
+                    android:scaleType="centerInside"
+                    fb:login_text=""
+                    fb:logout_text=""
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <ImageButton
                     android:id="@+id/loginTwitter"

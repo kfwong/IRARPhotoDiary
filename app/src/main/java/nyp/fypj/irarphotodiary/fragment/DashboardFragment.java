@@ -27,7 +27,7 @@ public class DashboardFragment extends Fragment {
 
         viewPager = (JazzyViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(new DashboardPagerAdapter(getChildFragmentManager()));
-        viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.Accordion);
+        viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.Standard);
 
         final TitlePageIndicator titlePageIndicator = (TitlePageIndicator) view.findViewById(R.id.indicator);
         titlePageIndicator.setViewPager(viewPager);
