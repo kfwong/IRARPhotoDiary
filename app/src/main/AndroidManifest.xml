@@ -70,6 +70,8 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyAAC1WLzXCO890r4O2YMTAINYB_14vucSs" />
 
+        <meta-data android:name="alternate-map-key" android:value="AIzaSyBwVvzmfnOP6HWeP-b0xi3qCl1NCNySiRU"></meta-data>
+
         <activity
             android:name="nyp.fypj.irarphotodiary.activity.ARActivity"
             android:label="@string/title_activity_ar"></activity>

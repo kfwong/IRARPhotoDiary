@@ -43,7 +43,9 @@ public class GoogleMapActivity extends FragmentActivity implements GoogleMap.OnM
     protected void onDestroy() {
         super.onDestroy();
 
-    }    final SensorEventListener sensorEventListener = new SensorEventListener() {
+    }
+
+    final SensorEventListener sensorEventListener = new SensorEventListener() {
         public void onSensorChanged(SensorEvent sensorEvent) {
             if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
                 headingAngle = sensorEvent.values[0];
@@ -58,9 +60,12 @@ public class GoogleMapActivity extends FragmentActivity implements GoogleMap.OnM
             }
         }
 
+
+
         public void launchARActivity() {
             GoogleMapActivity.this.finish();
             Intent i = new Intent(GoogleMapActivity.this, ARActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.putParcelableArrayListExtra("imageProfiles", imageProfiles);
             startActivity(i);
         }
@@ -69,6 +74,7 @@ public class GoogleMapActivity extends FragmentActivity implements GoogleMap.OnM
         public void onAccuracyChanged(Sensor arg0, int arg1) {
             // TODO Auto-generated method stub
         }
+
     };
 
     @Override
@@ -96,7 +102,7 @@ public class GoogleMapActivity extends FragmentActivity implements GoogleMap.OnM
             // because the beyondar has only setName function...we need to insert more details
             Gson gson = new Gson();
             String json = gson.toJson(imageProfile);
-            geoObject.setName(json);
+            geoObject.setName(imageProfile.getTitle());
 
             //WORKING: geoObject.setImageUri("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_512,h_512,c_thumb/" + imageProfile.getFilename() + "." + imageProfile.getExtension());
             //PARTIAL WORKING: geoObject.setImageUri("http://res.cloudinary.com/dxspdhqz3/image/upload/w_512,h_512,c_thumb/w_348,h_128,c_pad,g_south_west,bo_5px_solid_rgb:00000090,b_rgb:000000/l_text:arial_18_bold_underline:Title,g_north_west,x_138,y_15,c_fit,w_192,h_65,co_white/l_text:arial_16:Description.,g_north_west,x_138,y_40,c_fit,w_192,h_95,co_white/sfls6bydbraqv4im43n0.jpg");
@@ -115,8 +121,8 @@ public class GoogleMapActivity extends FragmentActivity implements GoogleMap.OnM
 
         GeoObject user = new GeoObject(10001);
         user.setGeoPosition(1.37912487, 103.84926296);
-        user.setImageResource(R.drawable.placeholder);
-        user.setName("User Position");
+        user.setImageResource(R.drawable.ic_user_position);
+        user.setName("You are here!");
         world.addBeyondarObject(user);
 
         ////
@@ -126,18 +132,12 @@ public class GoogleMapActivity extends FragmentActivity implements GoogleMap.OnM
         sensorManager.registerListener(sensorEventListener, sensorManager
                 .getDefaultSensor(orientationSensor), SensorManager.SENSOR_DELAY_NORMAL);
 
+        Toast.makeText(this, "Hold your phone 90 degree straight to switch to camera view.", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        GeoObject geoObject = googleMapWorldPlugin.getGeoObjectOwner(marker);
-        if (geoObject != null) {
-            Toast.makeText(this,
-                    "Click on a marker owned by a GeoOject with the name: " + geoObject.getName(),
-                    Toast.LENGTH_SHORT).show();
-        }
         return false;
     }
-
 
 }

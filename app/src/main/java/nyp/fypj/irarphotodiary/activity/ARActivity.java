@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.view.BeyondarViewAdapter;
@@ -107,6 +108,8 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
         orientationSensor = Sensor.TYPE_ORIENTATION;
         sensorManager.registerListener(sensorEventListener, sensorManager
                 .getDefaultSensor(orientationSensor), SensorManager.SENSOR_DELAY_NORMAL);
+
+        Toast.makeText(this, "Lay down your phone to switch to Google Map view.", Toast.LENGTH_LONG).show();
     }    final SensorEventListener sensorEventListener = new SensorEventListener() {
         public void onSensorChanged(SensorEvent sensorEvent) {
             if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
@@ -133,6 +136,8 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
         public void onAccuracyChanged(Sensor arg0, int arg1) {
             // TODO Auto-generated method stub
         }
+
+
     };
 
     @Override
@@ -155,6 +160,7 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
         imageProfiles.add(imageProfile);
 
         Intent intent = new Intent(ARActivity.this.getApplicationContext(), ViewStoryActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putParcelableArrayListExtra("imageProfiles", imageProfiles);
         startActivity(intent);
     }
@@ -192,6 +198,5 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
             return recycledView;
         }
     }
-
 
 }
