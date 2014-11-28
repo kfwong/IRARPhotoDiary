@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="nyp.fypj.irarphotodiary.activity.ViewStoryActivity">
+
+    <item
+        android:id="@+id/viewStoryARMode"
+        android:icon="@drawable/ic_action_switch_camera"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="AR Mode" />
+
+    <item
+        android:id="@+id/viewStoryMapMode"
+        android:icon="@drawable/ic_action_map"
+        android:orderInCategory="101"
+        android:showAsAction="always"
+        android:title="Map Mode" />
+
+</menu>

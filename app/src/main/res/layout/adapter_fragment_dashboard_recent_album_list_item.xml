@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativelayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <ImageView
+        android:id="@+id/dashboardRecentAlbumItemImage"
+        android:layout_width="fill_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:background="#50eeeeee"
+        android:maxHeight="250dp"
+        android:minHeight="250dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/sample" />
+
+    <TextView
+        android:id="@+id/dashboardRecentAlbumItemTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/dashboardRecentAlbumItemDescription"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#80000000"
+        android:paddingBottom="1dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:singleLine="true"
+        android:text="Lorem Ipsum"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/dashboardRecentAlbumItemDescription"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/dashboardRecentAlbumItemImage"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#80000000"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="1dp"
+        android:singleLine="true"
+        android:text="But it's important to use this workaround in a relative layout for the layout_align settings to be recognized."
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#ffffffff"
+        android:textSize="10dp" />
+</RelativeLayout>
