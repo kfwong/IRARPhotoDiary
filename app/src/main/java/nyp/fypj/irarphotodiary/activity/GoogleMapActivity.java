@@ -1,13 +1,8 @@
 package nyp.fypj.irarphotodiary.activity;
 
-import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Toast;
 
 import com.beyondar.android.plugin.googlemap.GoogleMapWorldPlugin;
 import com.beyondar.android.world.GeoObject;
@@ -45,37 +40,37 @@ public class GoogleMapActivity extends FragmentActivity implements GoogleMap.OnM
 
     }
 
-    final SensorEventListener sensorEventListener = new SensorEventListener() {
-        public void onSensorChanged(SensorEvent sensorEvent) {
-            if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
-                headingAngle = sensorEvent.values[0];
-                pitchAngle = sensorEvent.values[1];
-                rollAngle = sensorEvent.values[2];
+    //final SensorEventListener sensorEventListener = new SensorEventListener() {
+    // public void onSensorChanged(SensorEvent sensorEvent) {
+    // if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
+    //    headingAngle = sensorEvent.values[0];
+    //   pitchAngle = sensorEvent.values[1];
+    //  rollAngle = sensorEvent.values[2];
 
-                if (pitchAngle > 7 || pitchAngle < -7 || rollAngle > 7
-                        || rollAngle < -7) {
-                    sensorManager.unregisterListener(sensorEventListener);
-                    launchARActivity();
-                }
-            }
-        }
+    // if (pitchAngle > 7 || pitchAngle < -7 || rollAngle > 7
+    //        || rollAngle < -7) {
+    //   sensorManager.unregisterListener(sensorEventListener);
+    //    //launchARActivity();
+    //  }
+    //}
+    //  }
 
 
 
-        public void launchARActivity() {
-            GoogleMapActivity.this.finish();
-            Intent i = new Intent(GoogleMapActivity.this, ARActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            i.putParcelableArrayListExtra("imageProfiles", imageProfiles);
-            startActivity(i);
-        }
+    //  public void launchARActivity() {
+    //    GoogleMapActivity.this.finish();
+    //    Intent i = new Intent(GoogleMapActivity.this, ARActivity.class);
+    //    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    //  i.putParcelableArrayListExtra("imageProfiles", imageProfiles);
+    //  startActivity(i);
+    // }
 
-        @Override
-        public void onAccuracyChanged(Sensor arg0, int arg1) {
-            // TODO Auto-generated method stub
-        }
+    // @Override
+    // public void onAccuracyChanged(Sensor arg0, int arg1) {
+    //    // TODO Auto-generated method stub
+    // }
 
-    };
+    //  };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,12 +122,12 @@ public class GoogleMapActivity extends FragmentActivity implements GoogleMap.OnM
 
         ////
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        orientationSensor = Sensor.TYPE_ORIENTATION;
-        sensorManager.registerListener(sensorEventListener, sensorManager
-                .getDefaultSensor(orientationSensor), SensorManager.SENSOR_DELAY_NORMAL);
+        //sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        //  orientationSensor = Sensor.TYPE_ORIENTATION;
+        //sensorManager.registerListener(sensorEventListener, sensorManager
+        //        .getDefaultSensor(orientationSensor), SensorManager.SENSOR_DELAY_NORMAL);
 
-        Toast.makeText(this, "Hold your phone 90 degree straight to switch to camera view.", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Hold your phone 90 degree straight to switch to camera view.", Toast.LENGTH_LONG).show();
     }
 
     @Override

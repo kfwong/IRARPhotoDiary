@@ -3,8 +3,10 @@ package nyp.fypj.irarphotodiary.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +50,14 @@ public class DashboardRecentAlbumFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        getActivity().getActionBar()
+                .setTitle(R.string.recent_album);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -61,6 +71,7 @@ public class DashboardRecentAlbumFragment extends Fragment {
 
                 Intent intent = new Intent(DashboardRecentAlbumFragment.this.getActivity().getApplicationContext(), ViewStoryActivity.class);
                 intent.putParcelableArrayListExtra("imageProfiles", selectedAlbum.getImageProfiles());
+                intent.putExtra("albumTitle", selectedAlbum.getTitle());
                 startActivity(intent);
             }
         });
@@ -117,6 +128,7 @@ public class DashboardRecentAlbumFragment extends Fragment {
                 viewHolder.dashboardRecentAlbumItemImage = (ImageView) view.findViewById(R.id.dashboardRecentAlbumItemImage);
                 viewHolder.dashboardRecentAlbumItemTitle = (TextView) view.findViewById(R.id.dashboardRecentAlbumItemTitle);
                 viewHolder.dashboardRecentAlbumItemDescription = (TextView) view.findViewById(R.id.dashboardRecentAlbumItemDescription);
+                viewHolder.dashboardRecentAlbumItemSize = (TextView) view.findViewById(R.id.dashboardRecentAlbumItemSize);
                 view.setTag(viewHolder);
             } else {
                 view = convertView;
@@ -125,8 +137,12 @@ public class DashboardRecentAlbumFragment extends Fragment {
 
             Album album = albums.get(i);
             ImageProfile coverImage = albums.get(i).getImageProfiles().get(0);
-
-            viewHolder.dashboardRecentAlbumItemTitle.setText(album.getTitle());
+           // String albumTitle=
+            viewHolder.dashboardRecentAlbumItemTitle.setText(album.getTitle()+"("+Integer.toString(album.getImageProfiles().size())+")");
+            viewHolder.dashboardRecentAlbumItemTitle.setTextColor(Color.parseColor("#ff33B5E5"));
+           viewHolder.dashboardRecentAlbumItemSize.setText("("+Integer.toString(album.getImageProfiles().size())+")");
+            //viewHolder.dashboardRecentAlbumItemSize.setTextColor(Color.parseColor("#FFFFFF"));
+            //Log.e(Integer.toString(album.getImageProfiles().size()), "album size");
             viewHolder.dashboardRecentAlbumItemDescription.setText(album.getDescription());
             ImageLoader.getInstance().displayImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_0.1/" + coverImage.getFilename() + "." + coverImage.getExtension(), viewHolder.dashboardRecentAlbumItemImage);
             return view;
@@ -136,6 +152,7 @@ public class DashboardRecentAlbumFragment extends Fragment {
             public ImageView dashboardRecentAlbumItemImage;
             public TextView dashboardRecentAlbumItemTitle;
             public TextView dashboardRecentAlbumItemDescription;
+            public TextView dashboardRecentAlbumItemSize;
         }
     }
 }

@@ -1,6 +1,7 @@
 package nyp.fypj.irarphotodiary.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,6 +21,7 @@ import nyp.fypj.irarphotodiary.R;
 /**
  * A simple {@link Fragment} subclass.
  */
+
 public class ProfileFragment extends Fragment {
 
     private ProfilePictureView profilePictureView;
@@ -30,14 +32,20 @@ public class ProfileFragment extends Fragment {
     private Session session = Session.getActiveSession();
 
     public ProfileFragment() {
-        // Required empty public constructor
+
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        getActivity().getActionBar()
+                .setTitle(R.string.my_profile);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         profilePictureView = (ProfilePictureView) view.findViewById(R.id.profilePicture);
@@ -50,6 +58,7 @@ public class ProfileFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+
     }
 
     private void updateUI() {
@@ -67,7 +76,7 @@ public class ProfileFragment extends Fragment {
                                 profilePictureView.setProfileId(user.getId());
                                 profileName.setText(user.getName());
                                 profileLocation.setText(user.getLocation().getName());
-                                profileEmail.setText(user.getProperty("email") !=null? user.getProperty("email").toString(): "[Email not available]");
+                                profileEmail.setText(user.getProperty("email") != null ? user.getProperty("email").toString() : "[Email not available]");
                                 profileBio.setText(user.getProperty("bio").toString());
 
                                 //greeting.setText(getString(R.string.hello_user, user.getFirstName()));
@@ -82,8 +91,8 @@ public class ProfileFragment extends Fragment {
 
                         }
                     }
-                } catch (Exception ex){
-                    Log.e("PROFILE_FRAGMENT", "MSG:"+ex.getMessage());
+                } catch (Exception ex) {
+                    Log.e("PROFILE_FRAGMENT", "MSG:" + ex.getMessage());
                 }
             }
         });
@@ -91,5 +100,10 @@ public class ProfileFragment extends Fragment {
         Request.executeBatchAsync(request);
 
     }
-
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
+    }
 }

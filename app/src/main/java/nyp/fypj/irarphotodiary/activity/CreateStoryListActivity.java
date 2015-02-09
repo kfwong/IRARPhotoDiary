@@ -1,7 +1,9 @@
 package nyp.fypj.irarphotodiary.activity;
 
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -20,10 +22,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cloudinary.Cloudinary;
 import com.google.gson.Gson;
@@ -47,7 +51,9 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
@@ -94,12 +100,12 @@ public class CreateStoryListActivity extends FragmentActivity {
         if (savedInstanceState != null) {
             imageProfiles = savedInstanceState.getParcelableArrayList("imageProfiles");
         } else {
-            albumTitle.setText("My Album Title");
-            albumDescription.setText("These are some collections of images I have!");
+            albumTitle.setText("");
+            albumDescription.setText("");
 
             ImageProfile imageProfile1 = new ImageProfile();
-            imageProfile1.setTitle("Tap here to edit this content!");
-            imageProfile1.setDescription("Select options on top right corner to Add new content to this album.");
+            imageProfile1.setTitle("");
+            imageProfile1.setDescription("");
 
             imageProfiles = new ArrayList<ImageProfile>();
             imageProfiles.add(imageProfile1);
@@ -166,11 +172,12 @@ public class CreateStoryListActivity extends FragmentActivity {
         switch (item.getItemId()) {
             case R.id.createStoryListAddNew:
                 ImageProfile imageProfile = new ImageProfile();
-                imageProfile.setTitle("New stuff coming up soon!");
-                imageProfile.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nisi eros, varius vitae quam quis, mattis dignissim elit. Ut ipsum orci, consequat vitae nisi nec, vulputate commodo mi. Ut eros lectus, malesuada a velit nec, posuere pharetra massa. Vestibulum feugiat egestas orci, sit amet volutpat ligula pretium a. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vestibulum congue urna at varius feugiat. Etiam mattis pellentesque odio, elementum dapibus mauris placerat eu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis nulla nulla, eleifend vitae lectus ac, scelerisque fringilla metus. Proin aliquam in felis eget convallis. Maecenas a est quis eros dapibus facilisis. Nunc ut massa feugiat, suscipit tellus ut, congue arcu. ");
-                createStoryListAdapter.add(imageProfile);
+                imageProfile.setTitle("");
+                imageProfile.setDescription("");
+               createStoryListAdapter.add(imageProfile);
                 break;
             case R.id.createStoryListUpload:
+                Toast.makeText(this, "Photos are being uploaded!", Toast.LENGTH_LONG).show();
                 ///// async task
                 AsyncTask<Void, Integer, Void> task = new AsyncTask<Void, Integer, Void>() {
                     private Album album = new Album();
@@ -255,15 +262,19 @@ public class CreateStoryListActivity extends FragmentActivity {
 
                         // Upload imageProfiles
                         try {
-
+                            SimpleDateFormat format=new SimpleDateFormat("EEEE, dd, MMM yyyy, hh:mm aaa");
+                            Date date1 = Calendar.getInstance().getTime();
+                            String today=format.format(date1);
                             album.setTitle(albumTitle.getTextString());
                             album.setDescription(albumDescription.getTextString());
-                            album.setDateUploaded(new Date());
+                            album.setDateUploaded(today);
                             album.setImageProfiles(imageProfiles);
 
                             // flatten imageProfile to json
                             Gson gson = new Gson();
                             String albumJson = gson.toJson(album);
+
+                            Log.e("this is the json", albumJson);
 
                             // Upload json to databasesss
                             HttpClient httpClient = new DefaultHttpClient();
@@ -309,6 +320,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                         notificationCompat.setContentText("Upload completed.");
                         notificationCompat.setProgress(0, 0, false);
                         notificationManager.notify(1, notificationCompat.build());
+                        finish();
                     }
                 };
 
@@ -316,9 +328,28 @@ public class CreateStoryListActivity extends FragmentActivity {
                 ///// end of async task
                 break;
             case R.id.createStoryListCancel:
-                setResult(RESULT_CANCELED);
-                finish();
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Exit")
+                        .setMessage("Discard changes?")
+                        .setPositiveButton(R.string.dgts__okay, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                                //    String imgProfileId = imageProfiles.get(viewPager.getCurrentItem()).getFilename();
+                                // make a httpclient call with uri provided by kang fei to remove this image profile based on its filename (unique key).
+                                setResult(RESULT_CANCELED);
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(R.drawable.ic_action_warning)
+                        .show();
                 break;
+
             default:
                 break;
         }
@@ -464,5 +495,39 @@ public class CreateStoryListActivity extends FragmentActivity {
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
+    }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Exit Application")
+                .setMessage("Are you sure you want to exit this application?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        // continue with exit
+
+                        // deleteCache(getApplication());
+
+
+                        finish();
+
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }

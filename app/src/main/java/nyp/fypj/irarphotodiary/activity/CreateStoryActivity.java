@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -16,6 +17,12 @@ import com.wrapp.floatlabelededittext.FloatLabeledEditText;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.application.BootstrapApplication;
@@ -27,6 +34,15 @@ public class CreateStoryActivity extends FragmentActivity {
     private KenBurnsView createStoryImageView;
     private FloatLabeledEditText createStoryTitle;
     private FloatLabeledEditText createStoryDescription;
+    private TextView date;
+    private TextView day;
+    private TextView monthyear;
+    private TextView time;
+
+//datetime format
+    SimpleDateFormat format=new SimpleDateFormat("EEEE, dd, MMM yyyy, hh:mm aaa");
+    Date date1 = Calendar.getInstance().getTime();
+    String today=format.format(date1).toString();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +55,21 @@ public class CreateStoryActivity extends FragmentActivity {
         createStoryTitle = (FloatLabeledEditText) findViewById(R.id.createStoryTitle);
         createStoryDescription = (FloatLabeledEditText) findViewById(R.id.createStoryDescription);
 
+
+        //display time
+        date = (TextView) findViewById(R.id.date);
+        day = (TextView) findViewById(R.id.day);
+        monthyear = (TextView) findViewById(R.id.monthyear);
+        time = (TextView) findViewById(R.id.time);
+
+        List<String> arrayLists=new ArrayList<String>(Arrays.asList(today.split(", ")));
+        day.setText(arrayLists.get(0));
+        date.setText(arrayLists.get(1));
+        monthyear.setText(arrayLists.get(2));
+        time.setText(arrayLists.get(3));
+
+        createStoryTitle = (FloatLabeledEditText) findViewById(R.id.createStoryTitle);
+        createStoryDescription = (FloatLabeledEditText) findViewById(R.id.createStoryDescription);
         if (savedInstanceState != null) {
             position = savedInstanceState.getInt("position", position);
             imageProfile = savedInstanceState.getParcelable("imageProfile");
@@ -106,7 +137,7 @@ public class CreateStoryActivity extends FragmentActivity {
             case R.id.createStorySave:
                 imageProfile.setTitle(createStoryTitle.getTextString());
                 imageProfile.setDescription(createStoryDescription.getTextString());
-
+                imageProfile.setDateUploaded(today);
                 Intent intent = new Intent();
                 intent.putExtra("position", position);
                 intent.putExtra("imageProfile", imageProfile);
@@ -135,7 +166,7 @@ public class CreateStoryActivity extends FragmentActivity {
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
                     Cursor cursor = getContentResolver().query(cachedUri,
-                            filePathColumn, null, null, null);
+                            filePathColumn,null, null, null, null);
                     cursor.moveToFirst();
 
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);

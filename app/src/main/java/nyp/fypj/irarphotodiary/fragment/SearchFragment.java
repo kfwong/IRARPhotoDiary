@@ -60,6 +60,14 @@ public class SearchFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        getActivity().getActionBar()
+                .setTitle(R.string.search);
+    }
+
     public int GetDipsFromPixel(float pixels) {
         // Get the screen's density scale
         final float scale = getResources().getDisplayMetrics().density;
@@ -396,4 +404,5 @@ public class SearchFragment extends Fragment {
             TextView confidence;
         }
     }
+
 }

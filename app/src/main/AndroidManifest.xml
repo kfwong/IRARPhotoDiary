@@ -15,7 +15,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="com.vogella.android.locationapi.maps.permission.MAPS_RECEIVE" />
-
+    <uses-permission
+        android:name="android.permission.INTERNET_ACROSS_USERS_FULL" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- user feature declaration -->
     <!-- for BeyondAR -->
     <uses-feature android:name="android.hardware.camera" />
@@ -40,7 +42,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="nyp.fypj.irarphotodiary.activity.LoginActivity" />
+        <activity android:name="nyp.fypj.irarphotodiary.activity.LoginActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data
+                android:host="t4jsample"
+                android:scheme="oauth" />
+
+        </intent-filter>
+        </activity>
         <activity android:name="nyp.fypj.irarphotodiary.activity.NavigationActivity" />
         <activity
             android:name="nyp.fypj.irarphotodiary.activity.CreateStoryActivity"
@@ -53,9 +72,29 @@
         </activity>
         <activity
             android:name="nyp.fypj.irarphotodiary.activity.CreateStoryListActivity"
+            android:label="@string/create_story"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="nyp.fypj.irarphotodiary.activity.UpdateStoryListActivity"
+            android:label="@string/update_album"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="nyp.fypj.irarphotodiary.activity.UpdateStoryActivity"
+            android:label="@string/update_story"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.ManageStoryActivity"
+            android:label="@string/title_activity_create_story"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.UpdateImageActivity"
+            android:label="@string/update_story"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="nyp.fypj.irarphotodiary.activity.ViewStoryActivity"
+            android:label="@string/title_activity_view_story"></activity>
+        <activity
+            android:name="nyp.fypj.irarphotodiary.activity.ViewImageActivity"
             android:label="@string/title_activity_view_story"></activity>
 
         <!-- meta data declarations -->
@@ -83,6 +122,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:label="@string/app_name" />
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/>
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="d664db608f495cd0bc7071700db992d6fc69ad5f"/>
     </application>
 
 </manifest>

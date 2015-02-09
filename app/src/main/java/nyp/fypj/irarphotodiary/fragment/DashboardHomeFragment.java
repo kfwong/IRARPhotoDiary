@@ -2,10 +2,12 @@ package nyp.fypj.irarphotodiary.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,13 @@ public class DashboardHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_dashboard_home, container, false);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        getActivity().getActionBar()
+                .setTitle(R.string.home);
     }
 
     @Override
@@ -128,7 +137,9 @@ public class DashboardHomeFragment extends Fragment {
                 viewHolder = new ViewHolder();
                 viewHolder.dashboardHomeItemImage = (ImageView) view.findViewById(R.id.dashboardHomeItemImage);
                 viewHolder.dashboardHomeItemTitle = (TextView) view.findViewById(R.id.dashboardHomeItemTitle);
+                viewHolder.dashboardHomeItemTitle.setTextColor(Color.parseColor("#ff33B5E5"));
                 viewHolder.dashboardHomeItemDescription = (TextView) view.findViewById(R.id.dashboardHomeItemDescription);
+
                 view.setTag(viewHolder);
             } else {
                 view = convertView;

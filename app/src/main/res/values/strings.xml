@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
     <string name="app_name">IRAR Photo Diary</string>
     <string name="hello_world">Hello world!</string>
+    <string name="my_profile">My Profile</string>
+    <string name="manage_my_diary">Manage My Diary</string>
+    <string name="search">Search</string>
+    <string name="home">Home</string>
+    <string name="recent_album">Home</string>
+    <string name="create_story">Create Album</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_splash">SplashActivity</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="title_activity_dashboard">DashboardActivity</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="action_edit">Edit</string>
+    <string name="title_activity_splash">Splash</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_dashboard">Dashboard</string>
+    <string name="title_activity_main">Main Activity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_create_story">CreateStoryActivity</string>
-    <string name="title_activity_view_story">ViewStoryActivity</string>
-    <string name="title_activity_ar">ARActivity</string>
-    <string name="title_activity_google_map">GoogleMapActivity</string>
+    <string name="title_activity_view_story">Album</string>
+    <string name="title_activity_create_story">Create Album</string>
+    <string name="title_activity_ar">AR</string>
+    <string name="title_activity_google_map">Google Map</string>
     <string name="app_id">374182362749448</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="toast_twitter_signin_fail">Login Fail</string>
+    <string name="new_album">New Album</string>
+    <string name="update_album">Update Album</string>
+    <string name="delete_album">Delete Album</string>
+    <string name="update_story">Update Story</string>
+    <string name="exit">Exit</string>
+    <string name="proceed">Proceed to Application</string>
+    <!-- GOOGLE PLUS -->
+    <string name="btn_logout_from_google">Logout from Google</string>
+    <string name="btn_revoke_access">Revoke Access</string>
 </resources>

@@ -1,9 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:padding="15dp">
+    android:padding="15dp"
+    tools:context="nyp.fypj.irarphotodiary.activity.CreateStoryActivity">
 
     <TextView
         android:id="@+id/albumInfo"
@@ -21,12 +23,14 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="15dp"
         android:layout_marginTop="15dp"
+
         android:inputType="text"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:fletFloatingHint="Album Title"
+        app:fletFloatingHint="My Album Title"
         app:fletHintTextColor="@color/ICS_BLUE"
-        app:fletTextColor="#ffffff" />
+        app:fletTextColor="#ffffff"
+        />
 
     <com.wrapp.floatlabelededittext.FloatLabeledEditText
         android:id="@+id/albumDescription"
@@ -38,7 +42,7 @@
         android:inputType="text"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:fletFloatingHint="Album Description"
+        app:fletFloatingHint="These are some collections of images I have!"
         app:fletHintTextColor="@color/ICS_BLUE"
         app:fletTextColor="#ffffff" />
 

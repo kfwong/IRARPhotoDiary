@@ -22,15 +22,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.Session;
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import nyp.fypj.irarphotodiary.R;
+import nyp.fypj.irarphotodiary.dto.ImageProfile;
 import nyp.fypj.irarphotodiary.fragment.DashboardFragment;
 import nyp.fypj.irarphotodiary.fragment.MyDiaryFragment;
-import nyp.fypj.irarphotodiary.fragment.ProfileFragment;
 import nyp.fypj.irarphotodiary.fragment.SearchFragment;
+import nyp.fypj.irarphotodiary.fragment.TwitterProfileFragment;
 
 
 public class NavigationActivity extends FragmentActivity {
@@ -47,12 +51,13 @@ public class NavigationActivity extends FragmentActivity {
         // Remove divider under actionbar
         getActionBar().setBackgroundDrawable(null);
 
-        //TODO: should move all these stuff to strings.xml
         List<String> data = new ArrayList<String>();
         data.add("Home");
         data.add("My Profile");
-        data.add("My Diary");
-        data.add("Search...");
+        data.add("Manage Diary");
+        data.add("Search");
+        data.add("AR Locations");
+        data.add("Google Map");
         data.add("Logout");
 
         navigationDrawer = (DrawerLayout) findViewById(R.id.navigationDrawer);
@@ -89,13 +94,14 @@ public class NavigationActivity extends FragmentActivity {
     private void displayFragment(int position) {
 
         Fragment fragment = null;
+        Intent intent = null;
 
         switch (position) {
             case 0: //Home
                 fragment = new DashboardFragment();
                 break;
             case 1:
-                fragment = new ProfileFragment();
+                fragment = new TwitterProfileFragment();
 
                 break;
             case 2:
@@ -105,6 +111,36 @@ public class NavigationActivity extends FragmentActivity {
                 fragment = new SearchFragment();
                 break;
             case 4:
+                Ion.with(this)
+                        .load("https://fypj-124465r.rhcloud.com/albums/images/")
+                        .as(new TypeToken<ArrayList<ImageProfile>>() {
+                        })
+                        .setCallback(new FutureCallback<ArrayList<ImageProfile>>() {
+                            @Override
+                            public void onCompleted(Exception e, ArrayList<ImageProfile> imageProfiles){
+
+                                Intent i = new Intent(NavigationActivity.this, ARActivity.class);
+                                i.putParcelableArrayListExtra("imageProfiles", imageProfiles);
+                                startActivity(i);
+                            }
+                        });
+                break;
+            case 5:
+                Ion.with(this)
+                        .load("https://fypj-124465r.rhcloud.com/albums/images/")
+                        .as(new TypeToken<ArrayList<ImageProfile>>() {
+                        })
+                        .setCallback(new FutureCallback<ArrayList<ImageProfile>>() {
+                            @Override
+                            public void onCompleted(Exception e, ArrayList<ImageProfile> imageProfiles){
+
+                                Intent i = new Intent(NavigationActivity.this, GoogleMapActivity.class);
+                                i.putParcelableArrayListExtra("imageProfiles", imageProfiles);
+                                startActivity(i);
+                            }
+                        });
+                break;
+            case 6:
                 fragment = null;
 
                 // find the active session which can only be facebook in my app
@@ -195,11 +231,17 @@ public class NavigationActivity extends FragmentActivity {
             View view;
             ViewHolder viewHolder;
 
+
             if (convertView == null) {
                 view = layoutInflater.inflate(R.layout.adapter_activity_navigation, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.navigationListItemTitle = (TextView) view.findViewById(R.id.navigationListItemTitle);
-                viewHolder.navigationListItemIcon = (ImageView) view.findViewById(R.id.navigationListItemIcon);
+                viewHolder.navigationListItemIcon = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
+
+
+
+
+
                 view.setTag(viewHolder);
 
             } else {
@@ -217,7 +259,33 @@ public class NavigationActivity extends FragmentActivity {
             */
 
             String datum = data.get(i);
+
+            if(datum=="Home"){
+
+                ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
+                image.setImageResource(R.drawable.ic_home);}
+
+            else if (datum=="My Profile"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
+                image.setImageResource(R.drawable.ic_user);
+                }
+
+            else if(datum=="Manage Diary"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
+                image.setImageResource(R.drawable.ic_settings);}
+
+            else if (datum=="Search"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
+                image.setImageResource(R.drawable.ic_search);}
+
+            else if (datum=="AR Locations"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
+                image.setImageResource(R.drawable.ic_ar);}
+
+            else if (datum=="Google Map"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
+                image.setImageResource(R.drawable.ic_map);}
+
+            else if (datum=="Logout"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
+                image.setImageResource(R.drawable.ic_power);}
+
             viewHolder.navigationListItemTitle.setText(datum);
+            // viewHolder.navigationListItemIcon.setText(datum);
             return view;
         }
 
@@ -225,5 +293,24 @@ public class NavigationActivity extends FragmentActivity {
             public TextView navigationListItemTitle;
             public ImageView navigationListItemIcon;
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+        // find the active session which can only be facebook in my app
+        Session session = Session.getActiveSession();
+        // run the closeAndClearTokenInformation which does the following
+        // DOCS : Closes the local in-memory Session object and clears any persistent
+        // cache related to the Session.
+        session.closeAndClearTokenInformation();
+        // return the user to the login screen
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
+       // Intent setIntent = new Intent(Intent.ACTION_MAIN);
+       // setIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+       // setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+       //startActivity(setIntent);
     }
 }

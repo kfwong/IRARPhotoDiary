@@ -21,8 +21,10 @@
 
     <TextView
         android:id="@+id/dashboardRecentAlbumItemTitle"
-        android:layout_width="fill_parent"
+        android:layout_width="135dp"
         android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
         android:layout_above="@+id/dashboardRecentAlbumItemDescription"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -36,7 +38,24 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="12dp"
         android:textStyle="bold" />
-
+    <TextView
+        android:id="@+id/dashboardRecentAlbumItemSize"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/dashboardRecentAlbumItemDescription"
+        android:layout_toEndOf="@id/albumTitle"
+        android:layout_marginLeft="135dp"
+        android:background="#80000000"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="1dp"
+        android:singleLine="true"
+        android:text="5"
+        android:textColor="#ffffffff"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12dp"
+        android:textStyle="bold" />
     <TextView
         android:id="@+id/dashboardRecentAlbumItemDescription"
         android:layout_width="fill_parent"

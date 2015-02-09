@@ -18,7 +18,23 @@
         android:minHeight="250dp"
         android:scaleType="centerCrop"
         android:src="@drawable/sample" />
-
+    <TextView
+        android:id="@+id/myDiaryItemSize"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/myDiaryItemTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#80000000"
+        android:paddingBottom="1dp"
+        android:paddingLeft="155dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:singleLine="true"
+        android:text="5"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12dp"
+        android:textStyle="bold" />
     <TextView
         android:id="@+id/myDiaryItemTitle"
         android:layout_width="fill_parent"

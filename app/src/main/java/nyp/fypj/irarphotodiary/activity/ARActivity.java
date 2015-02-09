@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.view.BeyondarViewAdapter;
@@ -109,7 +108,7 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
         sensorManager.registerListener(sensorEventListener, sensorManager
                 .getDefaultSensor(orientationSensor), SensorManager.SENSOR_DELAY_NORMAL);
 
-        Toast.makeText(this, "Lay down your phone to switch to Google Map view.", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Lay down your phone to switch to Google Map view.", Toast.LENGTH_LONG).show();
     }    final SensorEventListener sensorEventListener = new SensorEventListener() {
         public void onSensorChanged(SensorEvent sensorEvent) {
             if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
