@@ -88,7 +88,7 @@ public class DashboardHomeFragment extends Fragment {
         });
 
         Ion.with(this)
-                .load("https://fypj-124465r.rhcloud.com/albums/images/")
+                .load("nodejs-irarphotodiary.rhcloud.com/albums/images/")
                 .as(new TypeToken<ArrayList<ImageProfile>>() {
                 })
                 .setCallback(new FutureCallback<ArrayList<ImageProfile>>() {

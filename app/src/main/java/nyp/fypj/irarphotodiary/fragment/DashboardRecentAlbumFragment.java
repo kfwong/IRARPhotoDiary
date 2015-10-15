@@ -79,7 +79,7 @@ public class DashboardRecentAlbumFragment extends Fragment {
         progressBar.setVisibility(ProgressBar.VISIBLE);
 
         Ion.with(this)
-                .load("https://fypj-124465r.rhcloud.com/albums/")
+                .load("nodejs-irarphotodiary.rhcloud.com/albums/")
                 .as(new TypeToken<ArrayList<Album>>() {
                 })
                 .setCallback(new FutureCallback<ArrayList<Album>>() {

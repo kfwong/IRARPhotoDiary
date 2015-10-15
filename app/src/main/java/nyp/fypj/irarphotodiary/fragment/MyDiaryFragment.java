@@ -63,7 +63,7 @@ public class MyDiaryFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         //to remove cache
 
-        // MemoryCacheUtils.removeFromCache("https://fypj-124465r.rhcloud.com/albums/", ImageLoader.getInstance().getMemoryCache());
+        // MemoryCacheUtils.removeFromCache("nodejs-irarphotodiary.rhcloud.com/albums/", ImageLoader.getInstance().getMemoryCache());
 
         // ImageLoaderConfiguration config= new ImageLoaderConfiguration().Builder(getActivity().getApplicationContext()).memoryCache(new UsingFreqLimitedMemoryCache((2*1024*1024))).discCache(new UnlimitedDiscCache(cacheDir));
         final ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.myDiaryFragmentProgressBar);
@@ -83,7 +83,7 @@ public class MyDiaryFragment extends Fragment {
         });
         progressBar.setVisibility(ProgressBar.VISIBLE);
         Ion.with(this)
-                .load("https://fypj-124465r.rhcloud.com/albums/")
+                .load("nodejs-irarphotodiary.rhcloud.com/albums/")
                 .as(new TypeToken<ArrayList<Album>>() {
                 })
                 .setCallback(new FutureCallback<ArrayList<Album>>() {

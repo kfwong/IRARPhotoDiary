@@ -129,7 +129,7 @@ public class NavigationActivity extends FragmentActivity {
                 break;
             case 4:
                 Ion.with(this)
-                        .load("https://fypj-124465r.rhcloud.com/albums/images/")
+                        .load("nodejs-irarphotodiary.rhcloud.com/albums/images/")
                         .as(new TypeToken<ArrayList<ImageProfile>>() {
                         })
                         .setCallback(new FutureCallback<ArrayList<ImageProfile>>() {
@@ -144,7 +144,7 @@ public class NavigationActivity extends FragmentActivity {
                 break;
             case 5:
                 Ion.with(this)
-                        .load("https://fypj-124465r.rhcloud.com/albums/images/")
+                        .load("nodejs-irarphotodiary.rhcloud.com/albums/images/")
                         .as(new TypeToken<ArrayList<ImageProfile>>() {
                         })
                         .setCallback(new FutureCallback<ArrayList<ImageProfile>>() {
