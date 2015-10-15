@@ -119,7 +119,7 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
                 if (pitchAngle < 7 && pitchAngle > -7 && rollAngle < 7 &&
                         rollAngle > -7) {
                     sensorManager.unregisterListener(sensorEventListener);
-                    launchGoogleMapActivity();
+                    //launchGoogleMapActivity();
                 }
             }
         }
@@ -128,7 +128,7 @@ public class ARActivity extends FragmentActivity implements OnClickBeyondarObjec
             ARActivity.this.finish();
             Intent i = new Intent(ARActivity.this, GoogleMapActivity.class);
             i.putParcelableArrayListExtra("imageProfiles", imageProfiles);
-            startActivity(i);
+            //startActivity(i);
         }
 
         @Override

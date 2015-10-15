@@ -27,7 +27,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
@@ -84,9 +83,25 @@ public class ManageStoryActivity extends FragmentActivity {
         viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.Accordion);
         circlePageIndicator.setViewPager(viewPager);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == 1) {
+                 imageProfiles = intent.getExtras().getParcelableArrayList("imageProfiles");
+            Log.e("imageResult", imageProfiles.toString());
+            albumTitle = getIntent().getStringExtra("albumTitle");
+            ViewStoryPagerAdapter viewStoryPagerAdapter = new ViewStoryPagerAdapter(ManageStoryActivity.this.getSupportFragmentManager(), imageProfiles);
+            viewPager.setAdapter(viewStoryPagerAdapter);
+            viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.Accordion);
+            circlePageIndicator.setViewPager(viewPager);
+        }
+    }
     @Override
     public void onResume() {
         super.onResume();
+
+
+      //  startActivity(getIntent());
         // Set title
         if(albumTitle == null){
             getActionBar()
@@ -94,6 +109,8 @@ public class ManageStoryActivity extends FragmentActivity {
         else{
             getActionBar()
                     .setTitle(albumTitle);}
+
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -109,7 +126,7 @@ public class ManageStoryActivity extends FragmentActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.editStory:
-               // Toast.makeText(getApplicationContext(), "test: "  +  imageProfiles.get(viewPager.getCurrentItem()).getTitle(), Toast.LENGTH_LONG).show();
+                // Toast.makeText(getApplicationContext(), "test: "  +  imageProfiles.get(viewPager.getCurrentItem()).getTitle(), Toast.LENGTH_LONG).show();
                 Intent i = new Intent(ManageStoryActivity.this, UpdateImageActivity.class);
                 i.putExtra("imageProfile", imageProfiles.get(viewPager.getCurrentItem()));
                 i.putParcelableArrayListExtra("imageProfiles", imageProfiles);
@@ -117,11 +134,48 @@ public class ManageStoryActivity extends FragmentActivity {
                 break;
             case R.id.removeStory:
                 new AlertDialog.Builder(this)
-                        .setTitle("Delete Photo")
-                        .setMessage("Are you sure you want to delete this photo?")
+                        .setTitle("Delete Story")
+                        .setMessage("Are you sure you want to delete this story?")
                         .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
+                                AsyncTask<Void, Integer, Void> task = new AsyncTask<Void, Integer, Void>() {
+                                    @Override
+                                    protected Void doInBackground(Void... params) {
+                                        Log.e("Story Delete", "Before delete");
+                                        // continue with delete
+                                        //    String imgProfileId = imageProfiles.get(viewPager.getCurrentItem()).getFilename();
+                                        // make a httpclient call with uri provided by kang fei to remove this image profile based on its filename (unique key).
+                                        album.getImageProfiles().remove(imageProfiles.get(viewPager.getCurrentItem()));
+
+                                        Gson gson = new Gson();
+                                        String albumJson = gson.toJson(album);
+
+                                        try {
+                                            HttpClient httpClient = new DefaultHttpClient();
+                                            HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/update/album");
+                                            httpPost.setHeader("Content-Type", "application/json");
+                                            httpPost.setEntity(new StringEntity(albumJson));
+                                            HttpResponse httpResponse = httpClient.execute(httpPost); //TODO: not used?
+                                            Log.e("AlbumJson", albumJson);
+                                        }catch (Exception ex){
+                                            ex.printStackTrace();
+                                        }
+                                        Log.e("Album Delete", "after delete");
+                                        return null;
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        super.onPostExecute(aVoid);
+                                        Intent intent= new Intent(ManageStoryActivity.this,NavigationActivity.class);
+                                        //int position=2;
+                                        intent.putExtra("navpo","2");
+                                        startActivity(intent);
+
+                                    }
+                                };
+                                task.execute();
 
                             }
                         })
@@ -139,6 +193,7 @@ public class ManageStoryActivity extends FragmentActivity {
                 break;
             case R.id.update_album:
                 Intent intent = new Intent(ManageStoryActivity.this, UpdateStoryListActivity.class);
+                intent.putExtra("albumId", albumId);
                 intent.putParcelableArrayListExtra("imageProfiles", imageProfiles);
                 intent.putExtra("albumTitle", albumTitle);
                 intent.putExtra("albumDescription", albumDes);
@@ -178,8 +233,18 @@ public class ManageStoryActivity extends FragmentActivity {
                                         Log.e("Album Delete", "after delete");
                                         return null;
                                     }
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        super.onPostExecute(aVoid);
+                                        Intent intent= new Intent(ManageStoryActivity.this,NavigationActivity.class);
+                                        //int position=2;
+                                        intent.putExtra("navpo","2");
+                                        startActivity(intent);
+
+                                    }
                                 };
                                 task.execute();
+
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -191,7 +256,7 @@ public class ManageStoryActivity extends FragmentActivity {
                         .show();
 
         }
-                return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
     private class ViewStoryPagerAdapter extends FragmentPagerAdapter {
         private ArrayList<ImageProfile> imageProfiles;
@@ -219,4 +284,23 @@ public class ManageStoryActivity extends FragmentActivity {
             return obj;
         }
     }
+    public void onBackPressed() {
+
+        Intent intent= new Intent(ManageStoryActivity.this,NavigationActivity.class);
+           //int position=2;
+        intent.putExtra("navpo","2");
+          startActivity(intent);
+        //this.getIntent().putExtra("navpo", 2);
+       // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+      //  startActivityForResult(intent,2);
+      //  finish();
+       // MyDiaryFragment fragment = (MyDiaryFragment) getFragmentManager().findFragmentById(R.id.myDiaryFragmentProgressBar);
+      //  fragment.<specific_function_name>();
+        //  Fragment fragment= new MyDiaryFragment();
+      //  FragmentManager fragmentManager = this.getSupportFragmentManager();
+      //  fragmentManager.beginTransaction().add(fragment,null);
+      //  FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+       // fragmentTransaction.replace(R.id.content, fragment).commit();
+    }
+
 }

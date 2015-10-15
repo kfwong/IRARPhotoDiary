@@ -1,6 +1,8 @@
 package nyp.fypj.irarphotodiary.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.Session;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -42,6 +45,9 @@ public class NavigationActivity extends FragmentActivity {
     private ActionBarDrawerToggle navigationToggle;
     private ListView navigationList;
     private DrawerLayout navigationDrawer;
+    private GoogleApiClient mGoogleApiClient;
+    private static final String TAG = "MainFragment";
+    private  Integer navpo=0;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +57,13 @@ public class NavigationActivity extends FragmentActivity {
         // Remove divider under actionbar
         getActionBar().setBackgroundDrawable(null);
 
+
         List<String> data = new ArrayList<String>();
         data.add("Home");
         data.add("My Profile");
-        data.add("Manage Diary");
+        data.add("Manage My Diary");
         data.add("Search");
-        data.add("AR Locations");
+        data.add("AR Location");
         data.add("Google Map");
         data.add("Logout");
 
@@ -72,9 +79,12 @@ public class NavigationActivity extends FragmentActivity {
         this.getActionBar().setDisplayHomeAsUpEnabled(true);
         this.getActionBar().setHomeButtonEnabled(true);
 
+        //added code here
         NavigationListAdapter navigationListAdapter = new NavigationListAdapter(this.getApplicationContext(), data);
         navigationList = (ListView) findViewById(R.id.navigationList);
         navigationList.setAdapter(navigationListAdapter);
+        //navigationList.setSelection(2);
+
         navigationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -82,11 +92,17 @@ public class NavigationActivity extends FragmentActivity {
             }
         });
 
+
+
         if (savedInstanceState == null) {
             DashboardFragment dashboardFragment = new DashboardFragment();
             FragmentManager fragmentManager = this.getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.content, dashboardFragment).commit();
+        }
+        if(getIntent().getStringExtra("navpo")!=null){
+            displayFragment(2);
+
         }
 
     }
@@ -106,6 +122,7 @@ public class NavigationActivity extends FragmentActivity {
                 break;
             case 2:
                 fragment = new MyDiaryFragment();
+
                 break;
             case 3:
                 fragment = new SearchFragment();
@@ -150,6 +167,9 @@ public class NavigationActivity extends FragmentActivity {
                 // cache related to the Session.
                 session.closeAndClearTokenInformation();
                 // return the user to the login screen
+                LoginActivity la= new LoginActivity();
+                la.logoutFromTwitter();
+
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 // make sure the user can not access the page after he/she is logged out
                 // clear the activity stack
@@ -194,6 +214,16 @@ public class NavigationActivity extends FragmentActivity {
         navigationToggle.syncState();
     }
 
+   /* @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 2){
+           // displayFragment(0);
+            displayFragment(2);
+        }
+    }*/
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -237,11 +267,6 @@ public class NavigationActivity extends FragmentActivity {
                 viewHolder = new ViewHolder();
                 viewHolder.navigationListItemTitle = (TextView) view.findViewById(R.id.navigationListItemTitle);
                 viewHolder.navigationListItemIcon = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
-
-
-
-
-
                 view.setTag(viewHolder);
 
             } else {
@@ -269,13 +294,13 @@ public class NavigationActivity extends FragmentActivity {
                 image.setImageResource(R.drawable.ic_user);
                 }
 
-            else if(datum=="Manage Diary"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
+            else if(datum=="Manage My Diary"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
                 image.setImageResource(R.drawable.ic_settings);}
 
             else if (datum=="Search"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
                 image.setImageResource(R.drawable.ic_search);}
 
-            else if (datum=="AR Locations"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
+            else if (datum=="AR Location"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
                 image.setImageResource(R.drawable.ic_ar);}
 
             else if (datum=="Google Map"){ImageView image = (ImageView) view.findViewById(R.id.navigationListItemIcon1);
@@ -298,16 +323,43 @@ public class NavigationActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        Log.d("CDA", "onBackPressed Called");
-        // find the active session which can only be facebook in my app
-        Session session = Session.getActiveSession();
-        // run the closeAndClearTokenInformation which does the following
-        // DOCS : Closes the local in-memory Session object and clears any persistent
-        // cache related to the Session.
-        session.closeAndClearTokenInformation();
-        // return the user to the login screen
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-        finish();
+        Log.e("TADAH", this.getActionBar().getTitle()+"");
+        if(!this.getActionBar().getTitle().equals("Home")){
+            displayFragment(0);
+        }else{
+            new AlertDialog.Builder(this)
+                    .setTitle("Exit Application")
+                    .setMessage("Are you sure you want to logout this application?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // continue with exit
+                            // find the active session which can only be facebook in my app
+                            Session session = Session.getActiveSession();
+                            // run the closeAndClearTokenInformation which does the following
+                            // DOCS : Closes the local in-memory Session object and clears any persistent
+                            // cache related to the Session.
+                            session.closeAndClearTokenInformation();
+                            // return the user to the login screen
+                            //for twitter Logout
+                            LoginActivity la= new LoginActivity();
+                            la.logoutFromTwitter();
+                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+
+     //   Log.d("CDA", "onBackPressed Called");
+
        // Intent setIntent = new Intent(Intent.ACTION_MAIN);
        // setIntent.addCategory(Intent.CATEGORY_LAUNCHER);
        // setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -52,17 +52,20 @@ public class MyDiaryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_my_diary, container, false);
+
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //to remove cache
 
-      // MemoryCacheUtils.removeFromCache("https://fypj-124465r.rhcloud.com/albums/", ImageLoader.getInstance().getMemoryCache());
+        // MemoryCacheUtils.removeFromCache("https://fypj-124465r.rhcloud.com/albums/", ImageLoader.getInstance().getMemoryCache());
 
-       // ImageLoaderConfiguration config= new ImageLoaderConfiguration().Builder(getActivity().getApplicationContext()).memoryCache(new UsingFreqLimitedMemoryCache((2*1024*1024))).discCache(new UnlimitedDiscCache(cacheDir));
+        // ImageLoaderConfiguration config= new ImageLoaderConfiguration().Builder(getActivity().getApplicationContext()).memoryCache(new UsingFreqLimitedMemoryCache((2*1024*1024))).discCache(new UnlimitedDiscCache(cacheDir));
         final ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.myDiaryFragmentProgressBar);
         final StaggeredGridView staggeredGridView = (StaggeredGridView) getView().findViewById(R.id.myDiaryFragmentStaggeredGridView);
         staggeredGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -92,6 +95,10 @@ public class MyDiaryFragment extends Fragment {
                         progressBar.setVisibility(ProgressBar.INVISIBLE);
                     }
                 });
+
+        //onbackpress
+
+
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -110,6 +117,8 @@ public class MyDiaryFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
     private class MyDiaryFragmentAdapter extends BaseAdapter {
         private LayoutInflater layoutInflater;
         private ArrayList<Album> albums;
@@ -198,4 +207,5 @@ public class MyDiaryFragment extends Fragment {
  mActionMode = null;
  }
  };**/
+
 }

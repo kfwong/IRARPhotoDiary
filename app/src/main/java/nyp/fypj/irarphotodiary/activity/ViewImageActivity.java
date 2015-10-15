@@ -20,7 +20,7 @@ public class ViewImageActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_view_image);
         viewStorySingleImage = (KenBurnsView) findViewById(R.id.viewStorySingleImage);
-       // getActionBar().setBackgroundDrawable(null);
+        // getActionBar().setBackgroundDrawable(null);
         Intent intent = getIntent();
 
         imageProfile = intent.getExtras().getParcelable("imageProfile");

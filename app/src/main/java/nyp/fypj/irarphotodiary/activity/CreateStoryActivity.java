@@ -1,5 +1,6 @@
 package nyp.fypj.irarphotodiary.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.flaviofaria.kenburnsview.KenBurnsView;
@@ -135,6 +137,11 @@ public class CreateStoryActivity extends FragmentActivity {
                 startActivityForResult(photoPickerIntent, 1);//TODO: LOOK AT THAT UGLY REQUEST CODE!!!
                 break;
             case R.id.createStorySave:
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
                 imageProfile.setTitle(createStoryTitle.getTextString());
                 imageProfile.setDescription(createStoryDescription.getTextString());
                 imageProfile.setDateUploaded(today);

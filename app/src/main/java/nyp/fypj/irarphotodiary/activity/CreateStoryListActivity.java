@@ -174,7 +174,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                 ImageProfile imageProfile = new ImageProfile();
                 imageProfile.setTitle("");
                 imageProfile.setDescription("");
-               createStoryListAdapter.add(imageProfile);
+                createStoryListAdapter.add(imageProfile);
                 break;
             case R.id.createStoryListUpload:
                 Toast.makeText(this, "Photos are being uploaded!", Toast.LENGTH_LONG).show();
@@ -299,6 +299,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                         notificationCompat.setContentTitle("Uploading Album");
                         notificationCompat.setProgress(0, 0, true);
                         notificationManager.notify(1, notificationCompat.build());
+
                     }
 
                     @Override
@@ -320,7 +321,12 @@ public class CreateStoryListActivity extends FragmentActivity {
                         notificationCompat.setContentText("Upload completed.");
                         notificationCompat.setProgress(0, 0, false);
                         notificationManager.notify(1, notificationCompat.build());
-                        finish();
+                        Intent intent= new Intent(CreateStoryListActivity.this.getApplicationContext(),NavigationActivity.class);
+
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        //
+                        startActivityForResult(intent,2);
+                        CreateStoryListActivity.this.finish();
                     }
                 };
 
@@ -332,7 +338,7 @@ public class CreateStoryListActivity extends FragmentActivity {
                 new AlertDialog.Builder(this)
                         .setTitle("Exit")
                         .setMessage("Discard changes?")
-                        .setPositiveButton(R.string.dgts__okay, new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // continue with delete
                                 //    String imgProfileId = imageProfiles.get(viewPager.getCurrentItem()).getFilename();
@@ -508,8 +514,8 @@ public class CreateStoryListActivity extends FragmentActivity {
 
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setTitle("Exit Application")
-                .setMessage("Are you sure you want to exit this application?")
+                .setTitle("Discard Changes")
+                .setMessage("Are you sure you want to leave this page?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 

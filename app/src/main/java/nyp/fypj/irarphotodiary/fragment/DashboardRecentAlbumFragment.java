@@ -137,10 +137,10 @@ public class DashboardRecentAlbumFragment extends Fragment {
 
             Album album = albums.get(i);
             ImageProfile coverImage = albums.get(i).getImageProfiles().get(0);
-           // String albumTitle=
-            viewHolder.dashboardRecentAlbumItemTitle.setText(album.getTitle()+"("+Integer.toString(album.getImageProfiles().size())+")");
+            // String albumTitle=
+            viewHolder.dashboardRecentAlbumItemTitle.setText(album.getTitle());
             viewHolder.dashboardRecentAlbumItemTitle.setTextColor(Color.parseColor("#ff33B5E5"));
-           viewHolder.dashboardRecentAlbumItemSize.setText("("+Integer.toString(album.getImageProfiles().size())+")");
+            viewHolder.dashboardRecentAlbumItemSize.setText("("+Integer.toString(album.getImageProfiles().size())+")");
             //viewHolder.dashboardRecentAlbumItemSize.setTextColor(Color.parseColor("#FFFFFF"));
             //Log.e(Integer.toString(album.getImageProfiles().size()), "album size");
             viewHolder.dashboardRecentAlbumItemDescription.setText(album.getDescription());

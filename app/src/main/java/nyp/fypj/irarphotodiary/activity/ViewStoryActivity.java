@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 import com.mobeta.android.dslv.DragSortListView;
@@ -25,10 +26,12 @@ public class ViewStoryActivity extends FragmentActivity {
     private CirclePageIndicator circlePageIndicator;
     private ArrayList<ImageProfile> imageProfiles;
     private ImageProfile imageProfile;
-    private DragSortListView createStoryList;
-    private FloatLabeledEditText albumDescription;
     private Album album;
+    private DragSortListView createStoryList;
     private String albumTitle;
+    private FloatLabeledEditText albumDescription;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,26 +40,28 @@ public class ViewStoryActivity extends FragmentActivity {
         viewPager = (JazzyViewPager) findViewById(R.id.viewPager);
         circlePageIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
 
+
         imageProfiles = getIntent().getParcelableArrayListExtra("imageProfiles");
-        albumTitle=getIntent().getStringExtra("albumTitle");
+        albumTitle = getIntent().getStringExtra("albumTitle");
+
         ViewStoryPagerAdapter viewStoryPagerAdapter = new ViewStoryPagerAdapter(ViewStoryActivity.this.getSupportFragmentManager(), imageProfiles);
         viewPager.setAdapter(viewStoryPagerAdapter);
         viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.Accordion);
 
         circlePageIndicator.setViewPager(viewPager);
     }
-@Override
-public void onResume(){
-
-    super.onResume();
-    if(albumTitle==null){
-        getActionBar().setTitle(imageProfiles.get(viewPager.getCurrentItem()).getTitle());
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Set title 
+        if(albumTitle == null){
+       getActionBar()
+                .setTitle(imageProfiles.get(viewPager.getCurrentItem()).getTitle());}
+        else{
+            getActionBar()
+                    .setTitle(albumTitle);}
 
     }
-    else{
-        getActionBar().setTitle(albumTitle);
-    }
-}
    /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -127,7 +132,4 @@ public void onResume(){
             return obj;
         }
     }
-
-
-
 }

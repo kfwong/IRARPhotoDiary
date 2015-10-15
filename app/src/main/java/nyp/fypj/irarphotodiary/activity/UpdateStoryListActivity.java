@@ -45,6 +45,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,12 +68,14 @@ public class UpdateStoryListActivity extends FragmentActivity {
     private DragSortListView updateStoryList;
     private UpdateStoryListAdapter updateStoryListAdapter;
     private ImageSize thumbnailSize = new ImageSize(128, 128);
-    private ArrayList<ImageProfile> imageProfiles;
+    private ArrayList<ImageProfile> imageProfiles=null;
     private ImageProfile imageProfile;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private FloatLabeledEditText albumTitle;
     private FloatLabeledEditText albumDescription;
+    private String albumId;
+
 
     @Override
     protected void onStart() {
@@ -93,14 +96,21 @@ public class UpdateStoryListActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_story_list);
-
-
-        albumTitle = (FloatLabeledEditText) findViewById(R.id.albumTitle);
-        albumDescription = (FloatLabeledEditText) findViewById(R.id.albumDescription);
-        albumTitle.setText(getIntent().getStringExtra("albumTitle"));
-        albumDescription.setText(getIntent().getStringExtra("albumDescription"));
-            imageProfiles = getIntent().getParcelableArrayListExtra("imageProfiles");
-            Log.e("imageProfiles",imageProfiles.toString());
+if(imageProfiles==null) {
+    albumId = getIntent().getStringExtra("albumId");
+    albumTitle = (FloatLabeledEditText) findViewById(R.id.albumTitle);
+    albumDescription = (FloatLabeledEditText) findViewById(R.id.albumDescription);
+    albumTitle.setText(getIntent().getStringExtra("albumTitle"));
+    albumDescription.setText(getIntent().getStringExtra("albumDescription"));
+    imageProfiles = getIntent().getParcelableArrayListExtra("imageProfiles");
+    Log.e("imageProfiles", imageProfiles.toString());
+}
+        /*if(getIntent().getParcelableExtra("imageProfile")!= null) {
+            ImageProfile imageProfile = getIntent().getParcelableExtra("imageProfile");
+            int position=getIntent().getIntExtra("position",-1);
+            imageProfiles.set(position,imageProfile);
+        }
+        */
         updateStoryListAdapter = new UpdateStoryListAdapter(this, imageProfiles);
 
         //http://stackoverflow.com/questions/14813882/bauerca-drag-sort-listview-simple-example
@@ -174,7 +184,8 @@ public class UpdateStoryListActivity extends FragmentActivity {
                     private ArrayList<ImageProfile> imageProfiles = updateStoryListAdapter.imageProfiles;
                     private NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     private NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(UpdateStoryListActivity.this);
-
+                    private File file;
+                    private  Album albumzz=new Album();
                     @Override
                     protected Void doInBackground(Void... voids) {
 
@@ -209,34 +220,38 @@ public class UpdateStoryListActivity extends FragmentActivity {
 
                                 // Upload image to cloudinary
                                 // Get instance from application constant DO NOT INITIALIZE ANOTHER.
-                                File file = new File(imageProfile.getUri().substring(7));
-                                Log.e("TADAH", "uploading image");
-                                Cloudinary cloudinary = ((BootstrapApplication) UpdateStoryListActivity.this.getApplication()).getCloudinary();
-                                JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
 
-                                Log.e("TADAH", "uploaded: " + uploadResult);
+                                if (imageProfile.getUri() != "" && imageProfile.getUri() != null) {
+                                    file = new File(imageProfile.getUri().substring(7));
 
-                                // autotagging
-                                Log.e("TADAH", "processing autotagging");
-                                JsonObject jsonObject = Ion.with(UpdateStoryListActivity.this)
-                                        .load("http://api.imagga.com/draft/tags?api_key=acc_31de762e407a6a3&url=" + uploadResult.getString("url"))
-                                        .asJsonObject()
-                                        .get();
+                                    Log.e("TADAH", "uploading image");
+                                    Cloudinary cloudinary = ((BootstrapApplication) UpdateStoryListActivity.this.getApplication()).getCloudinary();
+                                    JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
 
-                                Log.e("TADAH", "done autotagging: " + jsonObject.get("tags"));
+                                    Log.e("TADAH", "uploaded: " + uploadResult);
 
-                                ArrayList<Tag> tags = new Gson().fromJson(jsonObject.get("tags"), new TypeToken<ArrayList<Tag>>() {
-                                }.getType());
+                                    // autotagging
+                                    Log.e("TADAH", "processing autotagging");
+                                    JsonObject jsonObject = Ion.with(UpdateStoryListActivity.this)
+                                            .load("http://api.imagga.com/draft/tags?api_key=acc_31de762e407a6a3&url=" + uploadResult.getString("url"))
+                                            .asJsonObject()
+                                            .get();
 
-                                Log.e("TADAH", "done conversion to entity");
+                                    Log.e("TADAH", "done autotagging: " + jsonObject.get("tags"));
 
-                                //set to image's tags
-                                imageProfile.setTags(tags);
+                                    ArrayList<Tag> tags = new Gson().fromJson(jsonObject.get("tags"), new TypeToken<ArrayList<Tag>>() {
+                                    }.getType());
 
-                                // set the format and public url from cloudinary uplaod response
-                                // if the key is not present in the upload result (meaning upload failed), a JSONException will be thrown
-                                imageProfile.setFilename(uploadResult.get("public_id").toString());
-                                imageProfile.setExtension(uploadResult.get("format").toString());
+                                    Log.e("TADAH", "done conversion to entity");
+
+                                    //set to image's tags
+                                    imageProfile.setTags(tags);
+
+                                    // set the format and public url from cloudinary uplaod response
+                                    // if the key is not present in the upload result (meaning upload failed), a JSONException will be thrown
+                                    imageProfile.setFilename(uploadResult.get("public_id").toString());
+                                    imageProfile.setExtension(uploadResult.get("format").toString());
+                                }
 
                             } catch (IOException ex) {
                                 ex.printStackTrace();
@@ -255,6 +270,7 @@ public class UpdateStoryListActivity extends FragmentActivity {
                             SimpleDateFormat format=new SimpleDateFormat("EEEE, dd, MMM yyyy, hh:mm aaa");
                             Date date1 = Calendar.getInstance().getTime();
                             String today=format.format(date1);
+                            album.set_id(albumId);
                             album.setTitle(albumTitle.getTextString());
                             album.setDescription(albumDescription.getTextString());
                             album.setDateUploaded(today);
@@ -268,10 +284,15 @@ public class UpdateStoryListActivity extends FragmentActivity {
 
                             // Upload json to databasesss
                             HttpClient httpClient = new DefaultHttpClient();
-                            HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/albums");
+                            HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/update/album");
                             httpPost.setHeader("Content-Type", "application/json");
                             httpPost.setEntity(new StringEntity(albumJson));
                             HttpResponse httpResponse = httpClient.execute(httpPost); //TODO: not used?
+
+                           String result= EntityUtils.toString(httpResponse.getEntity());
+                            result=result.substring(1,result.length()-1);
+                            Log.e("tadah", result);
+                             albumzz = gson.fromJson(result, Album.class);
 
                         } catch (IOException ex) {
                             ex.printStackTrace();
@@ -286,7 +307,7 @@ public class UpdateStoryListActivity extends FragmentActivity {
 
                         // start the notification progress
                         notificationCompat.setSmallIcon(R.drawable.ic_launcher);
-                        notificationCompat.setContentTitle("Uploading Album");
+                        notificationCompat.setContentTitle("Updating Album");
                         notificationCompat.setProgress(0, 0, true);
                         notificationManager.notify(1, notificationCompat.build());
                     }
@@ -298,7 +319,7 @@ public class UpdateStoryListActivity extends FragmentActivity {
                         int count = progress[0];
                         int total = progress[1];
 
-                        notificationCompat.setContentText("Uploading image profiles " + count + " of " + total + "...");
+                        notificationCompat.setContentText("Updating image profiles " + count + " of " + total + "...");
                         notificationCompat.setProgress(0, 0, true);
                         notificationManager.notify(1, notificationCompat.build());
                     }
@@ -307,21 +328,33 @@ public class UpdateStoryListActivity extends FragmentActivity {
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
 
-                        notificationCompat.setContentText("Upload completed.");
+                        notificationCompat.setContentText("Update completed.");
                         notificationCompat.setProgress(0, 0, false);
                         notificationManager.notify(1, notificationCompat.build());
-                        finish();
+
+                        Intent intent= new Intent(UpdateStoryListActivity.this.getApplicationContext(),ManageStoryActivity.class);
+                        intent.putParcelableArrayListExtra("imageProfiles",albumzz.getImageProfiles());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("albumTitle", albumzz.getTitle());
+                       //
+                        startActivityForResult(intent,1);
+                        UpdateStoryListActivity.this.finish();
+
+
+
                     }
                 };
 
                 task.execute();
                 ///// end of async task
+
+
                 break;
             case R.id.createStoryListCancel:
                 new AlertDialog.Builder(this)
                         .setTitle("Exit")
                         .setMessage("Discard Changes?")
-                        .setPositiveButton(R.string.dgts__okay, new DialogInterface.OnClickListener() {
+                        .setPositiveButton("okay", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // continue with delete
                                 //    String imgProfileId = imageProfiles.get(viewPager.getCurrentItem()).getFilename();
@@ -402,9 +435,9 @@ public class UpdateStoryListActivity extends FragmentActivity {
             viewHolder.createStoryItemTitle.setText(imageProfile.getTitle());
             viewHolder.createStoryItemDescription.setText(imageProfile.getDescription());
             viewHolder.createStoryItemPosition.setText("#" + position);
-            if (imageProfile.getFilename() != "" && imageProfile.getFilename() != null || (imageProfile.getUri() != "" && imageProfile.getUri() != null)) {
+            if (imageProfile.getFilename() != "" && imageProfile.getFilename() != null ) {
                 viewHolder.createStoryItemThumbnail.setImageBitmap(null);
-                ImageLoader.getInstance().loadImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_300,h_400/" + imageProfile.getFilename() + "." + imageProfile.getExtension(), thumbnailSize, new SimpleImageLoadingListener() {
+                ImageLoader.getInstance().loadImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_0.1/" + imageProfile.getFilename() + "." + imageProfile.getExtension(), thumbnailSize, new SimpleImageLoadingListener() {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
@@ -419,9 +452,34 @@ public class UpdateStoryListActivity extends FragmentActivity {
                     }
 
                 });
-            } else {
+            }
+            else if (imageProfile.getUri() != "" && imageProfile.getUri() != null){
+                viewHolder.createStoryItemThumbnail.setImageBitmap(null);
+                ImageLoader.getInstance().loadImage(imageProfile.getUri(), thumbnailSize, new SimpleImageLoadingListener() {
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+
+                        Bitmap thumbnail = ThumbnailUtils.extractThumbnail(loadedImage, 128, 128);
+                        viewHolder.createStoryItemThumbnail.setImageBitmap(thumbnail);
+
+                        Animation fadeIn = new AlphaAnimation(0.0f, 1.0f);
+                        fadeIn.setDuration(300);
+                        fadeIn.setFillAfter(true);
+                        viewHolder.createStoryItemThumbnail.startAnimation(fadeIn);
+                    }
+
+                });
+            }
+            else {
                 viewHolder.createStoryItemThumbnail.setImageResource(R.drawable.placeholder);
             }
+
+
+
+
+            //    viewHolder.createStoryItemThumbnail.setImageResource(R.drawable.placeholder);
+
 
             return view;
         }

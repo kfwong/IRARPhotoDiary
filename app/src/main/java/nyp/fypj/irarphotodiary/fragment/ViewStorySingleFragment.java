@@ -2,6 +2,7 @@ package nyp.fypj.irarphotodiary.fragment;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -67,6 +68,7 @@ public class ViewStorySingleFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_view_story_single, container, false);
         KenBurnsView viewStorySingleImage = (KenBurnsView) view.findViewById(R.id.viewStorySingleImage);
         TextView viewStorySingleTitle = (TextView) view.findViewById(R.id.viewStorySingleTitle);
+        viewStorySingleTitle.setTextColor(Color.parseColor("#FCFC97"));
         TextView viewStorySingleDescription = (TextView) view.findViewById(R.id.viewStorySingleDescription);
         //display time
         date = (TextView) view.findViewById(R.id.date);
@@ -77,8 +79,10 @@ public class ViewStorySingleFragment extends Fragment {
         List<String> arrayLists=new ArrayList<String>(Arrays.asList(date1.split(", ")));
         day.setText(arrayLists.get(0));
         date.setText(arrayLists.get(1));
+        date.setTextColor(Color.parseColor("#FFFFFF"));
         monthyear.setText(arrayLists.get(2));
         time.setText(arrayLists.get(3));
+        time.setTextColor(Color.parseColor("#D3F1FF"));
 
         if (imageProfile != null) {
             ImageLoader.getInstance().displayImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_300,h_300/" + imageProfile.getFilename() + "." + imageProfile.getExtension(), viewStorySingleImage);

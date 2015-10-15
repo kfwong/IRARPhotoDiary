@@ -1,22 +1,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="nyp.fypj.irarphotodiary.activity.ManageStoryActivity">
+
     <item
         android:id="@+id/editStory"
         android:icon="@drawable/ic_action_edit"
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="AR Mode" />
+
     <item
         android:id="@+id/removeStory"
         android:icon="@drawable/ic_action_discard"
         android:orderInCategory="101"
         android:showAsAction="always"
         android:title="Map Mode" />
+
+
     <item
         android:id="@+id/new_album"
         android:title="@string/new_album"
         android:showAsAction="never"/>
+
     <item
         android:id="@+id/update_album"
         android:title="@string/update_album"
@@ -25,4 +31,6 @@
         android:id="@+id/delete_album"
         android:title="@string/delete_album"
         android:showAsAction="never"/>
+
+
 </menu>

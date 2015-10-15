@@ -17,8 +17,8 @@
     <string name="title_activity_dashboard">Dashboard</string>
     <string name="title_activity_main">Main Activity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_create_story">Edit Story</string>
     <string name="title_activity_view_story">Album</string>
-    <string name="title_activity_create_story">Create Album</string>
     <string name="title_activity_ar">AR</string>
     <string name="title_activity_google_map">Google Map</string>
     <string name="app_id">374182362749448</string>
@@ -27,10 +27,11 @@
     <string name="new_album">New Album</string>
     <string name="update_album">Update Album</string>
     <string name="delete_album">Delete Album</string>
-    <string name="update_story">Update Story</string>
     <string name="exit">Exit</string>
-    <string name="proceed">Proceed to Application</string>
+    <string name="update_story">Update Story</string>
     <!-- GOOGLE PLUS -->
-    <string name="btn_logout_from_google">Logout from Google</string>
+    <string name="btn_logout_from_google">Logout</string>
     <string name="btn_revoke_access">Revoke Access</string>
+    <string name="proceed">Proceed to application</string>
+
 </resources>

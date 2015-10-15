@@ -146,7 +146,7 @@
                 android:src="@drawable/ic_gplus"
                 android:layout_alignTop="@+id/loginFacebook"
                 android:layout_alignParentStart="true"
-                android:layout_marginLeft="15dp" />
+                android:layout_marginLeft="20dp" />
 
             <com.facebook.widget.LoginButton
                 xmlns:fb="http://schemas.android.com/apk/res-auto"
@@ -154,7 +154,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="10dp"
                 android:layout_toEndOf="@+id/loginGPlus"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="30dp"
                 android:scaleType="centerInside"
                 fb:login_text=""
                 fb:logout_text=""
@@ -162,21 +162,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/loginfb"/>
 
-            <ImageButton
-                android:id="@+id/btnLoginTwitter"
-                android:layout_toEndOf="@+id/loginFacebook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:scaleType="centerInside"
-                android:layout_marginTop="10dp"/>
-
-
-
-            <!--com.twitter.sdk.android.core.identity.TwitterLoginButton
+            <com.twitter.sdk.android.core.identity.TwitterLoginButton
                 xmlns:twitter="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/loginTwitter"
                 android:layout_toEndOf="@+id/loginFacebook"
@@ -190,7 +176,7 @@
                 twitter:login_text=""
                 twitter:logout_text=""
                 android:src="@drawable/ic_twitter"
-                /-->
+                />
 
             <Button
                 android:id="@+id/btn_sign_out"

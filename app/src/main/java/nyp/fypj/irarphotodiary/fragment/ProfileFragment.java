@@ -54,6 +54,8 @@ public class ProfileFragment extends Fragment {
         profileEmail = (TextView) view.findViewById(R.id.profileEmail);
         profileBio = (TextView) view.findViewById(R.id.profileBio);
 
+
+
         updateUI();
 
         // Inflate the layout for this fragment

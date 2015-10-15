@@ -1,6 +1,7 @@
 package nyp.fypj.irarphotodiary.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.flaviofaria.kenburnsview.KenBurnsView;
@@ -85,7 +87,7 @@ public class UpdateStoryActivity extends FragmentActivity {
             createStoryTitle.setText(imageProfile.getTitle());
             createStoryDescription.setText(imageProfile.getDescription());
 
-            if (imageProfile.getFilename() != "" && imageProfile.getFilename() != null ||imageProfile.getUri() != "" || imageProfile.getUri() != null) {
+            if (imageProfile.getFilename() != "" && imageProfile.getFilename() != null) {
                 // DEBUG image problem: Log.e("onCreate", "image-isnull: "+imageProfile.getUri());
                 ImageLoader.getInstance().displayImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/w_300,h_400/" + imageProfile.getFilename() + "." + imageProfile.getExtension(), createStoryImageView);
             }
@@ -137,6 +139,11 @@ public class UpdateStoryActivity extends FragmentActivity {
                 startActivityForResult(photoPickerIntent, 1);//TODO: LOOK AT THAT UGLY REQUEST CODE!!!
                 break;
             case R.id.createStorySave:
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
                 imageProfile.setTitle(createStoryTitle.getTextString());
                 imageProfile.setDescription(createStoryDescription.getTextString());
                 imageProfile.setDateUploaded(today);
@@ -187,7 +194,8 @@ public class UpdateStoryActivity extends FragmentActivity {
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                     final String actualUri = cursor.getString(columnIndex);
                     cursor.close();
-
+                    imageProfile.setFilename("");
+                    imageProfile.setFilename(null);
                     imageProfile.setUri("file://" + actualUri);
 
                     ImageLoader.getInstance().displayImage(imageProfile.getUri(), createStoryImageView);

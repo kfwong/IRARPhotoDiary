@@ -17,13 +17,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cloudinary.Cloudinary;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wrapp.floatlabelededittext.FloatLabeledEditText;
@@ -48,7 +48,6 @@ import java.util.concurrent.ExecutionException;
 
 import nyp.fypj.irarphotodiary.R;
 import nyp.fypj.irarphotodiary.application.BootstrapApplication;
-import nyp.fypj.irarphotodiary.dto.Album;
 import nyp.fypj.irarphotodiary.dto.ImageProfile;
 import nyp.fypj.irarphotodiary.dto.Tag;
 
@@ -63,7 +62,7 @@ public class UpdateImageActivity extends FragmentActivity {
     private TextView day;
     private TextView monthyear;
     private TextView time;
-    private Album albums;
+
 
 
     @Override
@@ -82,14 +81,14 @@ public class UpdateImageActivity extends FragmentActivity {
         monthyear = (TextView) findViewById(R.id.monthyear);
         time = (TextView) findViewById(R.id.time);
 
-            Intent intent = getIntent();
+        Intent intent = getIntent();
 
-            imageProfile = intent.getExtras().getParcelable("imageProfile");
-            imageProfiles = intent.getExtras().getParcelableArrayList("imageProfiles");
-          //  albums.setImageProfiles(imageProfile);
-            createStoryTitle.setText(imageProfile.getTitle());
-            createStoryDescription.setText(imageProfile.getDescription());
-            String date1= imageProfile.getDateUploaded();
+        imageProfile = intent.getExtras().getParcelable("imageProfile");
+        imageProfiles = intent.getExtras().getParcelableArrayList("imageProfiles");
+
+        createStoryTitle.setText(imageProfile.getTitle());
+        createStoryDescription.setText(imageProfile.getDescription());
+        String date1= imageProfile.getDateUploaded();
 
 
         List<String> arrayLists=new ArrayList<String>(Arrays.asList(date1.split(", ")));
@@ -99,14 +98,10 @@ public class UpdateImageActivity extends FragmentActivity {
         time.setText(arrayLists.get(3));
 
         // Uri myUri = Uri.parse(imageProfile.getUri());
-           // createStoryImageView.setImageURI(myUri);
-
-        if(imageProfile.getUri()==null || imageProfile.getUri()=="") {
-            imageProfile.setUri("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/" + imageProfile.getFilename() + "." + imageProfile.getExtension());
-        }
+        // createStoryImageView.setImageURI(myUri);
         ImageLoader.getInstance().displayImage("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/" + imageProfile.getFilename() + "." + imageProfile.getExtension(), createStoryImageView);
 
-        }
+    }
 
 
     @Override
@@ -153,7 +148,6 @@ public class UpdateImageActivity extends FragmentActivity {
                 startActivityForResult(photoPickerIntent, 1);//TODO: LOOK AT THAT UGLY REQUEST CODE!!!
                 break;
             case R.id.createStorySave:
-
                 new AlertDialog.Builder(this)
                         .setTitle("Update Photo")
                         .setMessage("Save Changes?")
@@ -161,6 +155,8 @@ public class UpdateImageActivity extends FragmentActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 // update the image
 
+
+                                imageProfile.setUri("http://res.cloudinary.com/" + BootstrapApplication.CLOUDINARY_CLOUD_NAME + "/image/upload/" + imageProfile.getFilename() + "." + imageProfile.getExtension());
 
                                 ///// async task
                                 AsyncTask<Void, Integer, Void> task = new AsyncTask<Void, Integer, Void>() {
@@ -198,16 +194,11 @@ public class UpdateImageActivity extends FragmentActivity {
 
                                             // Upload image to cloudinary
                                             // Get instance from application constant DO NOT INITIALIZE ANOTHER.
-
-
                                             File file = new File(imageProfile.getUri().substring(7));
                                             Log.e("TADAH", "uploading image");
                                             Cloudinary cloudinary = ((BootstrapApplication) UpdateImageActivity.this.getApplication()).getCloudinary();
-                                          // JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
-                                            JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.asMap(
-                                                    "public_id", imageProfile.getFilename(),
-                                                   "overwrite", "true"
-                                            ));
+                                            JSONObject uploadResult = cloudinary.uploader().upload(file, Cloudinary.emptyMap());
+
                                             Log.e("TADAH", "uploaded: " + uploadResult);
 
                                             // autotagging
@@ -229,7 +220,7 @@ public class UpdateImageActivity extends FragmentActivity {
 
                                             // set the format and public url from cloudinary uplaod response
                                             // if the key is not present in the upload result (meaning upload failed), a JSONException will be thrown
-                                           imageProfile.setFilename(uploadResult.get("public_id").toString());
+                                            imageProfile.setFilename(uploadResult.get("public_id").toString());
                                             imageProfile.setExtension(uploadResult.get("format").toString());
                                         } catch (IOException ex) {
                                             ex.printStackTrace();
@@ -239,83 +230,88 @@ public class UpdateImageActivity extends FragmentActivity {
                                             ex.printStackTrace();
                                         } catch (InterruptedException ex) {
                                             ex.printStackTrace();
+                                        }catch (NullPointerException ex){
+                                            if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+                                                UpdateImageActivity.this.runOnUiThread(new Runnable() {
+                                                    public void run() {
+                                                        Toast.makeText(UpdateImageActivity.this, "Please choose images to upload.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                                finish();
+                                            }
                                         }
 
 
+                                        // end for loop
 
-                                // end for loop
-
-                                // Upload imageProfiles
-                                try {
-                                    SimpleDateFormat format = new SimpleDateFormat("EEEE, dd, MMM yyyy, hh:mm aaa");
-                                    Date date1 = Calendar.getInstance().getTime();
-                                    String today = format.format(date1);
-                                    imageProfile.setTitle(createStoryTitle.getTextString());
-                                    imageProfile.setDescription(createStoryDescription.getTextString());
-                                    //imageProfile.setDateUploaded(today);
-
-
-                                    // flatten imageProfile to json
-                                    Gson gson = new Gson();
-                                    String albumJson = gson.toJson(imageProfile);
-
-                                    Log.e("this is the json", albumJson);
-
-                                    // Upload json to databasesss
-                                    HttpClient httpClient = new DefaultHttpClient();
-                                    HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/update/image");
-                                    httpPost.setHeader("Content-Type", "application/json");
-                                    httpPost.setEntity(new StringEntity(albumJson));
-                                    HttpResponse httpResponse = httpClient.execute(httpPost); //TODO: not used?
-
-                                } catch (IOException ex) {
-                                    ex.printStackTrace();
-                                }
-
-                                return null;
-                            }
-
-                            @Override
-                            protected void onPreExecute() {
-                                super.onPreExecute();
+                                        // Upload imageProfiles
+                                        try {
+                                            SimpleDateFormat format = new SimpleDateFormat("EEEE, dd, MMM yyyy, hh:mm aaa");
+                                            Date date1 = Calendar.getInstance().getTime();
+                                            String today = format.format(date1);
+                                            imageProfile.setTitle(createStoryTitle.getTextString());
+                                            imageProfile.setDescription(createStoryDescription.getTextString());
+                                            //imageProfile.setDateUploaded(today);
 
 
-                                // start the notification progress
-                                notificationCompat.setSmallIcon(R.drawable.ic_launcher);
-                                notificationCompat.setContentTitle("Updating Image");
-                                notificationCompat.setProgress(0, 0, true);
-                                notificationManager.notify(1, notificationCompat.build());
-                               // finish();
-                            }
+                                            // flatten imageProfile to json
+                                            Gson gson = new Gson();
+                                            String albumJson = gson.toJson(imageProfile);
+
+                                            Log.e("this is the json", albumJson);
+
+                                            // Upload json to databasesss
+                                            HttpClient httpClient = new DefaultHttpClient();
+                                            HttpPost httpPost = new HttpPost("http://fypj-124465r.rhcloud.com/update/image");
+                                            httpPost.setHeader("Content-Type", "application/json");
+                                            httpPost.setEntity(new StringEntity(albumJson));
+                                            HttpResponse httpResponse = httpClient.execute(httpPost); //TODO: not used?
+
+                                        } catch (IOException ex) {
+                                            ex.printStackTrace();
+                                        }
+
+                                        return null;
+                                    }
+
+                                    @Override
+                                    protected void onPreExecute() {
+                                        super.onPreExecute();
 
 
-                            @Override
-                            protected void onPostExecute(Void aVoid) {
-                                super.onPostExecute(aVoid);
+                                        // start the notification progress
+                                        notificationCompat.setSmallIcon(R.drawable.ic_launcher);
+                                        notificationCompat.setContentTitle("Updating Image");
+                                        notificationCompat.setProgress(0, 0, true);
+                                        notificationManager.notify(1, notificationCompat.build());
 
-                                notificationCompat.setContentText("Update completed.");
-                                notificationCompat.setProgress(0, 0, false);
-                                notificationManager.notify(1, notificationCompat.build());
-
-
-                               // refresh();
-                                finish();
-                            }
-                        };
-
-                task.execute();
-                ///// end of async task
-                                //refresh();
-                                // imageProfiles=ViewStoryPagerAdapter.
-                                finish();
-                                Intent intent= new Intent(UpdateImageActivity.this, ManageStoryActivity.class);
-
-                                intent.putParcelableArrayListExtra("imageProfiles", imageProfiles);
-                               // startActivity(intent);
-                                setResult(RESULT_OK, intent);
+                                    }
 
 
-                                //startActivity(getIntent());
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        super.onPostExecute(aVoid);
+
+                                        notificationCompat.setContentText("Update completed.");
+                                        notificationCompat.setProgress(0, 0, false);
+                                        notificationManager.notify(1, notificationCompat.build());
+                                        Intent intent= new Intent(UpdateImageActivity.this.getApplicationContext(),ManageStoryActivity.class);
+                                     //   intent.putParcelableArrayListExtra("imageProfiles",albumzz.getImageProfiles());
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                      //  intent.putExtra("albumTitle", albumzz.getTitle());
+                                        //
+                                        startActivityForResult(intent,1);
+                                        UpdateImageActivity.this.finish();
+
+
+                                    }
+                                };
+
+                                task.execute();
+                                ///// end of async task
+
+                                //finish();
+                               // startActivity(getIntent());
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -336,6 +332,9 @@ public class UpdateImageActivity extends FragmentActivity {
                         .setMessage("Discard changes?")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                Intent intent= new Intent(UpdateImageActivity.this.getApplicationContext(),ManageStoryActivity.class);
+                                intent.putParcelableArrayListExtra("imageProfiles",imageProfiles);
+                                startActivity(intent);
                                 finish();
                             }
                         })
@@ -351,24 +350,7 @@ public class UpdateImageActivity extends FragmentActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    private void refresh() {
-        Ion.with(this)
-                .load("https://fypj-124465r.rhcloud.com/albums/images/")
-                .as(new TypeToken<ArrayList<ImageProfile>>() {
-                })
-                .setCallback(new FutureCallback<ArrayList<ImageProfile>>() {
-                    @Override
-                    public void onCompleted(Exception e, ArrayList<ImageProfile> imageProfiles){
 
-                        Intent intent= new Intent(UpdateImageActivity.this, ManageStoryActivity.class);
-
-                        intent.putParcelableArrayListExtra("imageProfiles", imageProfiles);
-                        startActivity(intent);
-
-
-                    }
-                });
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -417,19 +399,29 @@ public class UpdateImageActivity extends FragmentActivity {
 
         super.onSaveInstanceState(outState);
     }
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Discard Changes")
+                .setMessage("Are you sure you want to leave this page?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
-    private class UpdateImageAdapter  {
-        private ArrayList<ImageProfile> imageProfiles;
-        public UpdateImageAdapter( ArrayList<ImageProfile> imageProfiles) {
+                        // continue with exit
 
-            this.imageProfiles = imageProfiles;
-        }
+                        // deleteCache(getApplication());
+                        Intent intent= new Intent(UpdateImageActivity.this.getApplicationContext(),ManageStoryActivity.class);
+                           intent.putParcelableArrayListExtra("imageProfiles",imageProfiles);
+                        startActivity(intent);
+                        finish();
 
-
-        public int getCount() {
-            return imageProfiles.size();
-        }
-        // required for JazzyViewPager
-
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }

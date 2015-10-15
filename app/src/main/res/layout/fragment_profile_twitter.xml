@@ -7,13 +7,14 @@
 
     <ImageView
         android:id="@+id/profilePicture"
-        android:layout_height="128px"
-        android:layout_width="128px"
+        android:layout_height="500px"
+        android:layout_width="500px"
         android:gravity="center_horizontal"
         android:layout_marginBottom="10dp"
         android:layout_gravity="center_horizontal"
-        android:minHeight="128px"
+
         android:nestedScrollingEnabled="true"
+        android:scaleType="fitXY"
         android:minWidth="128px" />
 
     <TextView
