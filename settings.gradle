@@ -1,2 +1,1 @@
-include ':app', ':floatlabelededittext', ':facebook'
-include ':JazzyViewPager'
+include ':app', ':facebook', ':floatlabelededittext', ':JazzyViewPager'

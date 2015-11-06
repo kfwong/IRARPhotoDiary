@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="nyp.fypj.irarphotodiary">
+    package="sg.edu.nyp.irarphotodiary" >
 
     <!-- user permission declaration -->
     <!-- Include following permission if you load images from Internet -->
@@ -22,67 +22,72 @@
     <uses-feature android:name="android.hardware.sensor.accelerometer" />
     <uses-feature android:name="android.hardware.sensor.compass" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
-        android:name="nyp.fypj.irarphotodiary.application.BootstrapApplication"
+        android:name="sg.edu.nyp.irarphotodiary.application.BootstrapApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:uiOptions="splitActionBarWhenNarrow">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
 
         <!-- activity declarations -->
         <activity
-            android:name="nyp.fypj.irarphotodiary.activity.SplashActivity"
-            android:label="@string/app_name">
+            android:name="sg.edu.nyp.irarphotodiary.activity.SplashActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="nyp.fypj.irarphotodiary.activity.LoginActivity" />
-        <activity android:name="nyp.fypj.irarphotodiary.activity.NavigationActivity" />
+        <activity android:name="sg.edu.nyp.irarphotodiary.activity.LoginActivity" />
+        <activity android:name="sg.edu.nyp.irarphotodiary.activity.NavigationActivity" />
         <activity
-            android:name="nyp.fypj.irarphotodiary.activity.CreateStoryActivity"
+            android:name="sg.edu.nyp.irarphotodiary.activity.CreateStoryActivity"
             android:label="@string/title_activity_create_story"
             android:parentActivityName="android.support.v4.app.FragmentActivity"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.support.v4.app.FragmentActivity" />
         </activity>
         <activity
-            android:name="nyp.fypj.irarphotodiary.activity.CreateStoryListActivity"
+            android:name="sg.edu.nyp.irarphotodiary.activity.CreateStoryListActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="nyp.fypj.irarphotodiary.activity.ViewStoryActivity"
-            android:label="@string/title_activity_view_story"></activity>
+            android:name="sg.edu.nyp.irarphotodiary.activity.ViewStoryActivity"
+            android:label="@string/title_activity_view_story" />
 
         <!-- meta data declarations -->
         <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <meta-data
             android:name="CLOUDINARY_URL"
             android:value="cloudinary://413734277452647:oR5axeqCqSYPepzFua2s9CI2M_w@dxspdhqz3" />
-
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyAAC1WLzXCO890r4O2YMTAINYB_14vucSs" />
-
-        <meta-data android:name="alternate-map-key" android:value="AIzaSyBwVvzmfnOP6HWeP-b0xi3qCl1NCNySiRU"></meta-data>
+        <meta-data
+            android:name="alternate-map-key"
+            android:value="AIzaSyBwVvzmfnOP6HWeP-b0xi3qCl1NCNySiRU" />
 
         <activity
-            android:name="nyp.fypj.irarphotodiary.activity.ARActivity"
-            android:label="@string/title_activity_ar"></activity>
+            android:name="sg.edu.nyp.irarphotodiary.activity.ARActivity"
+            android:label="@string/title_activity_ar" />
         <activity
-            android:name="nyp.fypj.irarphotodiary.activity.GoogleMapActivity"
-            android:label="@string/title_activity_google_map"></activity>
+            android:name="sg.edu.nyp.irarphotodiary.activity.GoogleMapActivity"
+            android:label="@string/title_activity_google_map" />
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <activity android:name="com.facebook.LoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name" />
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
     </application>
 
 </manifest>
