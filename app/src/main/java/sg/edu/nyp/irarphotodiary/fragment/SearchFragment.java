@@ -163,8 +163,9 @@ public class SearchFragment extends Fragment {
 
                                         publishProgress(1);
                                         String result = Ion.with(SearchFragment.this)
-                                                .load("http://api.imagga.com/draft/tags")
+                                                .load("http://api.imagga.com/v1/tagging?")
                                                 .setTimeout(60000)
+                                                .addHeader("Authorization", "Basic YWNjXzMxZGU3NjJlNDA3YTZhMzowMDczZDQ2NDMxY2Y5MjQ4YjM0ODE0ZTIxNjY1YWVhMA==")
                                                 .setMultipartParameter("api_key", "acc_31de762e407a6a3")
                                                 .setMultipartFile("file", new File(actualUri))
                                                 .asString()

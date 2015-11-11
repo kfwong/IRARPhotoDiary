@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.cloudinary.Cloudinary;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.ion.Ion;
@@ -244,9 +245,9 @@ public class CreateStoryListActivity extends FragmentActivity {
                                         .asJsonObject()
                                         .get();
 
-                                Log.e("TADAH", "done autotagging: " + jsonObject.get("tags"));
+                                Log.e("TADAH", "done autotagging: " + jsonObject.getAsJsonArray("results").get(0).getAsJsonObject().get("tags"));
 
-                                ArrayList<Tag> tags = new Gson().fromJson(jsonObject.get("tags"), new TypeToken<ArrayList<Tag>>() {
+                                ArrayList<Tag> tags = new Gson().fromJson(jsonObject.getAsJsonArray("results").get(0).getAsJsonObject().get("tags"), new TypeToken<ArrayList<Tag>>() {
                                 }.getType());
 
                                 Log.e("TADAH", "done conversion to entity");

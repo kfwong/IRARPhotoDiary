@@ -67,12 +67,12 @@
         <meta-data
             android:name="CLOUDINARY_URL"
             android:value="cloudinary://413734277452647:oR5axeqCqSYPepzFua2s9CI2M_w@dxspdhqz3" />
+
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+
         <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAAC1WLzXCO890r4O2YMTAINYB_14vucSs" />
-        <meta-data
-            android:name="alternate-map-key"
-            android:value="AIzaSyBwVvzmfnOP6HWeP-b0xi3qCl1NCNySiRU" />
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBwVvzmfnOP6HWeP-b0xi3qCl1NCNySiRU"/>`
 
         <activity
             android:name="sg.edu.nyp.irarphotodiary.activity.ARActivity"
